@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
+// import { formatDate } from '@angular/common';
+
+import Swal from 'sweetalert2';
+
 import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../../models/clientes.model';
 import { TipoClientesService } from '../../services/tipo-clientes.service';
 import { TipoCliente } from '../../../models/tipoClientes';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cliente',
@@ -67,23 +70,23 @@ export class ClienteComponent implements OnInit {
 
   buscarDatosOnLine() {
 
-    if (!this.cliente.CLI_RUCIDE)
+    if (!this.cliente.CLI_RUC)
       Swal.fire('Advertencia', 'Ingrese un número de identificación', 'warning');
 
-    if (this.cliente.CLI_RUCIDE.length !== 10 && this.cliente.CLI_RUCIDE.length !== 13)
+    if (this.cliente.CLI_RUC.length !== 10 && this.cliente.CLI_RUC.length !== 13)
       Swal.fire('Advertencia', 'Cédula o RUC deben tener 10 o 13 dígitos', 'warning');
 
-    if (this.cliente.CLI_RUCIDE.length === 10) {
-      this.clientesService.getClienteCedula(this.cliente.CLI_RUCIDE).subscribe(resp => {
+    if (this.cliente.CLI_RUC.length === 10) {
+      this.clientesService.getClienteCedula(this.cliente.CLI_RUC).subscribe(resp => {
         this.procesarDatos("C", resp["result"][0]);
       });
     }
 
-    if (this.cliente.CLI_RUCIDE.length === 13) {
-      this.clientesService.getClienteSri(this.cliente.CLI_RUCIDE).subscribe(resp => {
+    if (this.cliente.CLI_RUC.length === 13) {
+      this.clientesService.getClienteSri(this.cliente.CLI_RUC).subscribe(resp => {
         this.procesarDatos("R", resp);
       }, error => {
-        this.clientesService.getClienteSriAlt(this.cliente.CLI_RUCIDE).subscribe(resp => {
+        this.clientesService.getClienteSriAlt(this.cliente.CLI_RUC).subscribe(resp => {
           this.procesarDatos("R", resp);
         });
       });
@@ -92,6 +95,7 @@ export class ClienteComponent implements OnInit {
   }
 
   procesarDatos(tipo: string, datos: any) {
+
     if (tipo === "C") {
       if (datos["identity"]) {
         this.cliente.CLI_NOMBRE = datos["name"];
@@ -105,6 +109,13 @@ export class ClienteComponent implements OnInit {
         this.cliente.CLI_NOMBRE = datos["Raz\u00f3n Social:"];
         this.cliente.CLI_NOMBREC = datos["Nombre Comercial:"] !== "" ? datos["Nombre Comercial:"] : datos["Raz\u00f3n Social:"];
         this.cliente.CLI_ACTIVIDAD = datos["Actividad Econ\u00f3mica Principal"];
+        this.cliente.CLI_CLASECONTRIBUYENTE = datos["Clase de Contribuyente"];
+        this.cliente.CLI_TIPOCONTRIBUYENTE = datos["Tipo de Contribuyente"];
+        this.cliente.CLI_FECINIACTIVIDADES = this.limpiarFecha(datos["Fecha de inicio de actividades"]);
+        this.cliente.CLI_FECCESACTIVIDADES = this.limpiarFecha(datos["Fecha de cese de actividades"]);
+        this.cliente.CLI_FECREIACTIVIDADES = this.limpiarFecha(datos["Fecha reinicio de actividades"]);
+        this.cliente.CLI_FECACTUALIZACION = this.limpiarFecha(datos["Fecha actualizaci\u00f3n"]);
+        this.cliente.CLI_CATMIPYMES = datos["Categoria Mi PYMES"];
       }
       if (datos["NUMERO_RUC"]) {
         this.cliente.CLI_NOMBRE = datos["RAZON_SOCIAL"];
@@ -112,6 +123,16 @@ export class ClienteComponent implements OnInit {
         this.cliente.CLI_ACTIVIDAD = datos["ACTIVIDAD_ECONOMICA"];
       }
     }
+  }
+
+  limpiarFecha(fecha: string): string {
+    const regex = /\r\n|\r|\n|\t|\s/gi;
+
+    let f = fecha;
+    f = f.replace(regex, '');
+    let date = f.split('-');
+
+    return `${date[2]}-${date[1]}-${date[0]}`;
   }
 
 }

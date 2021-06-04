@@ -28,7 +28,7 @@ export class ClientesService {
     return this.http.post(`${this.ruta}/api/clientes`, cliente);
   }
 
-  putCliente(id: string, cliente: Cliente) {
+  putCliente(id: number, cliente: Cliente) {
     return this.http.put(`${this.ruta}/api/clientes/${id}`, cliente);
   }
 

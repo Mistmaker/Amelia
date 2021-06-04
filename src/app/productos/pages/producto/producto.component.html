@@ -18,7 +18,7 @@
 
                             <div class="form-group">
                                 <label>Código</label>
-                                <input type="text" class="form-control" [(ngModel)]="producto.ART_NOMBREC" name="codigo"
+                                <input type="text" class="form-control" [(ngModel)]="producto.ART_CODIGO" name="codigo"
                                     placeholder="" maxlength="25" required>
                             </div>
 
@@ -44,8 +44,8 @@
                             <div class="form-group" *ngIf="grupoProductos.length > 0">
                                 <label for="grupo">Grupo:</label>
                                 <select [(ngModel)]="producto.GRUP_CODIGO" class="form-control" name="grupo" required>
-                                    <option *ngFor="let grupo of grupoProductos" [value]="grupo.GRUP_CODIGO"> {{
-                                        grupo.GRUP_NOMBRE }} </option>
+                                    <option *ngFor="let grupo of grupoProductos" [value]="grupo.GRU_CODIGO"> {{
+                                        grupo.GRU_NOMBRE }} </option>
                                 </select>
                             </div>
 
@@ -96,14 +96,21 @@
                                                     <tr *ngFor="let precio of precios">
                                                         <td scope="row">
                                                             <div class="form-group">
-                                                                <select [(ngModel)]="precio.ARTPRE_CODIGO" [ngModelOptions]="{standalone: true}" name="tipoPrecio" class="form-control form-control-sm" name="" id="">
-                                                                    <option *ngFor="let tipo of tipoPrecios" [value]="tipo.id_tipre"> {{ tipo.tipre_nombre }}</option>
+                                                                <select [(ngModel)]="precio.ARTPRE_CODIGO"
+                                                                    [ngModelOptions]="{standalone: true}"
+                                                                    name="tipoPrecio"
+                                                                    class="form-control form-control-sm" name="" id="">
+                                                                    <option *ngFor="let tipo of tipoPrecios"
+                                                                        [value]="tipo.id_tipre"> {{ tipo.tipre_nombre }}
+                                                                    </option>
                                                                 </select>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="form-group">
-                                                                <input type="number" class="form-control form-control-sm" name="" placeholder="0" [value]="precio.ARTPRE_PRECIO">
+                                                                <input type="number"
+                                                                    class="form-control form-control-sm" name=""
+                                                                    placeholder="0" [value]="precio.ARTPRE_PRECIO">
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -118,11 +125,11 @@
 
                             <div class="form-group">
                                 <label>Activo</label>
-                                <button *ngIf="producto.ART_ACTIVO === '1'" (click)="producto.ART_ACTIVO = '0'"
+                                <button *ngIf="producto.ART_ESTADO === '1'" (click)="producto.ART_ESTADO = '0'"
                                     class="btn btn-outline-success w-50" type="button">
                                     Activo
                                 </button>
-                                <button *ngIf="producto.ART_ACTIVO === '0'" (click)="producto.ART_ACTIVO = '1'"
+                                <button *ngIf="producto.ART_ESTADO === '0'" (click)="producto.ART_ESTADO = '1'"
                                     class="btn btn-outline-danger w-50" type="button">
                                     Inactivo
                                 </button>

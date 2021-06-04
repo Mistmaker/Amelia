@@ -25,6 +25,8 @@ export class ProductoComponent implements OnInit {
   tipoPrecios: TipoPrecio[] = [];
   precios: Precio[] = [];
 
+  actualizar = false;
+
   constructor(private route: ActivatedRoute, private productosService: ProductosService, private grupoProductosService: GrupoProductosService, private tipoPrecioService: TipoPreciosService, private preciosService: PreciosService) { }
 
   ngOnInit(): void {
@@ -39,6 +41,7 @@ export class ProductoComponent implements OnInit {
           console.log(result);
           this.precios = result;
         });
+        this.actualizar = true;
       });
     }
 
@@ -68,7 +71,7 @@ export class ProductoComponent implements OnInit {
     });
     Swal.showLoading();
 
-    if (this.producto.ART_CODIGO) {
+    if (this.actualizar) {
       this.productosService.putProducto(this.producto.ART_CODIGO, this.producto).subscribe(resp => {
         console.log(resp);
         Swal.fire({

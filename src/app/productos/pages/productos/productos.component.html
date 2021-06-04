@@ -44,8 +44,8 @@
                                         <td>{{ producto.ART_CODIGO }}</td>
                                         <td>{{ producto.ART_NOMBRE }}</td>
                                         <td>
-                                            <label *ngIf="producto.ART_ACTIVO=='1'" class="badge badge-success">Activo</label>
-                                            <label *ngIf="producto.ART_ACTIVO=='0'" class="badge badge-danger">Inctivo</label>
+                                            <label *ngIf="producto.ART_ESTADO=='1'" class="badge badge-success">Activo</label>
+                                            <label *ngIf="producto.ART_ESTADO=='0'" class="badge badge-danger">Inctivo</label>
                                         </td>
                                         <td>
                                             <button class="btn btn-info mr-1"

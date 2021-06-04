@@ -32,6 +32,7 @@
                                 <thead class=" text-primary">
                                     <th>CI./RUC</th>
                                     <th>Nombre</th>
+                                    <th>Nombre Comercial</th>
                                     <th>Dirección</th>
                                     <th>Telefono</th>
                                     <th>Email</th>
@@ -44,15 +45,16 @@
                                         currentPage: page,
                                         totalItems: count
                                       };">
-                                        <td>{{ cliente.CLI_RUCIDE }}</td>
+                                        <td>{{ cliente.CLI_RUC }}</td>
                                         <td>{{ cliente.CLI_NOMBRE }}</td>
+                                        <td>{{ cliente.CLI_NOMBREC }}</td>
                                         <td>{{ cliente.CLI_DIRECCION1 }}</td>
                                         <td>{{ cliente.CLI_TELEFONO1 }}</td>
-                                        <td>{{ cliente.CLI_CORREO }}</td>
+                                        <td>{{ cliente.CLI_CORREO1 }}</td>
                                         <td>{{ cliente.CLI_ACTIVIDAD }}</td>
                                         <td>
                                             <button class="btn btn-info mr-1"
-                                                [routerLink]="['/clientes', cliente.CLI_RUCIDE]">
+                                                [routerLink]="['/clientes', cliente.CLI_CODIGO]">
                                                 <i class="fa fa-pen"></i>
                                             </button>
                                         </td>
