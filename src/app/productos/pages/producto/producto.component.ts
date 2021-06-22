@@ -23,7 +23,6 @@ export class ProductoComponent implements OnInit {
   producto = new Producto();
   grupoProductos: GrupoProducto[] = [];
   tipoPrecios: TipoPrecio[] = [];
-  precios: Precio[] = [];
 
   actualizar = false;
 
@@ -39,7 +38,7 @@ export class ProductoComponent implements OnInit {
         // Solo si encuentra un producto procede a sacar los precios de la base de datos
         this.preciosService.getPreciosPorProducto(id).subscribe( result =>{
           console.log(result);
-          this.precios = result;
+          this.producto.precios = result;
         });
         this.actualizar = true;
       });
@@ -97,6 +96,10 @@ export class ProductoComponent implements OnInit {
     }
 
 
+  }
+
+  agregarPrecio(){
+    this.producto.precios.push( new Precio());
   }
 
 }
