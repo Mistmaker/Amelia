@@ -23,11 +23,39 @@ export class ProveedoresComponent implements OnInit {
   ngOnInit(): void {
     this.loading = true;
     console.log('on init - proveedores');
-
     this.supplierService.getProveedores().subscribe((response) => {
       this.suppliers = response;
       console.log('data', response);
       this.loading = false;
     });
+  }
+
+  search(event: any) {
+    setTimeout(() => {
+      this.searchString = event.target.value;
+      if (this.searchString !== '') {
+        this.supplierService
+          .getProveedoresByName(this.searchString)
+          .subscribe((res) => {
+            this.suppliers = res;
+            this.page = 1;
+          });
+      } else {
+        this.supplierService.getProveedores().subscribe((res) => {
+          this.suppliers = res;
+          this.page = 1;
+          this.loading = false;
+        });
+      }
+    }, 500);
+  }
+
+  onTableDataChange(event: any) {
+    this.page = event;
+  }
+
+  onTableSizeChange(event: any): void {
+    this.tableSize = event.target.value;
+    this.page = 1;
   }
 }

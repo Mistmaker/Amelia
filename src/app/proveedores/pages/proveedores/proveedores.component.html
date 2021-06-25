@@ -12,6 +12,8 @@
             <div class="col-md-6">
               <div class="ml-3 mt-1">
                 <input
+                  [(ngModel)]="searchString"
+                  (keyup)="search($event)"
                   type="text"
                   class="form-control"
                   placeholder="Buscar..."
@@ -44,14 +46,25 @@
                   <th>Accion</th>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let supplier of suppliers">
-                    <td>{{supplier.PRO_CODIGO}}</td>
-                    <td>{{supplier.PRO_NOMBRE}}</td>
-                    <td>{{supplier.PRO_NOMBREC}}</td>
-                    <td>{{supplier.PRO_DIRECCION1}}</td>
-                    <td>{{supplier.PRO_TELEFONO1}}</td>
-                    <td>{{supplier.PRO_CORREO}}</td>
-                    <td>{{supplier.GRU_TIPO}}</td>
+                  <tr
+                    *ngFor="
+                      let supplier of suppliers
+                        | filtroSimple: ''
+                        | paginate
+                          : {
+                              itemsPerPage: tableSize,
+                              currentPage: page,
+                              totalItems: count
+                            }
+                    "
+                  >
+                    <td>{{ supplier.PRO_CODIGO }}</td>
+                    <td>{{ supplier.PRO_NOMBRE }}</td>
+                    <td>{{ supplier.PRO_NOMBREC }}</td>
+                    <td>{{ supplier.PRO_DIRECCION1 }}</td>
+                    <td>{{ supplier.PRO_TELEFONO1 }}</td>
+                    <td>{{ supplier.PRO_CORREO }}</td>
+                    <td>{{ supplier.GRU_TIPO }}</td>
                     <td>
                       <button
                         class="btn btn-info mr-1"
@@ -63,6 +76,14 @@
                   </tr>
                 </tbody>
               </table>
+              <div *ngIf="!loading" class="d-flex justify-content-center">
+                <pagination-controls
+                  previousLabel="Prev"
+                  nextLabel="Next"
+                  (pageChange)="onTableDataChange($event)"
+                >
+                </pagination-controls>
+              </div>
             </div>
           </div>
         </div>

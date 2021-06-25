@@ -36,6 +36,12 @@ export class ProveedoresService {
     return this.http.put(`${this.route}/proveedores/${id}`, supplier);
   }
 
+  getProveedoresByName(name: string) {
+    return this.http.post<Proveedor[]>(`${this.route}/proveedores/nombre`, {
+      name,
+    });
+  }
+
   getProveedorSri(ruc: string) {
     return this.http.get(`${this.wsSri}${ruc}`);
   }
