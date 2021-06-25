@@ -1,3 +1,4 @@
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProveedoresComponent } from './pages/proveedores/proveedores.component';
@@ -6,6 +7,6 @@ import { ProveedoresRoutingModule } from './proveedores.routes';
 
 @NgModule({
   declarations: [ProveedoresComponent, ProveedorComponent],
-  imports: [CommonModule, ProveedoresRoutingModule],
+  imports: [CommonModule, FormsModule, ProveedoresRoutingModule],
 })
 export class ProveedoresModule {}

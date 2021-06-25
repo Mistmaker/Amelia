@@ -29,7 +29,10 @@
 
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-hover animated fadein faster">
+              <table
+                *ngIf="!loading && suppliers.length > 0"
+                class="table table-hover animated fadein faster"
+              >
                 <thead class="text-primary">
                   <th>RUC</th>
                   <th>Nombre</th>
@@ -41,35 +44,18 @@
                   <th>Accion</th>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>proveedor.CLI_RUC</td>
-                    <td>proveedor.CLI_NOMBRE</td>
-                    <td>proveedor.CLI_NOMBREC</td>
-                    <td>proveedor.CLI_DIRECCION1</td>
-                    <td>proveedor.CLI_TELEFONO1</td>
-                    <td>proveedor.CLI_CORREO1</td>
-                    <td>proveedor.GRU_TIPO</td>
+                  <tr *ngFor="let supplier of suppliers">
+                    <td>{{supplier.PRO_CODIGO}}</td>
+                    <td>{{supplier.PRO_NOMBRE}}</td>
+                    <td>{{supplier.PRO_NOMBREC}}</td>
+                    <td>{{supplier.PRO_DIRECCION1}}</td>
+                    <td>{{supplier.PRO_TELEFONO1}}</td>
+                    <td>{{supplier.PRO_CORREO}}</td>
+                    <td>{{supplier.GRU_TIPO}}</td>
                     <td>
                       <button
                         class="btn btn-info mr-1"
-                        [routerLink]="['/proveedores', 1]"
-                      >
-                        <i class="fa fa-pen"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>proveedor.PRO_CODIGO</td>
-                    <td>proveedor.PRO_NOMBRE</td>
-                    <td>proveedor.PRO_NOMBREC</td>
-                    <td>proveedor.PRO_DIRECCION1</td>
-                    <td>proveedor.PRO_TELEFONO1</td>
-                    <td>proveedor.PRO_CORREO</td>
-                    <td>proveedor.GRU_TIPO</td>
-                    <td>
-                      <button
-                        class="btn btn-info mr-1"
-                        [routerLink]="['/proveedores', 1]"
+                        [routerLink]="['/proveedores', supplier.PRO_CODIGO]"
                       >
                         <i class="fa fa-pen"></i>
                       </button>
@@ -80,8 +66,8 @@
             </div>
           </div>
         </div>
-        <!-- <div
-          *ngIf="cargando"
+        <div
+          *ngIf="loading"
           class="alert alert-info text-center mt-3 animated fadein faster"
         >
           <h4 class="alert-heading">Cargando</h4>
@@ -91,14 +77,14 @@
           <p class="mb-0">Espere por favor</p>
         </div>
         <div
-          *ngIf="!cargando && clientes.length === 0"
+          *ngIf="!loading && suppliers.length === 0"
           class="alert alert-warning text-center mt-3 animated fadein faster"
         >
           <h4 class="alert-heading">No hay registros</h4>
           <p>
             <i class="fa fa-exclamation fa-3x"></i>
           </p>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
