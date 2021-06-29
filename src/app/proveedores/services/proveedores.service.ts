@@ -42,6 +42,10 @@ export class ProveedoresService {
     });
   }
 
+  deleteProveedor(id: string){
+    return this.http.delete(`${this.route}/proveedores/${id}`);
+  }
+
   getProveedorSri(ruc: string) {
     return this.http.get(`${this.wsSri}${ruc}`);
   }

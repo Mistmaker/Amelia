@@ -6,6 +6,7 @@ export class Proveedor {
   PRO_DIRECCION1: string; //
   PRO_TELEFONO1: string; //
   PRO_CORREO: string; //
+  PRO_TIPOIDE: string;
   GRU_TIPO: string;
 
   constructor() {}

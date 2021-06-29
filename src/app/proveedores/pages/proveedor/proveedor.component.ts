@@ -1,10 +1,12 @@
 import { NgForm } from '@angular/forms';
-import { ProveedoresService } from './../../services/proveedores.service';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 import { Proveedor } from './../../../models/proveedores.model';
+import { ProveedoresService } from './../../services/proveedores.service';
+import { TipoCliente } from './../../../models/tipoClientes';
+import { TipoClientesService } from './../../../clientes/services/tipo-clientes.service';
 
 @Component({
   selector: 'app-proveedor',
@@ -12,23 +14,40 @@ import { Proveedor } from './../../../models/proveedores.model';
   styleUrls: ['./proveedor.component.css'],
 })
 export class ProveedorComponent implements OnInit {
+  typeClient: TipoCliente[] = [];
   supplier = new Proveedor();
   showButton: boolean = false;
+  showDeleteButton: boolean = false;
   routeStr: string;
 
   constructor(
     private route: ActivatedRoute,
-    private supplierService: ProveedoresService
+    private router: Router,
+    private supplierService: ProveedoresService,
+    private typeClientService: TipoClientesService
   ) {}
 
   ngOnInit(): void {
     this.routeStr = this.route.snapshot.paramMap.get('id');
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       console.log(this.routeStr);
+      this.showDeleteButton = true;
       this.supplierService.getProveedor(this.routeStr).subscribe((response) => {
         this.supplier = response;
         console.log(response);
       });
+    }
+    this.typeClientService.getTipos().subscribe((resp) => {
+      console.log("type cliente",resp);
+      this.typeClient = resp;
+    });
+  }
+
+  onChangeSelect(value: string) {
+    if (value === '2') {
+      this.showButton = true;
+    } else {
+      this.showButton = false;
     }
   }
 
@@ -46,11 +65,7 @@ export class ProveedorComponent implements OnInit {
         },
         (err) => {
           console.log('error post', err);
-          Swal.fire(
-            'Error',
-            'Se produjo un error al crear el usuario',
-            'error'
-          );
+          Swal.fire('Error', err.error.msg, 'error');
         }
       );
     } else {
@@ -66,15 +81,41 @@ export class ProveedorComponent implements OnInit {
             );
           },
           (err) => {
-            alert('hubo un error');
-            Swal.fire(
-              'Error',
-              'Se produjo un error al actualizar el usuario',
-              'error'
-            );
+            console.log('error put', err);
+            Swal.fire('Error', err.error.msg, 'error');
           }
         );
     }
+  }
+
+  deleteProveedor() {
+    Swal.fire({
+      title: `¿Estas seguro de borrar el proveedor ${this.supplier.PRO_NOMBREC}?`,
+      showCancelButton: true,
+      confirmButtonText: `Eliminar`,
+      cancelButtonText: `Cancelar`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this.supplierService
+          .deleteProveedor(this.supplier.PRO_CODIGO)
+          .subscribe(
+            (res) => {
+              console.log('response delete', res);
+              Swal.fire(
+                'Eliminado',
+                'Se elimino el proveedor con éxito',
+                'success'
+              );
+              this.router.navigate(['/proveedores']);
+            },
+            (err) => {
+              console.log('error delete', err);
+              Swal.fire('Error', err.error.msg, 'error');
+            }
+          );
+      }
+    });
   }
 
   searchDataOnline() {

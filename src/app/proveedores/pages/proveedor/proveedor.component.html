@@ -7,9 +7,16 @@
             <h4 class="card-title">Proveedores</h4>
             <p class="card-category">Listado de proveedores registrados</p>
           </div>
-          <div class="text-right mr-3">
+          <div class="d-flex justify-content-between mx-3">
             <button routerLink="/proveedores" class="btn btn-info mt-1">
               <i class="fas fa-long-arrow-alt-left"></i> Regresar
+            </button>
+            <button
+              *ngIf="showDeleteButton"
+              (click)="deleteProveedor()"
+              class="btn btn-danger mt-1"
+            >
+              <i class="fas fa-trash-alt"></i> Borrar
             </button>
           </div>
           <div class="card-body">
@@ -18,24 +25,19 @@
                 <div class="row">
                   <div class="col-sm-12 col-md-3">
                     <div class="form-group">
-                      <label>Tipo de contribuyente</label>
-                      <!-- <input
-                        [(ngModel)]="supplier.PRO_CONTRIBUYENTE"
-                        name="taxpayer"
-                        maxlength="1"
-                        #taxpayer="ngModel"
-                        placeholder="Tipo de contribuyente"
-                        type="text"
-                        class="form-control"
-                      /> -->
+                      <label>Tipo de Identificación</label>
                       <select
-                        [(ngModel)]="supplier.PRO_CONTRIBUYENTE"
+                        [(ngModel)]="supplier.PRO_TIPOIDE"
                         name="typeTaxpayer"
                         #typeTaxpayer
+                        (change)="onChangeSelect(typeTaxpayer.value)"
                         class="form-control"
                       >
-                        <option [value]="supplier.PRO_CONTRIBUYENTE">
-                          {{ supplier.PRO_CONTRIBUYENTE || "S" }}
+                        <option
+                          *ngFor="let type of typeClient"
+                          [value]="type.TCL_CODIGO"
+                        >
+                          {{ type.TCL_NOMBRE }}
                         </option>
                       </select>
                     </div>
@@ -57,7 +59,7 @@
                       </div>
                       <div class="col-sm-2 col-md-2">
                         <button
-                          *ngIf="!showButton"
+                          *ngIf="showButton"
                           type="button"
                           class="btn btn-primary"
                           (click)="searchDataOnline()"
