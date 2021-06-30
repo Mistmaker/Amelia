@@ -1,0 +1,311 @@
+<div class="">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="card">
+          <div class="card-header">Proveedor</div>
+          <div class="card-body">
+            <form (ngSubmit)="f.form.valid && saveInvoice(f)" #f="ngForm">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-12 col-md-3">
+                    <div class="form-group">
+                      <label>Tipo de Identificación</label>
+                      <select
+                        [(ngModel)]="supplier.PRO_TIPOIDE"
+                        name="typeTaxpayer"
+                        #typeTaxpayer
+                        (change)="onChangeSelect(typeTaxpayer.value)"
+                        class="form-control"
+                      >
+                        <option
+                          *ngFor="let type of typeClient"
+                          [value]="type.TCL_CODIGO"
+                        >
+                          {{ type.TCL_NOMBRE }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12 col-md-3">
+                    <label>Ruc</label>
+                    <div class="row">
+                      <div class="col-sm-10 col-md-10">
+                        <input
+                          [(ngModel)]="supplier.PRO_CODIGO"
+                          type="text"
+                          class="form-control"
+                          name="documento"
+                          placeholder="9999999999"
+                          maxlength="13"
+                          required
+                        />
+                      </div>
+                      <div class="col-sm-2 col-md-2">
+                        <button
+                          *ngIf="showButton"
+                          type="button"
+                          class="btn btn-primary"
+                          (click)="searchDataOnline()"
+                        >
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Nombre</label>
+                      <input
+                        [(ngModel)]="supplier.PRO_NOMBRE"
+                        name="name"
+                        #name="ngModel"
+                        placeholder="Nombre proveedor"
+                        type="text"
+                        class="form-control"
+                        minlength="4"
+                        required
+                      />
+                      <div
+                        *ngIf="f.submitted && name.invalid"
+                        class="alert bg-warning"
+                      >
+                        <div *ngIf="name.errors.required">
+                          Nombre requeridos
+                        </div>
+                        <div *ngIf="name.errors.minlength">
+                          Debe tener mínimo 4 letras
+                        </div>
+                        <div *ngIf="name.errors.forbiddenName">
+                          No puede colocar ese nombre
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Nombre Comercial</label>
+                      <input
+                        [(ngModel)]="supplier.PRO_NOMBREC"
+                        name="comercialName"
+                        #comercialName="ngModel"
+                        placeholder="Nombre Comercial del Proveedor"
+                        type="text"
+                        class="form-control"
+                        minlength="4"
+                        required
+                      />
+                      <div
+                        *ngIf="f.submitted && comercialName.invalid"
+                        class="alert bg-warning"
+                      >
+                        <div *ngIf="comercialName.errors.required">
+                          Nombre requeridos
+                        </div>
+                        <div *ngIf="comercialName.errors.minlength">
+                          Debe tener mínimo 4 letras
+                        </div>
+                        <div *ngIf="comercialName.errors.forbiddenName">
+                          No puede colocar ese nombre
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Dirección</label>
+                      <input
+                        [(ngModel)]="supplier.PRO_DIRECCION1"
+                        name="address"
+                        placeholder="Dirección"
+                        type="text"
+                        class="form-control form-control-sm"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Teléfono</label>
+                      <input
+                        [(ngModel)]="supplier.PRO_TELEFONO1"
+                        name="phone"
+                        placeholder="Teléfono"
+                        type="text"
+                        class="form-control form-control-sm"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Email</label>
+                      <input
+                        [(ngModel)]="supplier.PRO_CORREO"
+                        name="address"
+                        placeholder="Email"
+                        type="text"
+                        class="form-control form-control-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Producto</div>
+          <div class="card-body">
+            <form (ngSubmit)="f.form.valid && saveInvoice(f)" #f="ngForm">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-12 col-md-3">
+                    <label>Nombre</label>
+                    <div class="row">
+                      <div class="col-sm-10 col-md-10">
+                        <input
+                          [(ngModel)]="supplier.PRO_CODIGO"
+                          type="text"
+                          class="form-control"
+                          name="documento"
+                          placeholder="Nombre del producto"
+                          required
+                        />
+                      </div>
+                      <div class="col-sm-2 col-md-2">
+                        <button type="button" class="btn btn-primary">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <table class="table table-hover animated fadein faster">
+                <thead class="text-primary">
+                  <th>Cantidad*</th>
+                  <th>Código</th>
+                  <th>Descripción</th>
+                  <th>Precio</th>
+                  <th>Descuento</th>
+                  <th>Total</th>
+                  <th>ICE</th>
+                  <th>IRBPNR</th>
+                  <th>Acción</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>código</td>
+                    <td>Descripción</td>
+                    <td>precio</td>
+                    <td>descuento</td>
+                    <td>total</td>
+                    <td>ice</td>
+                    <td>irbpnr</td>
+                    <td>
+                      <button class="btn btn-danger mr-1">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>1</td>
+                    <td>código</td>
+                    <td>Descripción</td>
+                    <td>precio</td>
+                    <td>descuento</td>
+                    <td>total</td>
+                    <td>ice</td>
+                    <td>irbpnr</td>
+                    <td>
+                      <button class="btn btn-danger mr-1">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label>Observación</label>
+                    <input
+                      name="observation"
+                      placeholder="Observación..."
+                      type="text"
+                      class="form-control"
+                      minlength="4"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-4 d-flex flex-column">
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">
+                      SubTotal Sin Impuesto
+                    </p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">SubTotal 12%</p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">SubTotal 0%</p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">
+                      SubTotal No Objeto IVA
+                    </p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">
+                      SubTotal Exento IVA
+                    </p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">Descuento</p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">Valor ICE</p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">Valor IRBPNR</p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">IVA 12%</p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end">Propina</p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                  <div class="row col">
+                    <p class="col-8 d-flex justify-content-end font-weight-bolder">VALOR TOTAL</p>
+                    <p class="col-4">0.00</p>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
