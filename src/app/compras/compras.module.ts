@@ -2,10 +2,10 @@ import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FacturaComponent } from './pages/factura/factura.component';
-import { FacturasRoutingModule } from './facturas.routes';
+import { ComprasRoutingModule } from './compras.routes';
 
 @NgModule({
   declarations: [FacturaComponent],
-  imports: [CommonModule, FacturasRoutingModule, FormsModule],
+  imports: [CommonModule, ComprasRoutingModule, FormsModule],
 })
-export class FacturasModule {}
+export class ComprasModule {}

@@ -1,3 +1,7 @@
+import { Producto } from './../../../models/productos.model';
+import { ProductosService } from './../../../productos/services/productos.service';
+import { DetalleFactura } from './../../../models/detalleFactura';
+import { EncabezadoFactura } from './../../../models/encabezadoFactura';
 import { NgForm } from '@angular/forms';
 import { TipoClientesService } from './../../../clientes/services/tipo-clientes.service';
 import { ProveedoresService } from './../../../proveedores/services/proveedores.service';
@@ -14,12 +18,17 @@ export class FacturaComponent implements OnInit {
   // data
   supplier = new Proveedor();
   typeClient: TipoCliente[] = [];
+  invoice = new EncabezadoFactura();
+  searchProductStr = '';
+  products: Producto[] = [];
+  selectedProduct = new Producto();
   // ui
   showButton: boolean = false;
 
   constructor(
     private supplierService: ProveedoresService,
-    private typeClientService: TipoClientesService
+    private typeClientService: TipoClientesService,
+    private productService: ProductosService
   ) {}
 
   ngOnInit(): void {
@@ -42,5 +51,28 @@ export class FacturaComponent implements OnInit {
     if (form.invalid) {
       return;
     }
+  }
+
+  searchProduct(event: any) {
+    setTimeout(() => {
+      this.productService
+        .getProductoByName(this.searchProductStr)
+        .subscribe((res) => {
+          console.log('productos', res);
+          this.products = res;
+        });
+    }, 500);
+  }
+
+  onChangeProductSelect(value: string) {
+    console.log('change value', value);
+  }
+
+  addProduct() {
+    this.invoice.itemsInvoice.push(new DetalleFactura());
+  }
+
+  removeProduct(index: number) {
+    this.invoice.itemsInvoice.splice(index, 1);
   }
 }

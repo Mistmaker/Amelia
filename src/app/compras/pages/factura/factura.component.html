@@ -2,10 +2,10 @@
   <div class="col-md-12">
     <div class="card">
       <div class="card-body">
-        <div class="card">
-          <div class="card-header">Proveedor</div>
-          <div class="card-body">
-            <form (ngSubmit)="f.form.valid && saveInvoice(f)" #f="ngForm">
+        <form (ngSubmit)="f.form.valid && saveInvoice(f)" #f="ngForm">
+          <div class="card">
+            <div class="card-header">Proveedor</div>
+            <div class="card-body">
               <div class="form-group">
                 <div class="row">
                   <div class="col-sm-12 col-md-3">
@@ -52,6 +52,19 @@
                           <i class="fas fa-search"></i>
                         </button>
                       </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-12 col-md-3 d-flex align-items-center">
+                    <div class="form-group form-check">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="newSupplierCK"
+                      />
+                      <label class="form-check-label" for="newSupplierCK">
+                        Nuevo proveedor
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -159,84 +172,124 @@
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
-        </div>
 
-        <div class="card">
-          <div class="card-header">Producto</div>
-          <div class="card-body">
-            <form (ngSubmit)="f.form.valid && saveInvoice(f)" #f="ngForm">
+          <div class="card">
+            <div class="card-header">Producto</div>
+            <div class="card-body">
               <div class="form-group">
                 <div class="row">
                   <div class="col-sm-12 col-md-3">
-                    <label>Nombre</label>
                     <div class="row">
-                      <div class="col-sm-10 col-md-10">
+                      <div class="d-flex col-sm-12 col-md-12">
                         <input
-                          [(ngModel)]="supplier.PRO_CODIGO"
+                          [(ngModel)]="searchProductStr"
+                          (keyup)="searchProduct($event)"
                           type="text"
                           class="form-control"
-                          name="documento"
+                          name="searchProduct"
                           placeholder="Nombre del producto"
                           required
                         />
-                      </div>
-                      <div class="col-sm-2 col-md-2">
-                        <button type="button" class="btn btn-primary">
-                          <i class="fas fa-search"></i>
+                        <button
+                          type="button"
+                          class="ml-1 btn btn-primary"
+                          (click)="addProduct()"
+                        >
+                          <i class="fas fa-plus"></i>
                         </button>
                       </div>
+                    </div>
+                    <div>
+                      <select
+                        [(ngModel)]="selectedProduct.ART_CODIGO"
+                        *ngIf="products.length > 0"
+                        name="selectedProduct"
+                        #selectedProduct
+                        (change)="onChangeProductSelect(selectedProduct.value)"
+                        multiple
+                        class="form-control"
+                      >
+                        <option
+                          *ngFor="let product of products"
+                          [value]="product.ART_CODIGO"
+                        >
+                          {{ product.ART_NOMBRE }}
+                        </option>
+                      </select>
                     </div>
                   </div>
                 </div>
               </div>
-              <table class="table table-hover animated fadein faster">
-                <thead class="text-primary">
-                  <th>Cantidad*</th>
-                  <th>Código</th>
-                  <th>Descripción</th>
-                  <th>Precio</th>
-                  <th>Descuento</th>
-                  <th>Total</th>
-                  <th>ICE</th>
-                  <th>IRBPNR</th>
-                  <th>Acción</th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>código</td>
-                    <td>Descripción</td>
-                    <td>precio</td>
-                    <td>descuento</td>
-                    <td>total</td>
-                    <td>ice</td>
-                    <td>irbpnr</td>
-                    <td>
-                      <button class="btn btn-danger mr-1">
-                        <i class="fas fa-trash-alt"></i>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>código</td>
-                    <td>Descripción</td>
-                    <td>precio</td>
-                    <td>descuento</td>
-                    <td>total</td>
-                    <td>ice</td>
-                    <td>irbpnr</td>
-                    <td>
-                      <button class="btn btn-danger mr-1">
-                        <i class="fas fa-trash-alt"></i>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="row">
+              <div class="table-responsive">
+                <table class="table table-hover animated fadein faster">
+                  <thead class="text-primary">
+                    <th>Cantidad*</th>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Descuento</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                  </thead>
+                  <tbody>
+                    <tr
+                      *ngFor="let item of invoice.itemsInvoice; let i = index"
+                    >
+                      <td>
+                        <input
+                          name="{{ item.DETFACPRO_CANTIDAD }}{{ i }}"
+                          [(ngModel)]="item.DETFACPRO_CANTIDAD"
+                          [value]="item.DETFACPRO_CANTIDAD"
+                          class="form-control"
+                          placeholder="1"
+                          type="number"
+                          min="1"
+                          required
+                        />
+                      </td>
+                      <td>{{ item.DETFACPRO_CODIGO }}{{ i }}</td>
+                      <td>{{ item.DETFACPRO_DESCRIPCION }}{{ i }}</td>
+                      <td>
+                        <input
+                          name="{{ item.DETFACPRO_COSTO }}{{ i }}"
+                          [(ngModel)]="item.DETFACPRO_COSTO"
+                          [value]="item.DETFACPRO_COSTO"
+                          class="form-control"
+                          placeholder="1"
+                          type="number"
+                          min="1"
+                          required
+                        />
+                      </td>
+                      <td>
+                        <input
+                          name="{{ item.DETFACPRO_PORDES }}{{ i }}"
+                          [(ngModel)]="item.DETFACPRO_PORDES"
+                          [value]="item.DETFACPRO_PORDES"
+                          class="form-control"
+                          placeholder="1"
+                          type="number"
+                          min="1"
+                          required
+                        />
+                      </td>
+                      <td>{{ item.DETFACPRO_TOTAL }}{{ i }}</td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn btn-danger mr-1"
+                          (click)="removeProduct(i)"
+                        >
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row mt-1">
                 <div class="col-md-8">
                   <div class="form-group">
                     <label>Observación</label>
@@ -297,14 +350,23 @@
                     <p class="col-4">0.00</p>
                   </div>
                   <div class="row col">
-                    <p class="col-8 d-flex justify-content-end font-weight-bolder">VALOR TOTAL</p>
+                    <p
+                      class="
+                        col-8
+                        d-flex
+                        justify-content-end
+                        font-weight-bolder
+                      "
+                    >
+                      VALOR TOTAL
+                    </p>
                     <p class="col-4">0.00</p>
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
