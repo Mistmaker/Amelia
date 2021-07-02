@@ -70,23 +70,23 @@ export class ClienteComponent implements OnInit {
 
   buscarDatosOnLine() {
 
-    if (!this.cliente.CLI_RUC)
+    if (!this.cliente.CLI_RUCIDE)
       Swal.fire('Advertencia', 'Ingrese un número de identificación', 'warning');
 
-    if (this.cliente.CLI_RUC.length !== 10 && this.cliente.CLI_RUC.length !== 13)
+    if (this.cliente.CLI_RUCIDE.length !== 10 && this.cliente.CLI_RUCIDE.length !== 13)
       Swal.fire('Advertencia', 'Cédula o RUC deben tener 10 o 13 dígitos', 'warning');
 
-    if (this.cliente.CLI_RUC.length === 10) {
-      this.clientesService.getClienteCedula(this.cliente.CLI_RUC).subscribe(resp => {
+    if (this.cliente.CLI_RUCIDE.length === 10) {
+      this.clientesService.getClienteCedula(this.cliente.CLI_RUCIDE).subscribe(resp => {
         this.procesarDatos("C", resp["result"][0]);
       });
     }
 
-    if (this.cliente.CLI_RUC.length === 13) {
-      this.clientesService.getClienteSri(this.cliente.CLI_RUC).subscribe(resp => {
+    if (this.cliente.CLI_RUCIDE.length === 13) {
+      this.clientesService.getClienteSri(this.cliente.CLI_RUCIDE).subscribe(resp => {
         this.procesarDatos("R", resp);
       }, error => {
-        this.clientesService.getClienteSriAlt(this.cliente.CLI_RUC).subscribe(resp => {
+        this.clientesService.getClienteSriAlt(this.cliente.CLI_RUCIDE).subscribe(resp => {
           this.procesarDatos("R", resp);
         });
       });

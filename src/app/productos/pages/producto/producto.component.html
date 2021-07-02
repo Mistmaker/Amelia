@@ -44,8 +44,8 @@
                             <div class="form-group" *ngIf="grupoProductos.length > 0">
                                 <label for="grupo">Grupo:</label>
                                 <select [(ngModel)]="producto.GRUP_CODIGO" class="form-control" name="grupo" required>
-                                    <option *ngFor="let grupo of grupoProductos" [value]="grupo.GRU_CODIGO"> {{
-                                        grupo.GRU_NOMBRE }} </option>
+                                    <option *ngFor="let grupo of grupoProductos" [value]="grupo.GRUP_CODIGO"> {{
+                                        grupo.GRUP_NOMBRE }} </option>
                                 </select>
                             </div>
 
@@ -85,7 +85,8 @@
                                     <div class="card">
                                         <div class="card-header">Precios
 
-                                            <button (click)="agregarPrecio()" class="btn btn-outline-primary" type="button">
+                                            <button (click)="agregarPrecio()" class="btn btn-outline-primary"
+                                                type="button">
                                                 Agregar
                                             </button>
 
@@ -129,7 +130,7 @@
 
 
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label>Activo</label>
                                 <button *ngIf="producto.ART_ESTADO === '1'" (click)="producto.ART_ESTADO = '0'"
                                     class="btn btn-outline-success w-50" type="button">
@@ -139,7 +140,7 @@
                                     class="btn btn-outline-danger w-50" type="button">
                                     Inactivo
                                 </button>
-                            </div>
+                            </div> -->
 
                             <hr>
                             <div class="form-group text-center">

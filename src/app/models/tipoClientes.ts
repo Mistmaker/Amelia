@@ -1,4 +1,4 @@
 export class TipoCliente {
-    TCL_CODIGO: number;
-    TCL_NOMBRE: string;
+    ticli_codigo: string;
+    ticli_nombre: string;
 }
