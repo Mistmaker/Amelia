@@ -19,9 +19,10 @@ export class FacturaComponent implements OnInit {
   supplier = new Proveedor();
   typeClient: TipoCliente[] = [];
   invoice = new EncabezadoFactura();
-  searchProductStr = '';
-  products: Producto[] = [];
-  selectedProduct = new Producto();
+  // add product
+  query = '';
+  productsList: Producto[] = [];
+  positionOfProduct: number = -1;
   // ui
   showButton: boolean = false;
 
@@ -56,19 +57,32 @@ export class FacturaComponent implements OnInit {
   searchProduct(event: any) {
     setTimeout(() => {
       this.productService
-        .getProductoByName(this.searchProductStr)
+        .getProductoByName(this.query)
         .subscribe((res) => {
           console.log('productos', res);
-          this.products = res;
+          this.productsList = res;
         });
     }, 500);
   }
 
-  onChangeProductSelect(value: string) {
-    console.log('change value', value);
+  onChangeProductSelect(position: number) {
+    this.positionOfProduct = position;
+    this.query = this.productsList[position].ART_NOMBRE;
+
+    // let detail = new DetalleFactura();
+
+    // detail.DETFACPRO_CANTIDAD = 1;
+    // detail.DETFACPRO_CODIGO = this.productsList[position].ART_CODIGO;
+    // detail.DETFACPRO_DESCRIPCION = this.productsList[position].ART_NOMBRE;
+    // detail.DETFACPRO_COSTO = 5;
+    // detail.DETFACPRO_PORDES = 0;
+    // detail.DETFACPRO_TOTAL = 1 * 5;
+
+    // this.invoice.itemsInvoice.push(detail);
   }
 
   addProduct() {
+    // $('#exampleModal').modal('show');
     this.invoice.itemsInvoice.push(new DetalleFactura());
   }
 

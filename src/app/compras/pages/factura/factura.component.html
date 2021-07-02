@@ -184,7 +184,7 @@
                     <div class="row">
                       <div class="d-flex col-sm-12 col-md-12">
                         <input
-                          [(ngModel)]="searchProductStr"
+                          [(ngModel)]="query"
                           (keyup)="searchProduct($event)"
                           type="text"
                           class="form-control"
@@ -194,26 +194,35 @@
                         />
                         <button
                           type="button"
-                          class="ml-1 btn btn-primary"
+                          class="
+                            ml-1
+                            btn btn-primary
+                            d-flex
+                            align-items-center
+                            justify-content-center
+                          "
                           (click)="addProduct()"
                         >
-                          <i class="fas fa-plus"></i>
+                          <i class="fas fa-plus"></i> Añadir
                         </button>
                       </div>
                     </div>
                     <div>
                       <select
-                        [(ngModel)]="selectedProduct.ART_CODIGO"
-                        *ngIf="products.length > 0"
+                        [(ngModel)]="positionOfProduct"
+                        *ngIf="
+                          productsList.length > 0 &&
+                          productsList[positionOfProduct]?.ART_NOMBRE != query
+                        "
                         name="selectedProduct"
                         #selectedProduct
-                        (change)="onChangeProductSelect(selectedProduct.value)"
+                        (change)="onChangeProductSelect(positionOfProduct)"
                         multiple
                         class="form-control"
                       >
                         <option
-                          *ngFor="let product of products"
-                          [value]="product.ART_CODIGO"
+                          *ngFor="let product of productsList; let i = index"
+                          [value]="i"
                         >
                           {{ product.ART_NOMBRE }}
                         </option>
@@ -249,8 +258,8 @@
                           required
                         />
                       </td>
-                      <td>{{ item.DETFACPRO_CODIGO }}{{ i }}</td>
-                      <td>{{ item.DETFACPRO_DESCRIPCION }}{{ i }}</td>
+                      <td>{{ item.DETFACPRO_CODIGO }}</td>
+                      <td>{{ item.DETFACPRO_DESCRIPCION }}</td>
                       <td>
                         <input
                           name="{{ item.DETFACPRO_COSTO }}{{ i }}"
@@ -271,11 +280,11 @@
                           class="form-control"
                           placeholder="1"
                           type="number"
-                          min="1"
+                          min="0"
                           required
                         />
                       </td>
-                      <td>{{ item.DETFACPRO_TOTAL }}{{ i }}</td>
+                      <td>{{ item.DETFACPRO_TOTAL }}</td>
                       <td>
                         <button
                           type="button"
@@ -370,4 +379,5 @@
       </div>
     </div>
   </div>
+  <app-crear-producto></app-crear-producto>
 </div>
