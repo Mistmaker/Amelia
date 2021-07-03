@@ -1,13 +1,14 @@
-import { Producto } from './../../../models/productos.model';
-import { ProductosService } from './../../../productos/services/productos.service';
+import { NgForm } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+
 import { DetalleFactura } from './../../../models/detalleFactura';
 import { EncabezadoFactura } from './../../../models/encabezadoFactura';
-import { NgForm } from '@angular/forms';
-import { TipoClientesService } from './../../../clientes/services/tipo-clientes.service';
-import { ProveedoresService } from './../../../proveedores/services/proveedores.service';
 import { TipoCliente } from './../../../models/tipoClientes';
+import { TipoClientesService } from './../../../clientes/services/tipo-clientes.service';
 import { Proveedor } from './../../../models/proveedores.model';
-import { Component, OnInit } from '@angular/core';
+import { ProveedoresService } from './../../../proveedores/services/proveedores.service';
+import { CrearProductoComponent } from 'src/app/shared/components/crear-producto/crear-producto.component';
 
 @Component({
   selector: 'app-factura',
@@ -19,17 +20,13 @@ export class FacturaComponent implements OnInit {
   supplier = new Proveedor();
   typeClient: TipoCliente[] = [];
   invoice = new EncabezadoFactura();
-  // add product
-  query = '';
-  productsList: Producto[] = [];
-  positionOfProduct: number = -1;
   // ui
   showButton: boolean = false;
 
   constructor(
     private supplierService: ProveedoresService,
     private typeClientService: TipoClientesService,
-    private productService: ProductosService
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -54,35 +51,19 @@ export class FacturaComponent implements OnInit {
     }
   }
 
-  searchProduct(event: any) {
-    setTimeout(() => {
-      this.productService
-        .getProductoByName(this.query)
-        .subscribe((res) => {
-          console.log('productos', res);
-          this.productsList = res;
-        });
-    }, 500);
-  }
+  openDialog(): void {
+    const dialogRef = this.dialog.open(CrearProductoComponent, {
+      width: '60%',
+      data: '',
+    });
 
-  onChangeProductSelect(position: number) {
-    this.positionOfProduct = position;
-    this.query = this.productsList[position].ART_NOMBRE;
-
-    // let detail = new DetalleFactura();
-
-    // detail.DETFACPRO_CANTIDAD = 1;
-    // detail.DETFACPRO_CODIGO = this.productsList[position].ART_CODIGO;
-    // detail.DETFACPRO_DESCRIPCION = this.productsList[position].ART_NOMBRE;
-    // detail.DETFACPRO_COSTO = 5;
-    // detail.DETFACPRO_PORDES = 0;
-    // detail.DETFACPRO_TOTAL = 1 * 5;
-
-    // this.invoice.itemsInvoice.push(detail);
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+      this.invoice.itemsInvoice.push(new DetalleFactura());
+    });
   }
 
   addProduct() {
-    // $('#exampleModal').modal('show');
     this.invoice.itemsInvoice.push(new DetalleFactura());
   }
 

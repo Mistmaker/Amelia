@@ -1,31 +1,87 @@
-<div
-  class="modal fade show"
-  id="exampleModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="exampleModalLabel"
-  aria-hidden="true"
+<div class="modal-header">
+  <h5 mat-dialog-title class="modal-title" id="exampleModalLabel">
+    Modal title
+  </h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form
+  mat-dialog-content
+  class="modal-body"
+  (ngSubmit)="f.form.valid && addProduct(f)"
+  #f="ngForm"
 >
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
+  <div>
+    <label>Nombre del producto</label>
+    <input
+      [(ngModel)]="query"
+      (keyup)="searchProduct($event)"
+      type="text"
+      class="form-control"
+      name="searchProduct"
+      placeholder="Nombre del producto"
+      required
+      autocomplete="off"
+    />
+    <div>
+      <select
+        [(ngModel)]="positionOfProduct"
+        *ngIf="
+          productsList.length > 0 &&
+          productsList[positionOfProduct]?.ART_NOMBRE != query
+        "
+        name="selectedProduct"
+        #selectedProduct
+        (change)="onChangeProductSelect(positionOfProduct)"
+        multiple
+        class="form-control"
+      >
+        <option *ngFor="let product of productsList; let i = index" [value]="i">
+          {{ product.ART_NOMBRE }}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group mt-2">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Cantidad</label>
+          <input
+            [(ngModel)]="invoiceDetail.DETFACPRO_CANTIDAD"
+            name="count"
+            #count="ngModel"
+            placeholder="0"
+            type="number"
+            class="form-control"
+            min="1"
+            required
+          />
+        </div>
       </div>
-      <div class="modal-body">...</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          Close
-        </button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Descuento</label>
+          <input
+            [(ngModel)]="invoiceDetail.DETFACPRO_PORDES"
+            name="discount"
+            #discount="ngModel"
+            placeholder="0"
+            type="number"
+            class="form-control"
+            min="0"
+            max="1"
+            required
+          />
+        </div>
       </div>
     </div>
   </div>
+</form>
+<div mat-dialog-actions class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="onNoClick()">
+    Cerrar
+  </button>
+  <button type="button" class="btn btn-primary">Añadir producto</button>
 </div>
