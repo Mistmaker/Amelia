@@ -1,4 +1,4 @@
 export class TipoPrecio {
-    TPR_ID: number;
-    TPR_NOMBRE: string;
+  id_tipre: string;
+  tipre_nombre: string;
 }

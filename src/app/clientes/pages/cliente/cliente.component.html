@@ -1,172 +1,149 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-info">
-                        <h4 class="card-title ">Personas</h4>
-                        <p class="card-category"> Listado de personas registradas</p>
-                    </div>
-                    <div class="text-right mr-3">
-                        <button routerLink="/clientes" class="btn btn-info mt-1">
-                            <i class="fas fa-long-arrow-alt-left"></i> Regresar
-                        </button>
-                    </div>
-                    <div class="card-body">
+<div class="card">
+    <div class="card-header card-header-info">
+        <h4 class="card-title ">Personas</h4>
+        <p class="card-category"> Listado de personas registradas</p>
+    </div>
 
-                        <form (ngSubmit)="f.form.valid &&guardar( f )" #f="ngForm">
+    <div class="card-body">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button routerLink="/clientes" class="btn btn-primary mt-1"><i class="fas fa-long-arrow-alt-left"></i> Regresar</button>
+        </div>
+        <form (ngSubmit)="f.form.valid &&guardar( f )" #f="ngForm">
 
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-sm-12 col-md-3">
-                                        <label>Tipo de documento:</label>
-                                        <select [(ngModel)]="cliente.CLI_TIPOIDE" #tipoDocu (change)="controlBotones(tipoDocu.value)" name="tipoDocumento" class="form-control">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <label>Tipo de documento:</label>
+                        <select [(ngModel)]="cliente.CLI_TIPOIDE" #tipoDocu (change)="controlBotones(tipoDocu.value)" name="tipoDocumento" class="form-control">
                                             <option *ngFor="let tipo of tipoClientes" [value]="tipo.ticli_codigo"> {{ tipo.ticli_nombre }}</option>
                                         </select>
-                                    </div>
-                                    <div class="col-sm-12 col-md-3">
-                                        <label>Ced/Ruc</label>
-                                        <div class="row">
-                                            <div class="col-sm-10 col-md-10">
-                                                <input type="text" class="form-control" [(ngModel)]="cliente.CLI_RUCIDE" name="documento" placeholder="9999999999" maxlength="13" required>
-                                            </div>
-                                            <div class="col-sm-2 col-md-2">
-                                                <button *ngIf="mostrarBtn" type="button" class="btn btn-primary" (click)="buscarDatosOnLine()"> <i class="fas fa-search"></i> </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="col-sm-12 col-md-3">
+                        <label>Ced/Ruc</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" [(ngModel)]="cliente.CLI_RUCIDE" name="documento" placeholder="9999999999" maxlength="13" required>
+                            <button *ngIf="mostrarBtn" type="button" class="btn btn-primary" (click)="buscarDatosOnLine()"> <i class="fas fa-search"></i> </button>
+                            <!-- <div *ngIf="buscando" class="mt-1">
+                                <i class="fas fa-spinner fa-2x fa-spin"></i>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                            <div class="form-group">
-                                <label>Nombre</label>
-                                <input type="text" class="form-control" [(ngModel)]="cliente.CLI_NOMBRE" name="nombre"
-                                    placeholder="Nombres" minlength="4" #nombre="ngModel" required>
-                                <div *ngIf="f.submitted && nombre.invalid" class="alert bg-warning">
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" class="form-control" [(ngModel)]="cliente.CLI_NOMBRE" name="nombre" placeholder="Nombres" minlength="4" #nombre="ngModel" required>
+                <div *ngIf="f.submitted && nombre.invalid" class="alert bg-warning">
 
-                                    <div *ngIf="nombre.errors.required">
-                                        Nombre requeridos
-                                    </div>
-                                    <div *ngIf="nombre.errors.minlength">
-                                        Debe tener mínimo 4 letras
-                                    </div>
-                                    <div *ngIf="nombre.errors.forbiddenName">
-                                        No puede colocar ese nombre
-                                    </div>
+                    <div *ngIf="nombre.errors.required">
+                        Nombre requeridos
+                    </div>
+                    <div *ngIf="nombre.errors.minlength">
+                        Debe tener mínimo 4 letras
+                    </div>
+                    <div *ngIf="nombre.errors.forbiddenName">
+                        No puede colocar ese nombre
+                    </div>
 
-                                </div>
-                            </div>
+                </div>
+            </div>
 
-                            <div class="form-group">
-                                <label>Nombre Comercial</label>
-                                <input type="text" class="form-control" [(ngModel)]="cliente.CLI_NOMBREC" name="nombrec"
-                                    placeholder="Nombre Comercial" minlength="4" #nombrec="ngModel" required>
-                                <div *ngIf="f.submitted && nombrec.invalid" class="alert bg-warning">
+            <div class="form-group">
+                <label>Nombre Comercial</label>
+                <input type="text" class="form-control" [(ngModel)]="cliente.CLI_NOMBREC" name="nombrec" placeholder="Nombre Comercial" minlength="4" #nombrec="ngModel" required>
+                <div *ngIf="f.submitted && nombrec.invalid" class="alert bg-warning">
 
-                                    <div *ngIf="nombrec.errors.required">
-                                        Nombre requeridos
-                                    </div>
-                                    <div *ngIf="nombrec.errors.minlength">
-                                        Debe tener mínimo 4 letras
-                                    </div>
-                                    <div *ngIf="nombrec.errors.forbiddenName">
-                                        No puede colocar ese nombre
-                                    </div>
+                    <div *ngIf="nombrec.errors.required">
+                        Nombre requeridos
+                    </div>
+                    <div *ngIf="nombrec.errors.minlength">
+                        Debe tener mínimo 4 letras
+                    </div>
+                    <div *ngIf="nombrec.errors.forbiddenName">
+                        No puede colocar ese nombre
+                    </div>
 
-                                </div>
-                            </div>
+                </div>
+            </div>
 
 
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Dirección</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_DIRECCION1" name="direccion"
-                                                placeholder="Dirección">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Teléfono</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_TELEFONO1" name="telefono"
-                                                placeholder="Teléfono">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Email</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_CORREO" name="email" placeholder="Email">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Email Secuendario</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_CORREO2" name="email2" placeholder="Email">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="form-group">
-                                            <label>Actividad</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_ACTIVIDAD" name="actividad" placeholder="Actividad">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Clase Contribuyente</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_CLASECONTRIBUYENTE" name="claseContr" placeholder="Clase Contribuyente">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Tipo Contribuyente</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_TIPOCONTRIBUYENTE" name="tipoContr" placeholder="Tipo Contribuyente">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>F. Inicio Actividades</label>
-                                            <input type="date" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_FECINIACTIVIDADES" name="fecIniAct" placeholder="Inicio Actividades">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>F. Cese Actividades</label>
-                                            <input type="date" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_FECCESACTIVIDADES" name="fecCesAct" placeholder="Cese Actividades">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>F. Reinicio Actividades</label>
-                                            <input type="date" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_FECREIACTIVIDADES" name="fecReiAct" placeholder="Reinicio Actividades">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>F. Actualización</label>
-                                            <input type="date" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_FECACTUALIZACION" name="fecAct" placeholder="Actualización">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Categoria Mi PYMES</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="cliente.CLI_CATMIPYMES" name="catMiPym" placeholder="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Dirección</label>
+                            <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_DIRECCION1" name="direccion" placeholder="Dirección">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_TELEFONO1" name="telefono" placeholder="Teléfono">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CORREO" name="email" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Email Secuendario</label>
+                            <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CORREO2" name="email2" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Actividad</label>
+                            <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_ACTIVIDAD" name="actividad" placeholder="Actividad">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Clase Contribuyente</label>
+                            <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CLASECONTRIBUYENTE" name="claseContr" placeholder="Clase Contribuyente">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Tipo Contribuyente</label>
+                            <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_TIPOCONTRIBUYENTE" name="tipoContr" placeholder="Tipo Contribuyente">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>F. Inicio Actividades</label>
+                            <input type="date" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_FECINIACTIVIDADES" name="fecIniAct" placeholder="Inicio Actividades">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>F. Cese Actividades</label>
+                            <input type="date" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_FECCESACTIVIDADES" name="fecCesAct" placeholder="Cese Actividades">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>F. Reinicio Actividades</label>
+                            <input type="date" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_FECREIACTIVIDADES" name="fecReiAct" placeholder="Reinicio Actividades">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>F. Actualización</label>
+                            <input type="date" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_FECACTUALIZACION" name="fecAct" placeholder="Actualización">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Categoria Mi PYMES</label>
+                            <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CATMIPYMES" name="catMiPym" placeholder="">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
 
@@ -174,22 +151,18 @@
 
 
 
-                            <!-- <div class="form-group">
+            <!-- <div class="form-group">
                                 <label>Fecha de ingreso</label>
                                 <input type="date" class="form-control" [(ngModel)]="cliente.CLI_FECING" name="fecha">
                             </div> -->
 
-                            <hr>
-                            <div class="form-group text-center">
-                                <button class="btn btn-primary w-50" type="submit">
+            <hr>
+            <div class="form-group text-center">
+                <button class="btn btn-primary w-50" type="submit">
                                     <i class="fas fa-save"></i> Guardar
                                 </button>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
             </div>
-        </div>
+
+        </form>
     </div>
 </div>
