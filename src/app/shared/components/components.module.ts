@@ -2,19 +2,22 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from './navbar/navbar.component';
-
-
+import { CrearProductoComponent } from './crear-producto/crear-producto.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    NavbarComponent
+    NavbarComponent,
+    CrearProductoComponent
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
   ],
   exports: [
-    NavbarComponent
+    NavbarComponent,
+    CrearProductoComponent
   ]
 })
 export class ComponentsModule { }
