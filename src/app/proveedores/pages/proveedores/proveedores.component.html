@@ -1,52 +1,35 @@
-<div class="main-content">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header card-header-info">
-            <h4 class="card-title">Proveedores</h4>
-            <p class="card-category">Listado de proveedores registrados</p>
-          </div>
+<div class="card">
+    <div class="card-header card-header-info">
+        <h4 class="card-title">Proveedores</h4>
+        <p class="card-category">Listado de proveedores registrados</p>
+    </div>
 
-          <div class="row">
+    <div class="card-body">
+        <div class="row mb-3">
             <div class="col-md-6">
-              <div class="ml-3 mt-1">
-                <input
-                  [(ngModel)]="searchString"
-                  (keyup)="search($event)"
-                  type="text"
-                  class="form-control"
-                  placeholder="Buscar..."
-                />
-              </div>
+                <div class="ml-3 mt-1">
+                    <input [(ngModel)]="searchString" (keyup)="search($event)" type="text" class="form-control" placeholder="Buscar..." />
+                </div>
             </div>
             <div class="col-md-6">
-              <div class="text-right mr-3 mt-1">
-                <button routerLink="/proveedores/nuevo" class="btn btn-info">
-                  <i class="fas fa-plus"></i> Agregar
-                </button>
-              </div>
+                <div class="text-right mr-3 mt-1">
+                    <button routerLink="/proveedores/nuevo" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar</button>
+                </div>
             </div>
-          </div>
-
-          <div class="card-body">
-            <div class="table-responsive">
-              <table
-                *ngIf="!loading && suppliers.length > 0"
-                class="table table-hover animated fadein faster"
-              >
+        </div>
+        <div class="table-responsive">
+            <table *ngIf="!loading && suppliers.length > 0" class="table table-hover animated fadein faster">
                 <thead class="text-primary">
-                  <th>RUC</th>
-                  <th>Nombre</th>
-                  <th>Nombre Comercial</th>
-                  <th>Dirección</th>
-                  <th>Telefono</th>
-                  <th>Email</th>
-                  <th>Acción</th>
+                    <th>RUC</th>
+                    <th>Nombre</th>
+                    <th>Nombre Comercial</th>
+                    <th>Dirección</th>
+                    <th>Telefono</th>
+                    <th>Email</th>
+                    <th>Acción</th>
                 </thead>
                 <tbody>
-                  <tr
-                    *ngFor="
+                    <tr *ngFor="
                       let supplier of suppliers
                         | filtroSimple: ''
                         | paginate
@@ -55,56 +38,38 @@
                               currentPage: page,
                               totalItems: count
                             }
-                    "
-                  >
-                    <td>{{ supplier.PRO_CODIGO }}</td>
-                    <td>{{ supplier.PRO_NOMBRE }}</td>
-                    <td>{{ supplier.PRO_NOMBREC }}</td>
-                    <td>{{ supplier.PRO_DIRECCION1 }}</td>
-                    <td>{{ supplier.PRO_TELEFONO1 }}</td>
-                    <td>{{ supplier.PRO_CORREO }}</td>
-                    <td>
-                      <button
-                        class="btn btn-info mr-1"
-                        [routerLink]="['/proveedores', supplier.PRO_CODIGO]"
-                      >
+                    ">
+                        <td>{{ supplier.PRO_CODIGO }}</td>
+                        <td>{{ supplier.PRO_NOMBRE }}</td>
+                        <td>{{ supplier.PRO_NOMBREC }}</td>
+                        <td>{{ supplier.PRO_DIRECCION1 }}</td>
+                        <td>{{ supplier.PRO_TELEFONO1 }}</td>
+                        <td>{{ supplier.PRO_CORREO }}</td>
+                        <td>
+                            <button class="btn btn-primary mr-1" [routerLink]="['/proveedores', supplier.PRO_CODIGO]">
                         <i class="fa fa-pen"></i>
                       </button>
-                    </td>
-                  </tr>
+                        </td>
+                    </tr>
                 </tbody>
-              </table>
-              <div *ngIf="!loading" class="d-flex justify-content-center">
-                <pagination-controls
-                  previousLabel="Prev"
-                  nextLabel="Next"
-                  (pageChange)="onTableDataChange($event)"
-                >
+            </table>
+            <div *ngIf="!loading" class="d-flex justify-content-center">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
                 </pagination-controls>
-              </div>
             </div>
-          </div>
         </div>
-        <div
-          *ngIf="loading"
-          class="alert alert-info text-center mt-3 animated fadein faster"
-        >
-          <h4 class="alert-heading">Cargando</h4>
-          <p>
-            <i class="fa fa-sync-alt fa-spin fa-3x"></i>
-          </p>
-          <p class="mb-0">Espere por favor</p>
-        </div>
-        <div
-          *ngIf="!loading && suppliers.length === 0"
-          class="alert alert-warning text-center mt-3 animated fadein faster"
-        >
-          <h4 class="alert-heading">No hay registros</h4>
-          <p>
-            <i class="fa fa-exclamation fa-3x"></i>
-          </p>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
+<div *ngIf="loading" class="alert alert-info text-center mt-3 animated fadein faster">
+    <h4 class="alert-heading">Cargando</h4>
+    <p>
+        <i class="fa fa-sync-alt fa-spin fa-3x"></i>
+    </p>
+    <p class="mb-0">Espere por favor</p>
+</div>
+<div *ngIf="!loading && suppliers.length === 0" class="alert alert-warning text-center mt-3 animated fadein faster">
+    <h4 class="alert-heading">No hay registros</h4>
+    <p>
+        <i class="fa fa-exclamation fa-3x"></i>
+    </p>
 </div>

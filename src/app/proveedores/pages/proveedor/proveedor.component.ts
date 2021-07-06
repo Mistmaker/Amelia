@@ -38,16 +38,16 @@ export class ProveedorComponent implements OnInit {
       });
     }
     this.typeClientService.getTipos().subscribe((resp) => {
-      console.log("type cliente",resp);
+      console.log('type cliente', resp);
       this.typeClient = resp;
     });
   }
 
   onChangeSelect(value: string) {
-    if (value === '2') {
-      this.showButton = true;
-    } else {
+    if (value === '3') {
       this.showButton = false;
+    } else {
+      this.showButton = true;
     }
   }
 
@@ -126,7 +126,12 @@ export class ProveedorComponent implements OnInit {
         'warning'
       );
 
-    if (this.supplier.PRO_CODIGO.length !== 13)
+    if (this.supplier.PRO_CODIGO.length === 10) {
+      Swal.fire('En construcción', '', 'info');
+      return;
+    }
+
+    if (!(this.supplier.PRO_CODIGO.length === 13 || this.supplier.PRO_CODIGO.length === 10))
       Swal.fire('Advertencia', 'RUC deben tener 13 dígitos', 'warning');
 
     if (this.supplier.PRO_CODIGO.length === 13) {

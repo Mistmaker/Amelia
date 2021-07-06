@@ -19,6 +19,7 @@ export class ClienteComponent implements OnInit {
   cliente = new Cliente();
   tipoClientes: TipoCliente[] = [];
   mostrarBtn: boolean = false;
+  showDeleteButton: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,6 +34,7 @@ export class ClienteComponent implements OnInit {
       console.log(id);
       this.clientesService.getCliente(id).subscribe((resp) => {
         this.cliente = resp;
+        this.showDeleteButton = true;
         console.log(resp);
       });
     }
@@ -219,5 +221,49 @@ export class ClienteComponent implements OnInit {
     let date = f.split('-');
 
     return `${date[2]}-${date[1]}-${date[0]}`;
+  }
+
+  eliminarCliente(): void {
+    let eliminar = false;
+    Swal.fire({
+      title: 'Confirmación',
+      text: 'Desea eliminar este cliente?',
+      icon: 'warning',
+      showDenyButton: true,
+      confirmButtonText: `Eliminar`,
+      denyButtonText: `No eliminar`,
+      denyButtonColor: '#3085d6',
+      confirmButtonColor: '#d33',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        eliminar = true;
+        if (eliminar) {
+          Swal.fire({
+            title: 'Espere',
+            text: 'Eliminando información',
+            allowOutsideClick: false,
+            icon: 'info',
+          });
+          Swal.showLoading();
+
+          this.clientesService.deleteCliente(this.cliente.CLI_CODIGO).subscribe(resp => {
+            Swal.fire(
+              'Eliminado!',
+              'Se eliminó los datos del cliente',
+              'success'
+            ).then(r => {
+              this.router.navigateByUrl('clientes');
+            });
+          }, error => {
+            console.log(error);
+            Swal.fire(
+              'Error!',
+              'Ocurrió un error al eliminar',
+              'error'
+            );
+          })
+        }
+      }
+    });
   }
 }

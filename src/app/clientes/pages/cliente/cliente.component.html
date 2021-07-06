@@ -158,9 +158,8 @@
 
             <hr>
             <div class="form-group text-center">
-                <button class="btn btn-primary w-50" type="submit">
-                                    <i class="fas fa-save"></i> Guardar
-                                </button>
+                <button class="btn btn-primary w-50" type="submit"> <i class="fas fa-save"></i> Guardar</button>
+                <button *ngIf="showDeleteButton" (click)="eliminarCliente()" class="btn btn-danger w-50" type="button"> <i class="fas fa-trash-alt"></i> Borrar </button>
             </div>
 
         </form>
