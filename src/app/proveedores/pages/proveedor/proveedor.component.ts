@@ -33,21 +33,22 @@ export class ProveedorComponent implements OnInit {
       console.log(this.routeStr);
       this.showDeleteButton = true;
       this.supplierService.getProveedor(this.routeStr).subscribe((response) => {
-        this.supplier = response;
         console.log(response);
+        this.supplier = response;
+        console.log(this.supplier.PRO_NOMBREC);
       });
     }
     this.typeClientService.getTipos().subscribe((resp) => {
-      console.log("type cliente",resp);
+      console.log('type cliente', resp);
       this.typeClient = resp;
     });
   }
 
   onChangeSelect(value: string) {
-    if (value === '2') {
-      this.showButton = true;
-    } else {
+    if (value === '3') {
       this.showButton = false;
+    } else {
+      this.showButton = true;
     }
   }
 
@@ -126,41 +127,67 @@ export class ProveedorComponent implements OnInit {
         'warning'
       );
 
-    if (this.supplier.PRO_CODIGO.length !== 13)
-      Swal.fire('Advertencia', 'RUC deben tener 13 dígitos', 'warning');
+    if (
+      this.supplier.PRO_CODIGO.length !== 10 &&
+      this.supplier.PRO_CODIGO.length !== 13
+    )
+      Swal.fire(
+        'Advertencia',
+        'Cédula o RUC deben tener 10 o 13 dígitos',
+        'warning'
+      );
+
+    if (this.supplier.PRO_CODIGO.length === 10) {
+      this.supplierService
+        .getProveedorCedula(this.supplier.PRO_CODIGO)
+        .subscribe((response) => {
+          this.formatData(response['result'][0], 'C');
+        });
+    }
 
     if (this.supplier.PRO_CODIGO.length === 13) {
       this.supplierService.getProveedorSri(this.supplier.PRO_CODIGO).subscribe(
         (res) => {
           console.log(res);
-          this.formatData(res);
+          this.formatData(res, 'R');
         },
         (err) => {
           this.supplierService
             .getProveedorSriAlt(this.supplier.PRO_CODIGO)
             .subscribe((res) => {
               console.log(res);
-              this.formatData(res);
+              this.formatData(res, 'R');
             });
         }
       );
     }
   }
 
-  formatData(data: any) {
-    if (data['RUC:']) {
-      this.supplier.PRO_NOMBRE = data['Raz\u00f3n Social:'];
-      this.supplier.PRO_NOMBREC =
-        data['Nombre Comercial:'] !== ''
-          ? data['Nombre Comercial:']
-          : data['Raz\u00f3n Social:'];
+  formatData(data: any, type: string) {
+    if (type === 'C') {
+      if (data['identity']) {
+        this.supplier.PRO_NOMBRE = data['name'];
+        this.supplier.PRO_NOMBREC = data['name'];
+        this.supplier.PRO_DIRECCION1 =
+          data['residence'] + ' ' + data['streets'] + ' ' + data['homenumber'];
+      }
     }
-    if (data['NUMERO_RUC']) {
-      this.supplier.PRO_NOMBRE = data['Raz\u00f3n Social:'];
-      this.supplier.PRO_NOMBREC =
-        data['Nombre Comercial:'] !== ''
-          ? data['Nombre Comercial:']
-          : data['Raz\u00f3n Social:'];
+
+    if (type === 'R') {
+      if (data['RUC:']) {
+        this.supplier.PRO_NOMBRE = data['Raz\u00f3n Social:'];
+        this.supplier.PRO_NOMBREC =
+          data['Nombre Comercial:'] !== ''
+            ? data['Nombre Comercial:']
+            : data['Raz\u00f3n Social:'];
+      }
+      if (data['NUMERO_RUC']) {
+        this.supplier.PRO_NOMBRE = data['Raz\u00f3n Social:'];
+        this.supplier.PRO_NOMBREC =
+          data['Nombre Comercial:'] !== ''
+            ? data['Nombre Comercial:']
+            : data['Raz\u00f3n Social:'];
+      }
     }
   }
 }

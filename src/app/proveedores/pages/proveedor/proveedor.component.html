@@ -35,16 +35,16 @@
                       >
                         <option
                           *ngFor="let type of typeClient"
-                          [value]="type.TCL_CODIGO"
+                          [value]="type.ticli_codigo"
                         >
-                          {{ type.TCL_NOMBRE }}
+                          {{ type.ticli_nombre }}
                         </option>
                       </select>
                     </div>
                   </div>
 
                   <div class="col-sm-12 col-md-3">
-                    <label>Ruc</label>
+                    <label>Ruc*</label>
                     <div class="row">
                       <div class="col-sm-10 col-md-10">
                         <input
@@ -73,7 +73,7 @@
               </div>
 
               <div class="form-group">
-                <label>Nombre</label>
+                <label>Nombre*</label>
                 <input
                   [(ngModel)]="supplier.PRO_NOMBRE"
                   name="name"
@@ -99,11 +99,11 @@
               </div>
 
               <div class="form-group">
-                <label>Nombre Comercial</label>
+                <label>Nombre Comercial*</label>
                 <input
                   [(ngModel)]="supplier.PRO_NOMBREC"
-                  name="comercialName"
-                  #comercialName="ngModel"
+                  name="nombrec"
+                  #nombrec="ngModel"
                   placeholder="Nombre Comercial del Proveedor"
                   type="text"
                   class="form-control"
@@ -111,16 +111,16 @@
                   required
                 />
                 <div
-                  *ngIf="f.submitted && comercialName.invalid"
+                  *ngIf="f.submitted && nombrec.invalid"
                   class="alert bg-warning"
                 >
-                  <div *ngIf="comercialName.errors.required">
+                  <div *ngIf="nombrec.errors.required">
                     Nombre requeridos
                   </div>
-                  <div *ngIf="comercialName.errors.minlength">
+                  <div *ngIf="nombrec.errors.minlength">
                     Debe tener mínimo 4 letras
                   </div>
-                  <div *ngIf="comercialName.errors.forbiddenName">
+                  <div *ngIf="nombrec.errors.forbiddenName">
                     No puede colocar ese nombre
                   </div>
                 </div>
@@ -154,6 +154,18 @@
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
+                      <label>Teléfono 2</label>
+                      <input
+                        [(ngModel)]="supplier.PRO_TELEFONO2"
+                        name="phone2"
+                        placeholder="Teléfono"
+                        type="text"
+                        class="form-control form-control-sm"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
                       <label>Email</label>
                       <input
                         [(ngModel)]="supplier.PRO_CORREO"
@@ -164,7 +176,65 @@
                       />
                     </div>
                   </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Parte relacionada</label>
+                      <select
+                      [(ngModel)]="supplier.PRO_PARTEREL"
+                      class="form-control form-control-sm"
+                      [ngModelOptions]="{standalone: true}"
+                      >
+                        <option value="s">Si</option>
+                        <option value="n">No</option>
+                      </select>
+                      <!-- <input
+                        [(ngModel)]="supplier.PRO_PARTEREL"
+                        name="relationalPart"
+                        placeholder="Parte relacionada"
+                        type="text"
+                        class="form-control form-control-sm"
+                      /> -->
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Cuenta Contable Proveedores</label>
+                      <input
+                        [(ngModel)]="supplier.CON_CODIGO1"
+                        name="accountSupplier"
+                        placeholder="Cuenta Contable Proveedores"
+                        type="text"
+                        class="form-control form-control-sm"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Cuenta Contable Anticipos</label>
+                      <input
+                        [(ngModel)]="supplier.CON_CODIGO2"
+                        name="accountAnticipe"
+                        placeholder="Cuenta Contable Anticipos"
+                        type="text"
+                        class="form-control form-control-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+              <div class="form-group">
+                <label>Observación</label>
+                <textarea
+                  [(ngModel)]="supplier.PRO_OBSERVACION"
+                  name="comercialName"
+                  #comercialName="ngModel"
+                  placeholder="Observación del proveedor"
+                  type="text"
+                  class="form-control"
+                  minlength="4"
+                  required
+                ></textarea>
               </div>
 
               <!-- <div class="form-group">

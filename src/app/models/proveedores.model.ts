@@ -1,4 +1,5 @@
 export class Proveedor {
+  // PRO_FECHACREADO: Date;
   PRO_CODIGO: string;
   GRU_CODIGO: string;
   PRO_NOMBREC: string;
