@@ -114,9 +114,7 @@
                   *ngIf="f.submitted && nombrec.invalid"
                   class="alert bg-warning"
                 >
-                  <div *ngIf="nombrec.errors.required">
-                    Nombre requeridos
-                  </div>
+                  <div *ngIf="nombrec.errors.required">Nombre requeridos</div>
                   <div *ngIf="nombrec.errors.minlength">
                     Debe tener mínimo 4 letras
                   </div>
@@ -180,9 +178,9 @@
                     <div class="form-group">
                       <label>Parte relacionada</label>
                       <select
-                      [(ngModel)]="supplier.PRO_PARTEREL"
-                      class="form-control form-control-sm"
-                      [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]="supplier.PRO_PARTEREL"
+                        class="form-control form-control-sm"
+                        [ngModelOptions]="{ standalone: true }"
                       >
                         <option value="s">Si</option>
                         <option value="n">No</option>
@@ -220,9 +218,68 @@
                       />
                     </div>
                   </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Clase de contribuyente</label>
+                      <input
+                        [(ngModel)]="supplier.PRO_CLASECONTRIBUYENTE"
+                        name="contributor"
+                        placeholder="Clase de contribuyente"
+                        type="text"
+                        class="form-control form-control-sm"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>F. Inicio Actividades</label>
+                      <input
+                        type="date"
+                        class="form-control form-control-sm"
+                        [(ngModel)]="supplier.PRO_FECINIACTIVIDADES"
+                        name="fecIniAct"
+                        placeholder="Inicio Actividades"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>F. Cese Actividades</label>
+                      <input
+                        type="date"
+                        class="form-control form-control-sm"
+                        [(ngModel)]="supplier.PRO_FECCESACTIVIDADES"
+                        name="fecCesAct"
+                        placeholder="Cese Actividades"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>F. Reinicio Actividades</label>
+                      <input
+                        type="date"
+                        class="form-control form-control-sm"
+                        [(ngModel)]="supplier.PRO_FECREIACTIVIDADES"
+                        name="fecReiAct"
+                        placeholder="Reinicio Actividades"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>F. Actualización</label>
+                      <input
+                        type="date"
+                        class="form-control form-control-sm"
+                        [(ngModel)]="supplier.PRO_FECACTUALIZACION"
+                        name="fecAct"
+                        placeholder="Actualización"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-
               <div class="form-group">
                 <label>Observación</label>
                 <textarea
@@ -233,7 +290,6 @@
                   type="text"
                   class="form-control"
                   minlength="4"
-                  required
                 ></textarea>
               </div>
 

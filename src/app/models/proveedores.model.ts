@@ -1,5 +1,13 @@
 export class Proveedor {
-  // PRO_FECHACREADO: Date;
+  PRO_FECINIACTIVIDADES: string;
+  PRO_FECCESACTIVIDADES: string;
+  PRO_FECREIACTIVIDADES: string;
+  PRO_FECACTUALIZACION: string;
+
+  PRO_CLASECONTRIBUYENTE: string;
+
+  PRO_FECHACREADO: string;
+
   PRO_CODIGO: string;
   GRU_CODIGO: string;
   PRO_NOMBREC: string;

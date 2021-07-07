@@ -56,6 +56,8 @@ export class ProveedorComponent implements OnInit {
     if (form.invalid) {
       return;
     }
+    console.log('me guardo', this.supplier);
+
     // if stay in route nuevo -> create new proveedor
     // else update the current proveedor
     if (this.routeStr == 'nuevo') {
@@ -141,6 +143,7 @@ export class ProveedorComponent implements OnInit {
       this.supplierService
         .getProveedorCedula(this.supplier.PRO_CODIGO)
         .subscribe((response) => {
+          console.log('cedula', response);
           this.formatData(response['result'][0], 'C');
         });
     }
@@ -180,6 +183,20 @@ export class ProveedorComponent implements OnInit {
           data['Nombre Comercial:'] !== ''
             ? data['Nombre Comercial:']
             : data['Raz\u00f3n Social:'];
+        // this.cliente.CLI_CLASECONTRIBUYENTE = data["Clase de Contribuyente"];
+        this.supplier.PRO_CLASECONTRIBUYENTE = data['Tipo de Contribuyente'];
+        this.supplier.PRO_FECINIACTIVIDADES = this.formatDate(
+          data['Fecha de inicio de actividades']
+        );
+        this.supplier.PRO_FECCESACTIVIDADES = this.formatDate(
+          data['Fecha de cese de actividades']
+        );
+        this.supplier.PRO_FECREIACTIVIDADES = this.formatDate(
+          data['Fecha reinicio de actividades']
+        );
+        this.supplier.PRO_FECACTUALIZACION = this.formatDate(
+          data['Fecha actualizaci\u00f3n']
+        );
       }
       if (data['NUMERO_RUC']) {
         this.supplier.PRO_NOMBRE = data['Raz\u00f3n Social:'];
@@ -189,5 +206,15 @@ export class ProveedorComponent implements OnInit {
             : data['Raz\u00f3n Social:'];
       }
     }
+  }
+
+  formatDate(fecha: string): string {
+    const regex = /\r\n|\r|\n|\t|\s/gi;
+
+    let f = fecha;
+    f = f.replace(regex, '');
+    let date = f.split('-');
+
+    return `${date[2]}-${date[1]}-${date[0]}`;
   }
 }
