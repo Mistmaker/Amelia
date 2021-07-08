@@ -7,6 +7,8 @@ export class Proveedor {
   PRO_CLASECONTRIBUYENTE: string;
 
   PRO_FECHACREADO: string;
+  PRO_ESTADO: string = '1';
+  PRO_GMAPS: string;
 
   PRO_CODIGO: string;
   GRU_CODIGO: string;

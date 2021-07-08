@@ -21,284 +21,397 @@
           </div>
           <div class="card-body">
             <form (ngSubmit)="f.form.valid && saveSupplier(f)" #f="ngForm">
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-sm-12 col-md-3">
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link active"
+                    id="general-data-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#general-data"
+                    type="button"
+                    role="tab"
+                    aria-controls="general-data"
+                    aria-selected="true"
+                  >
+                    Datos Generales
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="complementary-data-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#complementary-data"
+                    type="button"
+                    role="tab"
+                    aria-controls="complementary-data"
+                    aria-selected="false"
+                  >
+                    Información Complementaria
+                  </button>
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div
+                  class="tab-pane fade show active"
+                  id="general-data"
+                  role="tabpanel"
+                  aria-labelledby="general-data-tab"
+                >
+                  <div class="mt-2">
                     <div class="form-group">
-                      <label>Tipo de Identificación</label>
-                      <select
-                        [(ngModel)]="supplier.PRO_TIPOIDE"
-                        name="typeTaxpayer"
-                        #typeTaxpayer
-                        (change)="onChangeSelect(typeTaxpayer.value)"
+                      <div class="row">
+                        <div class="col-sm-12 col-md-3">
+                          <div class="form-group">
+                            <label>Tipo de Identificación</label>
+                            <select
+                              [(ngModel)]="supplier.PRO_TIPOIDE"
+                              name="typeTaxpayer"
+                              #typeTaxpayer
+                              (change)="onChangeSelect(typeTaxpayer.value)"
+                              class="form-control"
+                            >
+                              <option
+                                *ngFor="let type of typeClient"
+                                [value]="type.ticli_codigo"
+                              >
+                                {{ type.ticli_nombre }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-3">
+                          <label>Ruc*</label>
+                          <div class="row">
+                            <div class="col-sm-10 col-md-10">
+                              <input
+                                [(ngModel)]="supplier.PRO_CODIGO"
+                                type="text"
+                                class="form-control"
+                                name="documento"
+                                placeholder="9999999999"
+                                maxlength="13"
+                                required
+                              />
+                            </div>
+                            <div class="col-sm-2 col-md-2">
+                              <button
+                                *ngIf="showButton"
+                                type="button"
+                                class="btn btn-primary"
+                                (click)="searchDataOnline()"
+                              >
+                                <i class="fas fa-search"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Nombre*</label>
+                      <input
+                        [(ngModel)]="supplier.PRO_NOMBRE"
+                        name="name"
+                        #name="ngModel"
+                        placeholder="Nombre proveedor"
+                        type="text"
                         class="form-control"
+                        minlength="4"
+                        required
+                      />
+                      <div
+                        *ngIf="f.submitted && name.invalid"
+                        class="alert bg-warning"
                       >
-                        <option
-                          *ngFor="let type of typeClient"
-                          [value]="type.ticli_codigo"
-                        >
-                          {{ type.ticli_nombre }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-12 col-md-3">
-                    <label>Ruc*</label>
-                    <div class="row">
-                      <div class="col-sm-10 col-md-10">
-                        <input
-                          [(ngModel)]="supplier.PRO_CODIGO"
-                          type="text"
-                          class="form-control"
-                          name="documento"
-                          placeholder="9999999999"
-                          maxlength="13"
-                          required
-                        />
-                      </div>
-                      <div class="col-sm-2 col-md-2">
-                        <button
-                          *ngIf="showButton"
-                          type="button"
-                          class="btn btn-primary"
-                          (click)="searchDataOnline()"
-                        >
-                          <i class="fas fa-search"></i>
-                        </button>
+                        <div *ngIf="name.errors.required">
+                          Nombre requeridos
+                        </div>
+                        <div *ngIf="name.errors.minlength">
+                          Debe tener mínimo 4 letras
+                        </div>
+                        <div *ngIf="name.errors.forbiddenName">
+                          No puede colocar ese nombre
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
 
-              <div class="form-group">
-                <label>Nombre*</label>
-                <input
-                  [(ngModel)]="supplier.PRO_NOMBRE"
-                  name="name"
-                  #name="ngModel"
-                  placeholder="Nombre proveedor"
-                  type="text"
-                  class="form-control"
-                  minlength="4"
-                  required
-                />
-                <div
-                  *ngIf="f.submitted && name.invalid"
-                  class="alert bg-warning"
-                >
-                  <div *ngIf="name.errors.required">Nombre requeridos</div>
-                  <div *ngIf="name.errors.minlength">
-                    Debe tener mínimo 4 letras
-                  </div>
-                  <div *ngIf="name.errors.forbiddenName">
-                    No puede colocar ese nombre
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label>Nombre Comercial*</label>
-                <input
-                  [(ngModel)]="supplier.PRO_NOMBREC"
-                  name="nombrec"
-                  #nombrec="ngModel"
-                  placeholder="Nombre Comercial del Proveedor"
-                  type="text"
-                  class="form-control"
-                  minlength="4"
-                  required
-                />
-                <div
-                  *ngIf="f.submitted && nombrec.invalid"
-                  class="alert bg-warning"
-                >
-                  <div *ngIf="nombrec.errors.required">Nombre requeridos</div>
-                  <div *ngIf="nombrec.errors.minlength">
-                    Debe tener mínimo 4 letras
-                  </div>
-                  <div *ngIf="nombrec.errors.forbiddenName">
-                    No puede colocar ese nombre
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-md-4">
                     <div class="form-group">
-                      <label>Dirección</label>
+                      <label>Nombre Comercial*</label>
                       <input
-                        [(ngModel)]="supplier.PRO_DIRECCION1"
-                        name="address"
-                        placeholder="Dirección"
+                        [(ngModel)]="supplier.PRO_NOMBREC"
+                        name="nombrec"
+                        #nombrec="ngModel"
+                        placeholder="Nombre Comercial del Proveedor"
                         type="text"
-                        class="form-control form-control-sm"
+                        class="form-control"
+                        minlength="4"
+                        required
                       />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label>Teléfono</label>
-                      <input
-                        [(ngModel)]="supplier.PRO_TELEFONO1"
-                        name="phone"
-                        placeholder="Teléfono"
-                        type="text"
-                        class="form-control form-control-sm"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label>Teléfono 2</label>
-                      <input
-                        [(ngModel)]="supplier.PRO_TELEFONO2"
-                        name="phone2"
-                        placeholder="Teléfono"
-                        type="text"
-                        class="form-control form-control-sm"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label>Email</label>
-                      <input
-                        [(ngModel)]="supplier.PRO_CORREO"
-                        name="address"
-                        placeholder="Email"
-                        type="text"
-                        class="form-control form-control-sm"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label>Parte relacionada</label>
-                      <select
-                        [(ngModel)]="supplier.PRO_PARTEREL"
-                        class="form-control form-control-sm"
-                        [ngModelOptions]="{ standalone: true }"
+                      <div
+                        *ngIf="f.submitted && nombrec.invalid"
+                        class="alert bg-warning"
                       >
-                        <option value="s">Si</option>
-                        <option value="n">No</option>
-                      </select>
-                      <!-- <input
-                        [(ngModel)]="supplier.PRO_PARTEREL"
-                        name="relationalPart"
-                        placeholder="Parte relacionada"
+                        <div *ngIf="nombrec.errors.required">
+                          Nombre requeridos
+                        </div>
+                        <div *ngIf="nombrec.errors.minlength">
+                          Debe tener mínimo 4 letras
+                        </div>
+                        <div *ngIf="nombrec.errors.forbiddenName">
+                          No puede colocar ese nombre
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Dirección</label>
+                            <input
+                              [(ngModel)]="supplier.PRO_DIRECCION1"
+                              name="address"
+                              placeholder="Dirección"
+                              type="text"
+                              class="form-control form-control-sm"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Teléfono</label>
+                            <input
+                              [(ngModel)]="supplier.PRO_TELEFONO1"
+                              name="phone"
+                              placeholder="Teléfono"
+                              type="text"
+                              class="form-control form-control-sm"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Teléfono 2</label>
+                            <input
+                              [(ngModel)]="supplier.PRO_TELEFONO2"
+                              name="phone2"
+                              placeholder="Teléfono"
+                              type="text"
+                              class="form-control form-control-sm"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Email</label>
+                            <input
+                              [(ngModel)]="supplier.PRO_CORREO"
+                              name="address"
+                              placeholder="Email"
+                              type="text"
+                              class="form-control form-control-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Activo</label>
+                      <button
+                        *ngIf="supplier.PRO_ESTADO === '1'"
+                        (click)="supplier.PRO_ESTADO = '0'"
+                        class="btn btn-outline-success w-50"
+                        type="button"
+                      >
+                        Activo
+                      </button>
+                      <button
+                        *ngIf="supplier.PRO_ESTADO === '0'"
+                        (click)="supplier.PRO_ESTADO = '1'"
+                        class="btn btn-outline-danger w-50"
+                        type="button"
+                      >
+                        Pasivo
+                      </button>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Observación</label>
+                      <textarea
+                        [(ngModel)]="supplier.PRO_OBSERVACION"
+                        name="comercialName"
+                        #comercialName="ngModel"
+                        placeholder="Observación del proveedor"
                         type="text"
-                        class="form-control form-control-sm"
-                      /> -->
+                        class="form-control"
+                        minlength="4"
+                      ></textarea>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                </div>
+
+                <div
+                  class="tab-pane fade"
+                  id="complementary-data"
+                  role="tabpanel"
+                  aria-labelledby="complementary-data-tab"
+                >
+                  <div class="mt-2">
                     <div class="form-group">
-                      <label>Cuenta Contable Proveedores</label>
-                      <input
-                        [(ngModel)]="supplier.CON_CODIGO1"
-                        name="accountSupplier"
-                        placeholder="Cuenta Contable Proveedores"
-                        type="text"
-                        class="form-control form-control-sm"
-                      />
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Parte relacionada</label>
+                            <select
+                              [(ngModel)]="supplier.PRO_PARTEREL"
+                              class="form-control form-control-sm"
+                              [ngModelOptions]="{ standalone: true }"
+                            >
+                              <option value="s">Si</option>
+                              <option value="n">No</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Cuenta Contable Proveedores</label>
+                            <input
+                              [(ngModel)]="supplier.CON_CODIGO1"
+                              name="accountSupplier"
+                              placeholder="Cuenta Contable Proveedores"
+                              type="text"
+                              class="form-control form-control-sm"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Cuenta Contable Anticipos</label>
+                            <input
+                              [(ngModel)]="supplier.CON_CODIGO2"
+                              name="accountAnticipe"
+                              placeholder="Cuenta Contable Anticipos"
+                              type="text"
+                              class="form-control form-control-sm"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Clase de contribuyente</label>
+                            <input
+                              [(ngModel)]="supplier.PRO_CLASECONTRIBUYENTE"
+                              name="contributor"
+                              placeholder="Clase de contribuyente"
+                              type="text"
+                              class="form-control form-control-sm"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>F. Inicio Actividades</label>
+                            <input
+                              type="date"
+                              class="form-control form-control-sm"
+                              [(ngModel)]="supplier.PRO_FECINIACTIVIDADES"
+                              name="fecIniAct"
+                              placeholder="Inicio Actividades"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>F. Cese Actividades</label>
+                            <input
+                              type="date"
+                              class="form-control form-control-sm"
+                              [(ngModel)]="supplier.PRO_FECCESACTIVIDADES"
+                              name="fecCesAct"
+                              placeholder="Cese Actividades"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>F. Reinicio Actividades</label>
+                            <input
+                              type="date"
+                              class="form-control form-control-sm"
+                              [(ngModel)]="supplier.PRO_FECREIACTIVIDADES"
+                              name="fecReiAct"
+                              placeholder="Reinicio Actividades"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>F. Actualización</label>
+                            <input
+                              type="date"
+                              class="form-control form-control-sm"
+                              [(ngModel)]="supplier.PRO_FECACTUALIZACION"
+                              name="fecAct"
+                              placeholder="Actualización"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Ciudad</label>
+                            <select
+                              [(ngModel)]="supplier.PRO_TIPOIDE"
+                              name="typeTaxpayer"
+                              #typeTaxpayer
+                              (change)="onChangeSelect(typeTaxpayer.value)"
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let type of typeClient"
+                                [value]="type.ticli_codigo"
+                              >
+                                {{ type.ticli_nombre }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
                     <div class="form-group">
-                      <label>Cuenta Contable Anticipos</label>
-                      <input
-                        [(ngModel)]="supplier.CON_CODIGO2"
-                        name="accountAnticipe"
-                        placeholder="Cuenta Contable Anticipos"
-                        type="text"
-                        class="form-control form-control-sm"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label>Clase de contribuyente</label>
-                      <input
-                        [(ngModel)]="supplier.PRO_CLASECONTRIBUYENTE"
-                        name="contributor"
-                        placeholder="Clase de contribuyente"
-                        type="text"
-                        class="form-control form-control-sm"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label>F. Inicio Actividades</label>
-                      <input
-                        type="date"
-                        class="form-control form-control-sm"
-                        [(ngModel)]="supplier.PRO_FECINIACTIVIDADES"
-                        name="fecIniAct"
-                        placeholder="Inicio Actividades"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label>F. Cese Actividades</label>
-                      <input
-                        type="date"
-                        class="form-control form-control-sm"
-                        [(ngModel)]="supplier.PRO_FECCESACTIVIDADES"
-                        name="fecCesAct"
-                        placeholder="Cese Actividades"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label>F. Reinicio Actividades</label>
-                      <input
-                        type="date"
-                        class="form-control form-control-sm"
-                        [(ngModel)]="supplier.PRO_FECREIACTIVIDADES"
-                        name="fecReiAct"
-                        placeholder="Reinicio Actividades"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label>F. Actualización</label>
-                      <input
-                        type="date"
-                        class="form-control form-control-sm"
-                        [(ngModel)]="supplier.PRO_FECACTUALIZACION"
-                        name="fecAct"
-                        placeholder="Actualización"
-                      />
+                      <label>Ubicación (coordenadas)</label>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>X</label>
+                            <input
+                              [(ngModel)]="coordinateX"
+                              name="coordX"
+                              placeholder="0"
+                              type="text"
+                              class="form-control form-control-sm"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Y</label>
+                            <input
+                              [(ngModel)]="coordinateY"
+                              name="coordY"
+                              placeholder="0"
+                              type="text"
+                              class="form-control form-control-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="form-group">
-                <label>Observación</label>
-                <textarea
-                  [(ngModel)]="supplier.PRO_OBSERVACION"
-                  name="comercialName"
-                  #comercialName="ngModel"
-                  placeholder="Observación del proveedor"
-                  type="text"
-                  class="form-control"
-                  minlength="4"
-                ></textarea>
-              </div>
-
-              <!-- <div class="form-group">
-                              <label>Fecha de ingreso</label>
-                              <input type="date" class="form-control" [(ngModel)]="cliente.CLI_FECING" name="fecha">
-                          </div> -->
-
-              <hr />
               <div class="form-group text-center">
                 <button class="btn btn-primary w-50" type="submit">
                   <i class="fas fa-save"></i> Guardar

@@ -14,6 +14,8 @@ import { TipoClientesService } from './../../../clientes/services/tipo-clientes.
   styleUrls: ['./proveedor.component.css'],
 })
 export class ProveedorComponent implements OnInit {
+  coordinateX: string = '0';
+  coordinateY: string = '0';
   typeClient: TipoCliente[] = [];
   supplier = new Proveedor();
   showButton: boolean = false;
@@ -31,10 +33,12 @@ export class ProveedorComponent implements OnInit {
     this.routeStr = this.route.snapshot.paramMap.get('id');
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       console.log(this.routeStr);
+      this.supplier.PRO_ESTADO = '1';
       this.showDeleteButton = true;
       this.supplierService.getProveedor(this.routeStr).subscribe((response) => {
         console.log(response);
         this.supplier = response;
+        this.getCoordinates();
         console.log(this.supplier.PRO_NOMBREC);
       });
     }
@@ -42,6 +46,12 @@ export class ProveedorComponent implements OnInit {
       console.log('type cliente', resp);
       this.typeClient = resp;
     });
+  }
+
+  getCoordinates() {
+    let coordinates = this.supplier.PRO_GMAPS.split(',');
+    this.coordinateX = coordinates[0].replace(',', '').replace(' ', '');
+    this.coordinateY = coordinates[1].replace(',', '').replace(' ', '');
   }
 
   onChangeSelect(value: string) {
@@ -57,7 +67,29 @@ export class ProveedorComponent implements OnInit {
       return;
     }
     console.log('me guardo', this.supplier);
-
+    // put null on dates containing undefined string
+    if (
+      this.supplier.PRO_FECINIACTIVIDADES &&
+      this.supplier.PRO_FECINIACTIVIDADES.includes('undefined')
+    )
+      this.supplier.PRO_FECINIACTIVIDADES = null;
+    if (
+      this.supplier.PRO_FECCESACTIVIDADES &&
+      this.supplier.PRO_FECCESACTIVIDADES.includes('undefined')
+    )
+      this.supplier.PRO_FECCESACTIVIDADES = null;
+    if (
+      this.supplier.PRO_FECREIACTIVIDADES &&
+      this.supplier.PRO_FECREIACTIVIDADES.includes('undefined')
+    )
+      this.supplier.PRO_FECREIACTIVIDADES = null;
+    if (
+      this.supplier.PRO_FECACTUALIZACION &&
+      this.supplier.PRO_FECACTUALIZACION.includes('undefined')
+    )
+      this.supplier.PRO_FECACTUALIZACION = null;
+    // merge coordinates
+    this.supplier.PRO_GMAPS = this.coordinateX + ',' + this.coordinateY;
     // if stay in route nuevo -> create new proveedor
     // else update the current proveedor
     if (this.routeStr == 'nuevo') {
