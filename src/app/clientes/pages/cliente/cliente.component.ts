@@ -1,3 +1,6 @@
+import { ConfiguracionService } from './../../services/configuracion.service';
+import { CuentaContable } from './../../../models/cuentasContables';
+import { Vendedores } from './../../../models/vendedores';
 import { Ciudad } from './../../../models/ciudades.models';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -11,6 +14,8 @@ import { Cliente } from '../../../models/clientes.model';
 import { TipoClientesService } from '../../services/tipo-clientes.service';
 import { TipoCliente } from '../../../models/tipoClientes';
 import { CiudadesService } from '../../services/ciudades.service';
+import { VendedoresService } from '../../services/vendedores.service';
+import { CuentaContableService } from '../../services/cuentas-contables.service';
 
 @Component({
   selector: 'app-cliente',
@@ -20,7 +25,13 @@ import { CiudadesService } from '../../services/ciudades.service';
 export class ClienteComponent implements OnInit {
   cliente = new Cliente();
   tipoClientes: TipoCliente[] = [];
-  cities: Ciudad[] = [];
+  provinciaCodigo: string = '';
+  cantonCodigo: string = '';
+  provincias: Ciudad[] = [];
+  cantones: Ciudad[] = [];
+  vendedores: Vendedores[] = [];
+  cuentasContables: CuentaContable[] = [];
+  showMore: boolean;
   mostrarBtn: boolean = false;
   routeStr: string;
   coordinateX: string = '0';
@@ -30,7 +41,10 @@ export class ClienteComponent implements OnInit {
     private route: ActivatedRoute,
     private clientesService: ClientesService,
     private tipoClientesService: TipoClientesService,
-    private citiesService: CiudadesService
+    private citiesService: CiudadesService,
+    private vendedoresService: VendedoresService,
+    private cuentaContableService: CuentaContableService,
+    private configService: ConfiguracionService
   ) {}
 
   ngOnInit(): void {
@@ -42,15 +56,59 @@ export class ClienteComponent implements OnInit {
         console.log(resp);
         this.cliente.CLI_ESTADO = resp.CLI_ESTADO || '1';
         this.getCoordinates();
+        this.getCiudad();
       });
     }
     this.tipoClientesService.getTipos().subscribe((resp) => {
       console.log(resp);
       this.tipoClientes = resp;
     });
+    // get all provincias
+    this.citiesService.getAllProvincias().subscribe((resp) => {
+      this.provincias = resp;
+    });
+    // get all vendedores
+    this.vendedoresService.getAllVendedores().subscribe((resp) => {
+      this.vendedores = resp;
+    });
+    // get all cuentas contables
+    this.cuentaContableService.getAllCuentas().subscribe((resp) => {
+      this.cuentasContables = resp;
+    });
+    // get config
+    this.configService.getConfigClientes().subscribe((resp) => {
+      console.log('config', resp);
+      this.showMore = resp.codigo === 1 ? true : false;
+    });
+  }
 
-    this.citiesService.getAllCiudades().subscribe((resp) => {
-      this.cities = resp;
+  changeStatus() {
+    this.showMore = !this.showMore;
+    this.configService
+      .postConfigClientes(this.showMore ? 1 : 0)
+      .subscribe((resp) => {
+        console.log(resp);
+      });
+  }
+
+  getCiudad() {
+    if (this.cliente.CLI_CIUDAD) {
+      const data = this.cliente.CLI_CIUDAD.split('.');
+      console.log(data);
+      this.provinciaCodigo = data[0];
+      this.getAllCantones(this.provinciaCodigo);
+      this.cantonCodigo = this.cliente.CLI_CIUDAD;
+    }
+  }
+
+  onChangeProvincia(id: string) {
+    this.getAllCantones(id);
+  }
+
+  getAllCantones(id: string) {
+    // get all cantones
+    this.citiesService.getAllCantonesByProvincia(id).subscribe((resp) => {
+      this.cantones = resp;
     });
   }
 
@@ -69,6 +127,11 @@ export class ClienteComponent implements OnInit {
 
     // merge coordinates
     this.cliente.CLI_GMAPS = this.coordinateX + ',' + this.coordinateY;
+    console.log('provincia', this.provinciaCodigo);
+    console.log('canton', this.cantonCodigo);
+
+    this.cliente.CLI_CIUDAD = this.cantonCodigo;
+    console.log('ciudad', this.cliente.CLI_CIUDAD);
 
     if (this.routeStr !== 'nuevo') {
       this.clientesService
@@ -198,6 +261,8 @@ export class ClienteComponent implements OnInit {
             : datos['RAZON_SOCIAL'];
         this.cliente.CLI_ACTIVIDAD = datos['ACTIVIDAD_ECONOMICA'];
       }
+
+      this.cliente.CLI_FECHACONSULTA = new Date().toDateString();
     }
   }
 

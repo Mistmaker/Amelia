@@ -1,157 +1,364 @@
 <div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-info">
-                        <h4 class="card-title ">Producto</h4>
-                        <p class="card-category"> Creación/Mantenimiento de productos</p>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-info">
+            <h4 class="card-title">Producto</h4>
+            <p class="card-category">Creación/Mantenimiento de productos</p>
+          </div>
+          <div class="text-right mr-3">
+            <button routerLink="/productos" class="btn btn-info mt-1">
+              <i class="fas fa-long-arrow-alt-left"></i> Regresar
+            </button>
+          </div>
+          <div class="card-body">
+            <form (ngSubmit)="f.form.valid && guardar(f)" #f="ngForm">
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link active"
+                    id="general-data-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#general-data"
+                    type="button"
+                    role="tab"
+                    aria-controls="general-data"
+                    aria-selected="true"
+                  >
+                    Datos Generales
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="adicional-data-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#adicional-data"
+                    type="button"
+                    role="tab"
+                    aria-controls="adicional-data"
+                    aria-selected="false"
+                  >
+                    Datos Adicionales
+                  </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <button
+                    class="nav-link"
+                    id="prices-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#prices"
+                    type="button"
+                    role="tab"
+                    aria-controls="prices"
+                    aria-selected="false"
+                  >
+                    Precios
+                  </button>
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div
+                  class="tab-pane fade show active"
+                  id="general-data"
+                  role="tabpanel"
+                  aria-labelledby="general-data-tab"
+                >
+                  <div class="mt-2">
+                    <div class="form-group">
+                      <label>Código</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="producto.ART_CODIGO"
+                        name="codigo"
+                        placeholder=""
+                        maxlength="25"
+                        required
+                      />
                     </div>
-                    <div class="text-right mr-3">
-                        <button routerLink="/productos" class="btn btn-info mt-1">
-                            <i class="fas fa-long-arrow-alt-left"></i> Regresar
-                        </button>
+
+                    <div class="form-group">
+                      <label>Nombre</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="producto.ART_NOMBRE"
+                        name="nombre"
+                        placeholder="Nombre"
+                        minlength="1"
+                        #nombre="ngModel"
+                        required
+                      />
+                      <div
+                        *ngIf="f.submitted && nombre.invalid"
+                        class="alert bg-warning"
+                      >
+                        <div *ngIf="nombre.errors.required">
+                          Nombre requeridos
+                        </div>
+                        <div *ngIf="nombre.errors.minlength">
+                          Debe tener mínimo 1 letra
+                        </div>
+                        <div *ngIf="nombre.errors.forbiddenName">
+                          No puede colocar ese nombre
+                        </div>
+                      </div>
                     </div>
-                    <div class="card-body">
 
-                        <form (ngSubmit)="f.form.valid &&guardar( f )" #f="ngForm">
-
-                            <div class="form-group">
-                                <label>Código</label>
-                                <input type="text" class="form-control" [(ngModel)]="producto.ART_CODIGO" name="codigo"
-                                    placeholder="" maxlength="25" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Nombre</label>
-                                <input type="text" class="form-control" [(ngModel)]="producto.ART_NOMBRE" name="nombre"
-                                    placeholder="Nombre" minlength="1" #nombre="ngModel" required>
-                                <div *ngIf="f.submitted && nombre.invalid" class="alert bg-warning">
-
-                                    <div *ngIf="nombre.errors.required">
-                                        Nombre requeridos
-                                    </div>
-                                    <div *ngIf="nombre.errors.minlength">
-                                        Debe tener mínimo 1 letra
-                                    </div>
-                                    <div *ngIf="nombre.errors.forbiddenName">
-                                        No puede colocar ese nombre
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="form-group" *ngIf="grupoProductos.length > 0">
-                                <label for="grupo">Grupo:</label>
-                                <select [(ngModel)]="producto.GRUP_CODIGO" class="form-control" name="grupo" required>
-                                    <option *ngFor="let grupo of grupoProductos" [value]="grupo.GRU_CODIGO"> {{
-                                        grupo.GRU_NOMBRE }} </option>
-                                </select>
-                            </div>
-
-
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Modelo</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="producto.ART_MODELO" name="modelo" placeholder="Modelo">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>Observación</label>
-                                            <input type="text" class="form-control form-control-sm"
-                                                [(ngModel)]="producto.ART_OBSERVACION" name="observacion"
-                                                placeholder="Observación">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="iva">Grava IVA:</label>
-                                            <select [(ngModel)]="producto.ART_TRIBUTAIVA"
-                                                class="form-control form-control-sm" name="iva" required>
-                                                <option value="S"> Si </option>
-                                                <option value="N"> No </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">Precios
-
-                                            <button (click)="agregarPrecio()" class="btn btn-outline-primary" type="button">
-                                                Agregar
-                                            </button>
-
-                                        </div>
-                                        <div class="card-body">
-                                            <table class="table">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="lista">Lista</th>
-                                                        <th class="precio">Precio</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr *ngFor="let precio of producto.precios">
-                                                        <td scope="row">
-                                                            <div class="form-group">
-                                                                <select [(ngModel)]="precio.ARTPRE_CODIGO"
-                                                                    [ngModelOptions]="{standalone: true}"
-                                                                    name="tipoPrecio"
-                                                                    class="form-control form-control-sm" name="" id="">
-                                                                    <option *ngFor="let tipo of tipoPrecios"
-                                                                        [value]="tipo.id_tipre"> {{ tipo.tipre_nombre }}
-                                                                    </option>
-                                                                </select>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="form-group">
-                                                                <input type="number"
-                                                                    class="form-control form-control-sm" name=""
-                                                                    placeholder="0" [value]="precio.ARTPRE_PRECIO">
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            <div class="form-group">
-                                <label>Activo</label>
-                                <button *ngIf="producto.ART_ESTADO === '1'" (click)="producto.ART_ESTADO = '0'"
-                                    class="btn btn-outline-success w-50" type="button">
-                                    Activo
-                                </button>
-                                <button *ngIf="producto.ART_ESTADO === '0'" (click)="producto.ART_ESTADO = '1'"
-                                    class="btn btn-outline-danger w-50" type="button">
-                                    Inactivo
-                                </button>
-                            </div>
-
-                            <hr>
-                            <div class="form-group text-center">
-                                <button class="btn btn-primary w-50" type="submit">
-                                    <i class="fas fa-save"></i> Guardar
-                                </button>
-                            </div>
-
-                        </form>
+                    <div class="form-group">
+                      <label>Código de Barras</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="producto.ART_CODIGOBARRAS"
+                        name="codigoBarra"
+                        #codigoBarra="ngModel"
+                        placeholder="Código de barras"
+                      />
                     </div>
+
+                    <div class="form-group" *ngIf="grupoProductos.length > 0">
+                      <label for="grupo">Catalogo Grupos:</label>
+                      <select
+                        [(ngModel)]="producto.GRUP_CODIGO"
+                        class="form-control"
+                        name="grupo"
+                        required
+                      >
+                        <option
+                          *ngFor="let grupo of grupoProductos"
+                          [value]="grupo.GRU_CODIGO"
+                        >
+                          {{ grupo.GRU_NOMBRE }}
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Modelo</label>
+                            <input
+                              type="text"
+                              class="form-control form-control-sm"
+                              [(ngModel)]="producto.ART_MODELO"
+                              name="modelo"
+                              placeholder="Modelo"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Observación</label>
+                            <input
+                              type="text"
+                              class="form-control form-control-sm"
+                              [(ngModel)]="producto.ART_OBSERVACION"
+                              name="observacion"
+                              placeholder="Observación"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label for="iva">Grava IVA:</label>
+                            <select
+                              [(ngModel)]="producto.ART_TRIBUTAIVA"
+                              class="form-control form-control-sm"
+                              name="iva"
+                              required
+                            >
+                              <option value="S">Si</option>
+                              <option value="N">No</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Activo</label>
+                      <button
+                        *ngIf="producto.ART_ACTIVO === '1'"
+                        (click)="producto.ART_ACTIVO = '0'"
+                        class="btn btn-outline-success w-50"
+                        type="button"
+                      >
+                        Activo
+                      </button>
+                      <button
+                        *ngIf="producto.ART_ACTIVO === '0'"
+                        (click)="producto.ART_ACTIVO = '1'"
+                        class="btn btn-outline-danger w-50"
+                        type="button"
+                      >
+                        Inactivo
+                      </button>
+                    </div>
+                  </div>
                 </div>
-            </div>
+                <div
+                  class="tab-pane fade"
+                  id="adicional-data"
+                  role="tabpanel"
+                  aria-labelledby="adicional-data-tab"
+                >
+                  <div class="mt-2">
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Cuenta Contable Inventario</label>
+                            <select
+                              [(ngModel)]="producto.ART_CUENTAINVENTARIO"
+                              name="cuentaContableInventario"
+                              #cuentaContableInventario
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let cuentas of cuentasContables"
+                                [value]="cuentas.CON_CODIGO"
+                              >
+                                {{ cuentas.CON_NOMBRE }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Cuenta Contable Costos Ventas</label>
+                            <select
+                              [(ngModel)]="producto.ART_CUENTACOSTOVENTAS"
+                              name="cuentaContableCostoVentas"
+                              #cuentaContableCostoVentas
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let cuentas of cuentasContables"
+                                [value]="cuentas.CON_CODIGO"
+                              >
+                                {{ cuentas.CON_NOMBRE }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Cuenta Contable Ventas</label>
+                            <select
+                              [(ngModel)]="producto.ART_CUENTAVENTAS"
+                              name="cuentaContableVentas"
+                              #cuentaContableVentas
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let cuentas of cuentasContables"
+                                [value]="cuentas.CON_CODIGO"
+                              >
+                                {{ cuentas.CON_NOMBRE }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="tab-pane fade"
+                  id="prices"
+                  role="tabpanel"
+                  aria-labelledby="prices-tab"
+                >
+                  <div class="mt-2">
+                    <div class="row">
+                      <div class="col-sm-12 col-md-6">
+                        <div class="card">
+                          <div class="card-header">
+                            Precios
+                            <button
+                              (click)="agregarPrecio()"
+                              class="btn btn-outline-primary"
+                              type="button"
+                            >
+                              Agregar
+                            </button>
+                          </div>
+                          <div class="card-body">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th class="lista">Lista</th>
+                                  <th class="precio">Precio</th>
+                                  <th class="unidad">Unidad</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let precio of producto.precios">
+                                  <td scope="row">
+                                    <div class="form-group">
+                                      <select
+                                        [(ngModel)]="precio.ARTPRE_CODIGO"
+                                        [ngModelOptions]="{ standalone: true }"
+                                        name="tipoPrecio"
+                                        class="form-control form-control-sm"
+                                        name=""
+                                        id=""
+                                      >
+                                        <option
+                                          *ngFor="let tipo of tipoPrecios"
+                                          [value]="tipo.id_tipre"
+                                        >
+                                          {{ tipo.tipre_nombre }}
+                                        </option>
+                                      </select>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="form-group">
+                                      <input
+                                        type="number"
+                                        class="form-control form-control-sm"
+                                        name=""
+                                        placeholder="0"
+                                        [value]="precio.ARTPRE_PRECIO"
+                                      />
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div class="form-group">
+                                      <input
+                                        type="number"
+                                        class="form-control form-control-sm"
+                                        name=""
+                                        placeholder="0"
+                                        [value]="precio.ARTPRE_PRECIO"
+                                      />
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <hr /> -->
+              <div class="form-group text-center">
+                <button class="btn btn-primary w-50" type="submit">
+                  <i class="fas fa-save"></i> Guardar
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

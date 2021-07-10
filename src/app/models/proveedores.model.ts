@@ -6,6 +6,12 @@ export class Proveedor {
 
   PRO_CLASECONTRIBUYENTE: string;
 
+  PRO_BASEIVA: string;
+  PRO_BASECERO: string;
+  PRO_BASENOBJET: string;
+  PRO_CIUDAD: string;
+
+  PRO_FECHACONSULTA: string;
   PRO_FECHACREADO: string;
   PRO_ESTADO: string = '1';
   PRO_GMAPS: string;

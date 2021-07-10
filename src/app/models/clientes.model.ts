@@ -2,10 +2,16 @@ export class Cliente {
   CLI_FECHACREADO: string;
   CLI_OBSERVACION: string;
   CLI_PARTEREL: string;
-  CON_CODIGO1:string;
-  CON_CODIGO2:string;
-  CLI_GMAPS:string;
-  CLI_CIUDAD:string;
+  CON_CODIGO1: string;
+  CON_CODIGO2: string;
+  CLI_GMAPS: string;
+  CLI_CIUDAD: string;
+
+  VEN_CODIGO: string;
+  CLI_FECHACONSULTA: string;
+  CLI_BASEIVA: string;
+  CLI_BASECERO: string;
+  CLI_BASENOBJET: string;
 
   CLI_CODIGO: string;
   CLI_TIPOIDE: number;
@@ -26,7 +32,7 @@ export class Cliente {
   CLI_FECREIACTIVIDADES: string;
   CLI_FECACTUALIZACION: string;
   CLI_CATMIPYMES: string;
-  CLI_ESTADO: string ='1';
+  CLI_ESTADO: string = '1';
 
   constructor() {}
 }

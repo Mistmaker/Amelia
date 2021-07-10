@@ -10,7 +10,14 @@ export class CiudadesService {
   ruta = urlWs;
   constructor(private http: HttpClient) {}
 
-  getAllCiudades() {
-    return this.http.get<Ciudad[]>(`${this.ruta}/api/ciudades`);
+  getAllProvincias() {
+    return this.http.get<Ciudad[]>(`${this.ruta}/api/ciudades/provincias`);
   }
+
+  getAllCantonesByProvincia(codProv: string) {
+    return this.http.get<Ciudad[]>(
+      `${this.ruta}/api/ciudades/provincias/${codProv}`
+    );
+  }
+
 }

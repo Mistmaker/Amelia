@@ -278,25 +278,51 @@
                         <div class="col-md-4">
                           <div class="form-group">
                             <label>Cuenta Contable Proveedores</label>
-                            <input
+                            <!-- <input
                               [(ngModel)]="supplier.CON_CODIGO1"
                               name="accountSupplier"
                               placeholder="Cuenta Contable Proveedores"
                               type="text"
                               class="form-control form-control-sm"
-                            />
+                            /> -->
+                            <select
+                              [(ngModel)]="supplier.CON_CODIGO1"
+                              name="cuentaContableCliente"
+                              #cuentaContableCliente
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let cuentas of cuentasContables"
+                                [value]="cuentas.CON_CODIGO"
+                              >
+                                {{ cuentas.CON_NOMBRE }}
+                              </option>
+                            </select>
                           </div>
                         </div>
                         <div class="col-md-4">
                           <div class="form-group">
                             <label>Cuenta Contable Anticipos</label>
-                            <input
+                            <!-- <input
                               [(ngModel)]="supplier.CON_CODIGO2"
                               name="accountAnticipe"
                               placeholder="Cuenta Contable Anticipos"
                               type="text"
                               class="form-control form-control-sm"
-                            />
+                            /> -->
+                            <select
+                              [(ngModel)]="supplier.CON_CODIGO2"
+                              name="cuentaContableAnticipo"
+                              #cuentaContableAnticipo
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let cuentas of cuentasContables"
+                                [value]="cuentas.CON_CODIGO"
+                              >
+                                {{ cuentas.CON_NOMBRE }}
+                              </option>
+                            </select>
                           </div>
                         </div>
                         <div class="col-md-4">
@@ -361,25 +387,118 @@
                         </div>
                         <div class="col-md-4">
                           <div class="form-group">
-                            <label>Ciudad</label>
+                            <label>Provincia</label>
                             <select
-                              [(ngModel)]="supplier.PRO_TIPOIDE"
-                              name="typeTaxpayer"
-                              #typeTaxpayer
-                              (change)="onChangeSelect(typeTaxpayer.value)"
+                              [(ngModel)]="provinciaCodigo"
+                              name="provincia"
+                              #provincia
+                              (change)="onChangeProvincia(provincia.value)"
                               class="form-control form-control-sm"
                             >
                               <option
-                                *ngFor="let type of typeClient"
-                                [value]="type.ticli_codigo"
+                                *ngFor="let provincia of provincias"
+                                [value]="provincia.UBIGEO_CODIGO"
                               >
-                                {{ type.ticli_nombre }}
+                                {{ provincia.UBIGEO_NOMBRE }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4" *ngIf="provinciaCodigo !== ''">
+                          <div class="form-group">
+                            <label>Cantón</label>
+                            <select
+                              [(ngModel)]="cantonCodigo"
+                              name="cantonProveedor"
+                              #cantonProveedor
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let canton of cantones"
+                                [value]="canton.UBIGEO_CODIGO"
+                              >
+                                {{ canton.UBIGEO_NOMBRE }}
                               </option>
                             </select>
                           </div>
                         </div>
                       </div>
                     </div>
+
+                    <div class="form-group">
+                      <div>
+                        <div class="form-group form-check">
+                          <input
+                            [checked]="showMore"
+                            (change)="changeStatus()"
+                            type="checkbox"
+                            class="form-check-input"
+                            id="showMoreFields"
+                          />
+                          <label class="form-check-label" for="showMoreFields">
+                            Mostrar más campos
+                          </label>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="showMore">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Cuenta Contable BaseIVA</label>
+                            <select
+                              [(ngModel)]="supplier.PRO_BASEIVA"
+                              name="cuentaContableAnticipo"
+                              #cuentaContableAnticipo
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let cuentas of cuentasContables"
+                                [value]="cuentas.CON_CODIGO"
+                              >
+                                {{ cuentas.CON_NOMBRE }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Cuenta Contable BaseCERO</label>
+                            <select
+                              [(ngModel)]="supplier.PRO_BASECERO"
+                              name="cuentaContableBaseCero"
+                              #cuentaContableBaseCero
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let cuentas of cuentasContables"
+                                [value]="cuentas.CON_CODIGO"
+                              >
+                                {{ cuentas.CON_NOMBRE }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Cuenta Contable BaseNOBJET</label>
+                            <select
+                              [(ngModel)]="supplier.PRO_BASENOBJET"
+                              name="cuentaContableBaseNobjet"
+                              #cuentaContableBaseNobjet
+                              class="form-control form-control-sm"
+                            >
+                              <option
+                                *ngFor="let cuentas of cuentasContables"
+                                [value]="cuentas.CON_CODIGO"
+                              >
+                                {{ cuentas.CON_NOMBRE }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     <div class="form-group">
                       <label>Ubicación (coordenadas)</label>
                       <div class="row">

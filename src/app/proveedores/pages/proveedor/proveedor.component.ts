@@ -1,3 +1,8 @@
+import { ConfiguracionService } from './../../../clientes/services/configuracion.service';
+import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
+import { CiudadesService } from './../../../clientes/services/ciudades.service';
+import { CuentaContable } from './../../../models/cuentasContables';
+import { Ciudad } from './../../../models/ciudades.models';
 import { NgForm } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,30 +26,83 @@ export class ProveedorComponent implements OnInit {
   showButton: boolean = false;
   showDeleteButton: boolean = false;
   routeStr: string;
+  //
+  provinciaCodigo: string = '';
+  cantonCodigo: string = '';
+  provincias: Ciudad[] = [];
+  cantones: Ciudad[] = [];
+  cuentasContables: CuentaContable[] = [];
+  showMore: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private supplierService: ProveedoresService,
-    private typeClientService: TipoClientesService
+    private typeClientService: TipoClientesService,
+    private citiesService: CiudadesService,
+    private cuentaContableService: CuentaContableService,
+    private configService: ConfiguracionService
   ) {}
 
   ngOnInit(): void {
     this.routeStr = this.route.snapshot.paramMap.get('id');
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       console.log(this.routeStr);
-      this.supplier.PRO_ESTADO = '1';
       this.showDeleteButton = true;
       this.supplierService.getProveedor(this.routeStr).subscribe((response) => {
         console.log(response);
         this.supplier = response;
+        this.supplier.PRO_ESTADO = response.PRO_ESTADO || '1';
         this.getCoordinates();
-        console.log(this.supplier.PRO_NOMBREC);
+        this.getCiudad();
       });
     }
     this.typeClientService.getTipos().subscribe((resp) => {
       console.log('type cliente', resp);
       this.typeClient = resp;
+    });
+    // get all provincias
+    this.citiesService.getAllProvincias().subscribe((resp) => {
+      this.provincias = resp;
+    });
+    // get all cuentas contables
+    this.cuentaContableService.getAllCuentas().subscribe((resp) => {
+      this.cuentasContables = resp;
+    });
+    // get config
+    this.configService.getConfigProveedores().subscribe((resp) => {
+      console.log('config', resp);
+      this.showMore = resp.codigo === 1 ? true : false;
+    });
+  }
+
+  changeStatus() {
+    this.showMore = !this.showMore;
+    this.configService
+      .postConfigProveedores(this.showMore ? 1 : 0)
+      .subscribe((resp) => {
+        console.log(resp);
+      });
+  }
+
+  getCiudad() {
+    if (this.supplier.PRO_CIUDAD) {
+      const data = this.supplier.PRO_CIUDAD.split('.');
+      console.log(data);
+      this.provinciaCodigo = data[0];
+      this.getAllCantones(this.provinciaCodigo);
+      this.cantonCodigo = this.supplier.PRO_CIUDAD;
+    }
+  }
+
+  onChangeProvincia(id: string) {
+    this.getAllCantones(id);
+  }
+
+  getAllCantones(id: string) {
+    // get all cantones
+    this.citiesService.getAllCantonesByProvincia(id).subscribe((resp) => {
+      this.cantones = resp;
     });
   }
 
@@ -90,6 +148,7 @@ export class ProveedorComponent implements OnInit {
       this.supplier.PRO_FECACTUALIZACION = null;
     // merge coordinates
     this.supplier.PRO_GMAPS = this.coordinateX + ',' + this.coordinateY;
+    this.supplier.PRO_CIUDAD = this.cantonCodigo;
     // if stay in route nuevo -> create new proveedor
     // else update the current proveedor
     if (this.routeStr == 'nuevo') {
@@ -238,6 +297,7 @@ export class ProveedorComponent implements OnInit {
             : data['Raz\u00f3n Social:'];
       }
     }
+    this.supplier.PRO_FECHACONSULTA = new Date().toDateString();
   }
 
   formatDate(fecha: string): string {
