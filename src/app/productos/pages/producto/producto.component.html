@@ -275,17 +275,36 @@
                 >
                   <div class="mt-2">
                     <div class="row">
-                      <div class="col-sm-12 col-md-6">
+                      <div class="col-12">
                         <div class="card">
                           <div class="card-header">
-                            Precios
-                            <button
-                              (click)="agregarPrecio()"
-                              class="btn btn-outline-primary"
-                              type="button"
-                            >
-                              Agregar
-                            </button>
+                            <div>
+                              <div class="d-flex form-group form-check">
+                                <input
+                                  [checked]="includeIva"
+                                  (change)="changeStatus()"
+                                  type="checkbox"
+                                  class="form-check-input"
+                                  id="includeIva"
+                                />
+                                <label
+                                  class="form-check-label"
+                                  for="includeIva"
+                                >
+                                  Incluir IVA
+                                </label>
+                              </div>
+                            </div>
+                            <div>
+                              Precios
+                              <button
+                                (click)="agregarPrecio()"
+                                class="btn btn-outline-primary"
+                                type="button"
+                              >
+                                Agregar
+                              </button>
+                            </div>
                           </div>
                           <div class="card-body">
                             <table class="table">
@@ -297,16 +316,18 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr *ngFor="let precio of producto.precios">
+                                <tr
+                                  *ngFor="
+                                    let precio of producto.precios;
+                                    let i = index
+                                  "
+                                >
                                   <td scope="row">
                                     <div class="form-group">
                                       <select
+                                        name="tipoPrecio{{ i }}"
                                         [(ngModel)]="precio.ARTPRE_CODIGO"
-                                        [ngModelOptions]="{ standalone: true }"
-                                        name="tipoPrecio"
                                         class="form-control form-control-sm"
-                                        name=""
-                                        id=""
                                       >
                                         <option
                                           *ngFor="let tipo of tipoPrecios"
@@ -320,23 +341,29 @@
                                   <td>
                                     <div class="form-group">
                                       <input
+                                        name="precio{{ i }}"
                                         type="number"
                                         class="form-control form-control-sm"
-                                        name=""
                                         placeholder="0"
+                                        [(ngModel)]="precio.ARTPRE_PRECIO"
                                         [value]="precio.ARTPRE_PRECIO"
                                       />
                                     </div>
                                   </td>
-                                  <td>
+                                  <td class="row">
                                     <div class="form-group">
-                                      <input
-                                        type="number"
+                                      <select
+                                        name="tipoUnidad{{ i }}"
+                                        [(ngModel)]="precio.UNI_CODIGO"
                                         class="form-control form-control-sm"
-                                        name=""
-                                        placeholder="0"
-                                        [value]="precio.ARTPRE_PRECIO"
-                                      />
+                                      >
+                                        <option
+                                          *ngFor="let unidad of tipoUnidades"
+                                          [value]="unidad.UNI_CODIGO"
+                                        >
+                                          {{ unidad.UNI_NOMBRE }}
+                                        </option>
+                                      </select>
                                     </div>
                                   </td>
                                 </tr>

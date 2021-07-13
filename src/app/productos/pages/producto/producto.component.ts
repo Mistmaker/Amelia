@@ -1,3 +1,4 @@
+import { ConfiguracionService } from './../../../clientes/services/configuracion.service';
 import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
 import { CuentaContable } from './../../../models/cuentasContables';
 import { Component, OnInit } from '@angular/core';
@@ -14,6 +15,8 @@ import { TipoPreciosService } from '../../services/tipo-precios.service';
 import { TipoPrecio } from '../../../models/tipoPrecios';
 import { PreciosService } from '../../services/precios.service';
 import { Precio } from '../../../models/precios';
+import { TipoUnidad } from 'src/app/models/tipoUnidad.models';
+import { TipoUnidadesService } from '../../services/tipo-unidades.service';
 
 @Component({
   selector: 'app-producto',
@@ -21,10 +24,13 @@ import { Precio } from '../../../models/precios';
   styleUrls: ['./producto.component.css'],
 })
 export class ProductoComponent implements OnInit {
+  tipoUnidades: TipoUnidad[] = [];
   producto = new Producto();
   grupoProductos: GrupoProducto[] = [];
   tipoPrecios: TipoPrecio[] = [];
   cuentasContables: CuentaContable[] = [];
+
+  includeIva: boolean;
 
   actualizar = false;
 
@@ -34,7 +40,9 @@ export class ProductoComponent implements OnInit {
     private grupoProductosService: GrupoProductosService,
     private tipoPrecioService: TipoPreciosService,
     private preciosService: PreciosService,
-    private cuentaContableService: CuentaContableService
+    private cuentaContableService: CuentaContableService,
+    private tipoUnidadService: TipoUnidadesService,
+    private configService: ConfiguracionService
   ) {}
 
   ngOnInit(): void {
@@ -63,10 +71,28 @@ export class ProductoComponent implements OnInit {
       console.log(resp);
       this.tipoPrecios = resp;
     });
-
+    // get cuentas contables
     this.cuentaContableService.getAllCuentas().subscribe((resp) => {
       this.cuentasContables = resp;
     });
+    // get tipo unidades
+    this.tipoUnidadService.getAllUnidades().subscribe((resp) => {
+      this.tipoUnidades = resp;
+    });
+    // get config
+    this.configService.getConfigPreciosIva().subscribe((resp) => {
+      console.log('config', resp);
+      this.includeIva = resp.codigo === 1 ? true : false;
+    });
+  }
+
+  changeStatus() {
+    this.includeIva = !this.includeIva;
+    this.configService
+      .postConfigPreciosIva(this.includeIva ? 1 : 0)
+      .subscribe((resp) => {
+        console.log(resp);
+      });
   }
 
   guardar(form: NgForm) {
@@ -75,8 +101,7 @@ export class ProductoComponent implements OnInit {
       return;
     }
 
-    console.log("guardar products", this.producto);
-
+    console.log('guardar products', this.producto.precios);
 
     Swal.fire({
       title: 'Espere',

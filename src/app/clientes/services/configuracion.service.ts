@@ -33,4 +33,16 @@ export class ConfiguracionService {
       codigo: value,
     });
   }
+
+  getConfigPreciosIva() {
+    return this.http.get<Configuracion>(
+      `${this.ruta}/api/configuracion/precios-iva`
+    );
+  }
+
+  postConfigPreciosIva(value: number) {
+    return this.http.post(`${this.ruta}/api/configuracion/precios-iva`, {
+      codigo: value,
+    });
+  }
 }
