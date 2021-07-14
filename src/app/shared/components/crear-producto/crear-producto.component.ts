@@ -41,8 +41,6 @@ export class CrearProductoComponent implements OnInit {
     // detail.DETFACPRO_COSTO = 5;
     // detail.DETFACPRO_PORDES = 0;
     // detail.DETFACPRO_TOTAL = 1 * 5;
-
-    // this.invoice.itemsInvoice.push(detail);
   }
 
   searchProduct(event: any) {
@@ -58,5 +56,13 @@ export class CrearProductoComponent implements OnInit {
     if (form.invalid) {
       return;
     }
+
+    this.invoiceDetail.DETFACPRO_DESCRIPCION = this.productsList[this.positionOfProduct].ART_NOMBRE;
+    this.invoiceDetail.DETFACPRO_CODIGO = this.productsList[this.positionOfProduct].ART_CODIGO;
+    this.invoiceDetail.DETFACPRO_COSTO = 5;
+    // TODO: calcular el total de la factura con el descuento
+    this.invoiceDetail.DETFACPRO_TOTAL = this.invoiceDetail.DETFACPRO_COSTO  * this.invoiceDetail.DETFACPRO_CANTIDAD;
+
+    this.dialogRef.close(this.invoiceDetail);
   }
 }

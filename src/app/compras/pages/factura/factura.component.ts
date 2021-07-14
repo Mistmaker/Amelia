@@ -58,13 +58,19 @@ export class FacturaComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed');
-      this.invoice.itemsInvoice.push(new DetalleFactura());
+      console.log('The dialog was closed', result);
+      this.invoice.itemsInvoice.push(result);
     });
   }
 
   addProduct() {
     this.invoice.itemsInvoice.push(new DetalleFactura());
+  }
+
+  calculateTotalValues() {
+    this.invoice.itemsInvoice.forEach((item) => {
+
+    });
   }
 
   removeProduct(index: number) {

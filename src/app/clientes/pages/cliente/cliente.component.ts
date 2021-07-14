@@ -1,21 +1,20 @@
-import { ConfiguracionService } from './../../services/configuracion.service';
-import { CuentaContable } from './../../../models/cuentasContables';
-import { Vendedores } from './../../../models/vendedores';
-import { Ciudad } from './../../../models/ciudades.models';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 // import { formatDate } from '@angular/common';
-
 import Swal from 'sweetalert2';
 
-import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../../models/clientes.model';
-import { TipoClientesService } from '../../services/tipo-clientes.service';
+import { ClientesService } from '../../services/clientes.service';
 import { TipoCliente } from '../../../models/tipoClientes';
+import { TipoClientesService } from '../../services/tipo-clientes.service';
+import { Ciudad } from './../../../models/ciudades.models';
 import { CiudadesService } from '../../services/ciudades.service';
+import { Vendedores } from './../../../models/vendedores';
 import { VendedoresService } from '../../services/vendedores.service';
+import { CuentaContable } from './../../../models/cuentasContables';
 import { CuentaContableService } from '../../services/cuentas-contables.service';
+import { ConfiguracionesService } from 'src/app/configuraciones/service/configuraciones.service';
 
 @Component({
   selector: 'app-cliente',
@@ -44,7 +43,7 @@ export class ClienteComponent implements OnInit {
     private citiesService: CiudadesService,
     private vendedoresService: VendedoresService,
     private cuentaContableService: CuentaContableService,
-    private configService: ConfiguracionService
+    private configService: ConfiguracionesService
   ) {}
 
   ngOnInit(): void {
@@ -60,7 +59,7 @@ export class ClienteComponent implements OnInit {
       });
     }
     // default values
-    this.cliente.CLI_PARTEREL = 'n';
+    this.cliente.CLI_PARTEREL = this.cliente.CLI_PARTEREL || 'n';
 
     this.tipoClientesService.getTipos().subscribe((resp) => {
       console.log(resp);
@@ -83,15 +82,6 @@ export class ClienteComponent implements OnInit {
       console.log('config', resp);
       this.showMore = resp.codigo === 1 ? true : false;
     });
-  }
-
-  changeStatus() {
-    this.showMore = !this.showMore;
-    this.configService
-      .postConfigClientes(this.showMore ? 1 : 0)
-      .subscribe((resp) => {
-        console.log(resp);
-      });
   }
 
   getCiudad() {

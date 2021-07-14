@@ -1,14 +1,25 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { urlWs } from 'src/environments/environment.prod';
+import { HttpClient } from '@angular/common/http';
+
 import { Configuracion } from './../../models/configuracion';
+import { urlWs } from './../../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ConfiguracionService {
+export class ConfiguracionesService {
   ruta = urlWs;
   constructor(private http: HttpClient) {}
+
+  getAllConfigs() {
+    return this.http.get<Configuracion[]>(`${this.ruta}/api/configuracion`);
+  }
+
+  postAllConfigs(data: Configuracion[]) {
+    return this.http.post(`${this.ruta}/api/configuracion`, {
+      data,
+    });
+  }
 
   getConfigClientes() {
     return this.http.get<Configuracion>(

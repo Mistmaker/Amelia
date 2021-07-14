@@ -1,22 +1,21 @@
-import { ConfiguracionService } from './../../../clientes/services/configuracion.service';
-import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
-import { CuentaContable } from './../../../models/cuentasContables';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
-
 import Swal from 'sweetalert2';
 
-import { ProductosService } from '../../services/productos.service';
 import { Producto } from '../../../models/productos.model';
-import { GrupoProductosService } from '../../services/grupo-productos.service';
+import { ProductosService } from '../../services/productos.service';
 import { GrupoProducto } from '../../../models/grupoProductos';
-import { TipoPreciosService } from '../../services/tipo-precios.service';
+import { GrupoProductosService } from '../../services/grupo-productos.service';
 import { TipoPrecio } from '../../../models/tipoPrecios';
-import { PreciosService } from '../../services/precios.service';
+import { TipoPreciosService } from '../../services/tipo-precios.service';
 import { Precio } from '../../../models/precios';
+import { PreciosService } from '../../services/precios.service';
 import { TipoUnidad } from 'src/app/models/tipoUnidad.models';
 import { TipoUnidadesService } from '../../services/tipo-unidades.service';
+import { ConfiguracionesService } from 'src/app/configuraciones/service/configuraciones.service';
+import { CuentaContable } from './../../../models/cuentasContables';
+import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
 
 @Component({
   selector: 'app-producto',
@@ -42,7 +41,7 @@ export class ProductoComponent implements OnInit {
     private preciosService: PreciosService,
     private cuentaContableService: CuentaContableService,
     private tipoUnidadService: TipoUnidadesService,
-    private configService: ConfiguracionService
+    private configService: ConfiguracionesService
   ) {}
 
   ngOnInit(): void {
@@ -86,15 +85,6 @@ export class ProductoComponent implements OnInit {
     });
   }
 
-  changeStatus() {
-    this.includeIva = !this.includeIva;
-    this.configService
-      .postConfigPreciosIva(this.includeIva ? 1 : 0)
-      .subscribe((resp) => {
-        console.log(resp);
-      });
-  }
-
   guardar(form: NgForm) {
     // console.log(form);
     if (form.invalid) {
@@ -102,50 +92,91 @@ export class ProductoComponent implements OnInit {
     }
 
     console.log('guardar products', this.producto);
+    let { repeated, indexRepeated } = this.verifyPrices();
+    if (!repeated) {
+      Swal.fire({
+        title: 'Espere',
+        text: 'Guardando información',
+        allowOutsideClick: false,
+        icon: 'info',
+      });
+      Swal.showLoading();
 
-    Swal.fire({
-      title: 'Espere',
-      text: 'Guardando información',
-      allowOutsideClick: false,
-      icon: 'info',
-    });
-    Swal.showLoading();
-
-    if (this.actualizar) {
-      this.productosService
-        .putProducto(this.producto.ART_CODIGO, this.producto)
-        .subscribe(
-          (resp) => {
+      if (this.actualizar) {
+        this.productosService
+          .putProducto(this.producto.ART_CODIGO, this.producto)
+          .subscribe(
+            (resp) => {
+              console.log(resp);
+              Swal.fire({
+                title: 'Éxito',
+                text: 'Se actualizo el producto con éxito',
+                icon: 'success',
+              });
+            },
+            (err) => {
+              Swal.fire('Error', err.error.msg, 'error');
+              console.error(err);
+            }
+          );
+      } else {
+        this.productosService.postProducto(this.producto).subscribe(
+          (resp: any) => {
             console.log(resp);
+            this.producto.ART_CODIGO = resp.ART_CODIGO;
             Swal.fire({
-              title: 'Listo',
-              text: 'Realizado exitozamente',
+              title: 'Éxito',
+              text: 'Se creo el producto con éxito',
               icon: 'success',
             });
           },
           (err) => {
+            Swal.fire('Error', err.error.msg, 'error');
             console.error(err);
           }
         );
+      }
     } else {
-      this.productosService.postProducto(this.producto).subscribe(
-        (resp: any) => {
-          console.log(resp);
-          this.producto.ART_CODIGO = resp.ART_CODIGO;
-          Swal.fire({
-            title: 'Listo',
-            text: 'Realizado exitosamente',
-            icon: 'success',
-          });
-        },
-        (err) => {
-          console.error(err);
-        }
+      Swal.fire(
+        'Error',
+        `El precio en la posición ${indexRepeated + 1} ya existe en la tabla`,
+        'error'
       );
     }
   }
 
+  verifyPrices() {
+    // return repeated=true if price is repeats and the position of the repeated price
+    // return repeated=false if price is not repeated
+    let repeated = false;
+    let index = 0;
+    let indexRepeated = -1;
+
+    while (!repeated && index < this.producto.precios.length) {
+      let subIndex = index + 1;
+      let price = this.producto.precios[index];
+      while (!repeated && subIndex < this.producto.precios.length) {
+        let price2 = this.producto.precios[subIndex];
+        if (
+          price.ARTPRE_CODIGO === price2.ARTPRE_CODIGO &&
+          price.UNI_CODIGO === price2.UNI_CODIGO
+        ) {
+          repeated = true;
+          indexRepeated = subIndex;
+        }
+        subIndex++;
+      }
+      index++;
+    }
+
+    return { repeated, indexRepeated };
+  }
+
   agregarPrecio() {
     this.producto.precios.push(new Precio());
+  }
+
+  removePrice(index: number) {
+    this.producto.precios.splice(index, 1);
   }
 }

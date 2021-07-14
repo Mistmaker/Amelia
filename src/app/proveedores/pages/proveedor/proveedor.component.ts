@@ -1,8 +1,3 @@
-import { ConfiguracionService } from './../../../clientes/services/configuracion.service';
-import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
-import { CiudadesService } from './../../../clientes/services/ciudades.service';
-import { CuentaContable } from './../../../models/cuentasContables';
-import { Ciudad } from './../../../models/ciudades.models';
 import { NgForm } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +7,11 @@ import { Proveedor } from './../../../models/proveedores.model';
 import { ProveedoresService } from './../../services/proveedores.service';
 import { TipoCliente } from './../../../models/tipoClientes';
 import { TipoClientesService } from './../../../clientes/services/tipo-clientes.service';
+import { ConfiguracionesService } from 'src/app/configuraciones/service/configuraciones.service';
+import { CuentaContable } from './../../../models/cuentasContables';
+import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
+import { Ciudad } from './../../../models/ciudades.models';
+import { CiudadesService } from './../../../clientes/services/ciudades.service';
 
 @Component({
   selector: 'app-proveedor',
@@ -41,7 +41,7 @@ export class ProveedorComponent implements OnInit {
     private typeClientService: TipoClientesService,
     private citiesService: CiudadesService,
     private cuentaContableService: CuentaContableService,
-    private configService: ConfiguracionService
+    private configService: ConfiguracionesService
   ) {}
 
   ngOnInit(): void {
@@ -58,7 +58,7 @@ export class ProveedorComponent implements OnInit {
       });
     }
     // default values
-    this.supplier.PRO_PARTEREL = 'n';
+    this.supplier.PRO_PARTEREL = this.supplier.PRO_PARTEREL || 'n';
 
     this.typeClientService.getTipos().subscribe((resp) => {
       console.log('type cliente', resp);
@@ -77,15 +77,6 @@ export class ProveedorComponent implements OnInit {
       console.log('config', resp);
       this.showMore = resp.codigo === 1 ? true : false;
     });
-  }
-
-  changeStatus() {
-    this.showMore = !this.showMore;
-    this.configService
-      .postConfigProveedores(this.showMore ? 1 : 0)
-      .subscribe((resp) => {
-        console.log(resp);
-      });
   }
 
   getCiudad() {
@@ -158,7 +149,7 @@ export class ProveedorComponent implements OnInit {
       this.supplierService.postProveedores(this.supplier).subscribe(
         (res: any) => {
           console.log('response post', res);
-          Swal.fire('Advertencia', 'Se creo el proveedor con éxito', 'success');
+          Swal.fire('Éxito', 'Se creo el proveedor con éxito', 'success');
         },
         (err) => {
           console.log('error post', err);
@@ -172,7 +163,7 @@ export class ProveedorComponent implements OnInit {
           (res: any) => {
             console.log('response put', res);
             Swal.fire(
-              'Advertencia',
+              'Éxito',
               'Se actualizo el proveedor con éxito',
               'success'
             );

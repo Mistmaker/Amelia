@@ -282,23 +282,6 @@
                         <div class="card">
                           <div class="card-header">
                             <div>
-                              <div class="d-flex form-group form-check">
-                                <input
-                                  [checked]="includeIva"
-                                  (change)="changeStatus()"
-                                  type="checkbox"
-                                  class="form-check-input"
-                                  id="includeIva"
-                                />
-                                <label
-                                  class="form-check-label"
-                                  for="includeIva"
-                                >
-                                  Incluir IVA
-                                </label>
-                              </div>
-                            </div>
-                            <div>
                               Precios
                               <button
                                 (click)="agregarPrecio()"
@@ -310,68 +293,80 @@
                             </div>
                           </div>
                           <div class="card-body">
-                            <table class="table">
-                              <thead>
-                                <tr>
-                                  <th class="lista">Lista</th>
-                                  <th class="precio">Precio</th>
-                                  <th class="unidad">Unidad</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr
-                                  *ngFor="
-                                    let precio of producto.precios;
-                                    let i = index
-                                  "
-                                >
-                                  <td scope="row">
-                                    <div class="form-group">
-                                      <select
-                                        name="tipoPrecio{{ i }}"
-                                        [(ngModel)]="precio.ARTPRE_CODIGO"
-                                        class="form-control form-control-sm"
-                                      >
-                                        <option
-                                          *ngFor="let tipo of tipoPrecios"
-                                          [value]="tipo.id_tipre"
+                            <div class="table-responsive">
+                              <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Lista</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col">Unidad</th>
+                                    <th></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr
+                                    *ngFor="
+                                      let precio of producto.precios;
+                                      let i = index
+                                    "
+                                  >
+                                    <td scope="row">
+                                      <div class="form-group">
+                                        <select
+                                          name="tipoPrecio{{ i }}"
+                                          [(ngModel)]="precio.ARTPRE_CODIGO"
+                                          class="form-control form-control-sm"
                                         >
-                                          {{ tipo.tipre_nombre }}
-                                        </option>
-                                      </select>
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <div class="form-group">
-                                      <input
-                                        name="precio{{ i }}"
-                                        type="number"
-                                        class="form-control form-control-sm"
-                                        placeholder="0"
-                                        [(ngModel)]="precio.ARTPRE_PRECIO"
-                                        [value]="precio.ARTPRE_PRECIO"
-                                      />
-                                    </div>
-                                  </td>
-                                  <td class="row">
-                                    <div class="form-group">
-                                      <select
-                                        name="tipoUnidad{{ i }}"
-                                        [(ngModel)]="precio.UNI_CODIGO"
-                                        class="form-control form-control-sm"
-                                      >
-                                        <option
-                                          *ngFor="let unidad of tipoUnidades"
-                                          [value]="unidad.UNI_CODIGO"
+                                          <option
+                                            *ngFor="let tipo of tipoPrecios"
+                                            [value]="tipo.id_tipre"
+                                          >
+                                            {{ tipo.tipre_nombre }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div class="form-group">
+                                        <input
+                                          name="precio{{ i }}"
+                                          type="number"
+                                          class="form-control form-control-sm"
+                                          placeholder="0"
+                                          [(ngModel)]="precio.ARTPRE_PRECIO"
+                                          [value]="precio.ARTPRE_PRECIO"
+                                        />
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div class="form-group">
+                                        <select
+                                          name="tipoUnidad{{ i }}"
+                                          [(ngModel)]="precio.UNI_CODIGO"
+                                          class="form-control form-control-sm"
                                         >
-                                          {{ unidad.UNI_NOMBRE }}
-                                        </option>
-                                      </select>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
+                                          <option
+                                            *ngFor="let unidad of tipoUnidades"
+                                            [value]="unidad.UNI_CODIGO"
+                                          >
+                                            {{ unidad.UNI_NOMBRE }}
+                                          </option>
+                                        </select>
+                                      </div>
+                                    </td>
+                                    <td class="d-flex justify-content-end">
+                                      <button
+                                        type="button"
+                                        class="btn btn-danger mr-1"
+                                        (click)="removePrice(i)"
+                                      >
+                                        <i class="fas fa-trash-alt"></i>
+                                      </button>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
                       </div>
