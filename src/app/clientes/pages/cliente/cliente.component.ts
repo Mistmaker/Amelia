@@ -59,6 +59,9 @@ export class ClienteComponent implements OnInit {
         this.getCiudad();
       });
     }
+    // default values
+    this.cliente.CLI_PARTEREL = 'n';
+
     this.tipoClientesService.getTipos().subscribe((resp) => {
       console.log(resp);
       this.tipoClientes = resp;
@@ -125,6 +128,28 @@ export class ClienteComponent implements OnInit {
 
     console.log('guardar', this.cliente);
 
+    // put null on dates containing undefined string
+    if (
+      this.cliente.CLI_FECINIACTIVIDADES &&
+      this.cliente.CLI_FECINIACTIVIDADES.includes('undefined')
+    )
+      this.cliente.CLI_FECINIACTIVIDADES = null;
+    if (
+      this.cliente.CLI_FECCESACTIVIDADES &&
+      this.cliente.CLI_FECCESACTIVIDADES.includes('undefined')
+    )
+      this.cliente.CLI_FECCESACTIVIDADES = null;
+    if (
+      this.cliente.CLI_FECREIACTIVIDADES &&
+      this.cliente.CLI_FECREIACTIVIDADES.includes('undefined')
+    )
+      this.cliente.CLI_FECREIACTIVIDADES = null;
+    if (
+      this.cliente.CLI_FECACTUALIZACION &&
+      this.cliente.CLI_FECACTUALIZACION.includes('undefined')
+    )
+      this.cliente.CLI_FECACTUALIZACION = null;
+
     // merge coordinates
     this.cliente.CLI_GMAPS = this.coordinateX + ',' + this.coordinateY;
     console.log('provincia', this.provinciaCodigo);
@@ -139,11 +164,7 @@ export class ClienteComponent implements OnInit {
         .subscribe(
           (res: any) => {
             console.log('response post', res);
-            Swal.fire(
-              'Advertencia',
-              'Se actualizo el cliente con éxito',
-              'success'
-            );
+            Swal.fire('Éxito', 'Se actualizo el cliente con éxito', 'success');
           },
           (err) => {
             console.log('error post', err);
@@ -154,7 +175,7 @@ export class ClienteComponent implements OnInit {
       this.clientesService.postCliente(this.cliente).subscribe(
         (res: any) => {
           console.log('response put', res);
-          Swal.fire('Advertencia', 'Se creo el cliente con éxito', 'success');
+          Swal.fire('Éxito', 'Se creo el cliente con éxito', 'success');
         },
         (err) => {
           console.log('error put', err);

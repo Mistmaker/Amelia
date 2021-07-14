@@ -57,6 +57,9 @@ export class ProveedorComponent implements OnInit {
         this.getCiudad();
       });
     }
+    // default values
+    this.supplier.PRO_PARTEREL = 'n';
+
     this.typeClientService.getTipos().subscribe((resp) => {
       console.log('type cliente', resp);
       this.typeClient = resp;

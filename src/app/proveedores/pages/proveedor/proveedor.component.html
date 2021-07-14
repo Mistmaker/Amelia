@@ -63,7 +63,7 @@
                       <div class="row">
                         <div class="col-sm-12 col-md-3">
                           <div class="form-group">
-                            <label>Tipo de Identificación</label>
+                            <label>Tipo de Identificación*</label>
                             <select
                               [(ngModel)]="supplier.PRO_TIPOIDE"
                               name="typeTaxpayer"
@@ -295,6 +295,7 @@
                                 *ngFor="let cuentas of cuentasContables"
                                 [value]="cuentas.CON_CODIGO"
                               >
+                                {{ cuentas.CON_CODIGO }} ||
                                 {{ cuentas.CON_NOMBRE }}
                               </option>
                             </select>
@@ -320,6 +321,7 @@
                                 *ngFor="let cuentas of cuentasContables"
                                 [value]="cuentas.CON_CODIGO"
                               >
+                                {{ cuentas.CON_CODIGO }} ||
                                 {{ cuentas.CON_NOMBRE }}
                               </option>
                             </select>
@@ -455,6 +457,7 @@
                                 *ngFor="let cuentas of cuentasContables"
                                 [value]="cuentas.CON_CODIGO"
                               >
+                                {{ cuentas.CON_CODIGO }} ||
                                 {{ cuentas.CON_NOMBRE }}
                               </option>
                             </select>
@@ -473,6 +476,7 @@
                                 *ngFor="let cuentas of cuentasContables"
                                 [value]="cuentas.CON_CODIGO"
                               >
+                                {{ cuentas.CON_CODIGO }} ||
                                 {{ cuentas.CON_NOMBRE }}
                               </option>
                             </select>
@@ -491,6 +495,7 @@
                                 *ngFor="let cuentas of cuentasContables"
                                 [value]="cuentas.CON_CODIGO"
                               >
+                                {{ cuentas.CON_CODIGO }} ||
                                 {{ cuentas.CON_NOMBRE }}
                               </option>
                             </select>

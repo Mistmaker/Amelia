@@ -101,7 +101,7 @@ export class ProductoComponent implements OnInit {
       return;
     }
 
-    console.log('guardar products', this.producto.precios);
+    console.log('guardar products', this.producto);
 
     Swal.fire({
       title: 'Espere',
