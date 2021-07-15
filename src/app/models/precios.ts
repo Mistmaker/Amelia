@@ -16,4 +16,5 @@ export class Precio {
   ARTPRE_PRECIOFPVP: number;
 
   constructor() {}
+
 }

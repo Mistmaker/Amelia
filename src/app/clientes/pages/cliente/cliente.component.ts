@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 // import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2';
@@ -32,9 +32,12 @@ export class ClienteComponent implements OnInit {
   cuentasContables: CuentaContable[] = [];
   showMore: boolean;
   mostrarBtn: boolean = false;
+
   routeStr: string;
   coordinateX: string = '0';
   coordinateY: string = '0';
+  showDeleteButton: boolean = false;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +46,8 @@ export class ClienteComponent implements OnInit {
     private citiesService: CiudadesService,
     private vendedoresService: VendedoresService,
     private cuentaContableService: CuentaContableService,
-    private configService: ConfiguracionesService
+    private configService: ConfiguracionesService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +55,9 @@ export class ClienteComponent implements OnInit {
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       console.log(this.routeStr);
       this.clientesService.getCliente(this.routeStr).subscribe((resp) => {
+
         this.cliente = resp;
+        this.showDeleteButton = true;
         console.log(resp);
         this.cliente.CLI_ESTADO = resp.CLI_ESTADO || '1';
         this.getCoordinates();
@@ -159,6 +165,7 @@ export class ClienteComponent implements OnInit {
           (err) => {
             console.log('error post', err);
             Swal.fire('Error', err.error.msg, 'error');
+
           }
         );
     } else {
@@ -170,6 +177,7 @@ export class ClienteComponent implements OnInit {
         (err) => {
           console.log('error put', err);
           Swal.fire('Error', err.error.msg, 'error');
+
         }
       );
     }
@@ -286,4 +294,49 @@ export class ClienteComponent implements OnInit {
 
     return `${date[2]}-${date[1]}-${date[0]}`;
   }
+
+  eliminarCliente(): void {
+    let eliminar = false;
+    Swal.fire({
+      title: 'Confirmación',
+      text: 'Desea eliminar este cliente?',
+      icon: 'warning',
+      showDenyButton: true,
+      confirmButtonText: `Eliminar`,
+      denyButtonText: `No eliminar`,
+      denyButtonColor: '#3085d6',
+      confirmButtonColor: '#d33',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        eliminar = true;
+        if (eliminar) {
+          Swal.fire({
+            title: 'Espere',
+            text: 'Eliminando información',
+            allowOutsideClick: false,
+            icon: 'info',
+          });
+          Swal.showLoading();
+
+          this.clientesService.deleteCliente(this.cliente.CLI_CODIGO).subscribe(resp => {
+            Swal.fire(
+              'Eliminado!',
+              'Se eliminó los datos del cliente',
+              'success'
+            ).then(r => {
+              this.router.navigateByUrl('clientes');
+            });
+          }, error => {
+            console.log(error);
+            Swal.fire(
+              'Error!',
+              'Ocurrió un error al eliminar',
+              'error'
+            );
+          })
+        }
+      }
+    });
+  }
+
 }

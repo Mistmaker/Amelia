@@ -233,6 +233,7 @@ export class ProveedorComponent implements OnInit {
         });
     }
 
+
     if (this.supplier.PRO_CODIGO.length === 13) {
       this.supplierService.getProveedorSri(this.supplier.PRO_CODIGO).subscribe(
         (res) => {

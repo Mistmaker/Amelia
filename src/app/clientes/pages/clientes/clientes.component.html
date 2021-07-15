@@ -1,28 +1,11 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header card-header-info">
-                        <h4 class="card-title ">Clientes</h4>
-                        <p class="card-category"> Listado de clientes registrados</p>
-                    </div>
+<div class="card">
+    <div class="card-header card-header-info">
+        <h4 class="card-title ">Clientes</h4>
+        <p class="card-category"> Listado de clientes registrados</p>
+    </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="ml-3 mt-1">
-                                <!-- <input type="text" class="form-control" [(ngModel)]="textoBusqueda" placeholder="Buscar..."> -->
-                                <input type="text" class="form-control" [(ngModel)]="textoBusqueda" (keyup)="busqueda($event)" placeholder="Buscar...">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="text-right mr-3 mt-1">
-                                <button routerLink="/clientes/nuevo" class="btn btn-info">
-                                    <i class="fas fa-plus"></i> Agregar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+
+
 
 
                     <div class="card-body">
@@ -41,51 +24,46 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let cliente of clientes | filtroSimple: '' | paginate : {
+
                                         itemsPerPage: tableSize,
                                         currentPage: page,
                                         totalItems: count
                                       };">
-                                        <td>{{ cliente.CLI_RUC }}</td>
-                                        <td>{{ cliente.CLI_NOMBRE }}</td>
-                                        <td>{{ cliente.CLI_NOMBREC }}</td>
-                                        <td>{{ cliente.CLI_DIRECCION1 }}</td>
-                                        <td>{{ cliente.CLI_TELEFONO1 }}</td>
-                                        <td>{{ cliente.CLI_CORREO1 }}</td>
-                                        <td>{{ cliente.CLI_ACTIVIDAD }}</td>
-                                        <td>
-                                            <button class="btn btn-info mr-1"
-                                                [routerLink]="['/clientes', cliente.CLI_CODIGO]">
+                        <td>{{ cliente.CLI_RUCIDE }}</td>
+                        <td>{{ cliente.CLI_NOMBRE }}</td>
+                        <td>{{ cliente.CLI_NOMBREC }}</td>
+                        <td>{{ cliente.CLI_DIRECCION1 }}</td>
+                        <td>{{ cliente.CLI_TELEFONO1 }}</td>
+                        <td>{{ cliente.CLI_CORREO1 }}</td>
+                        <td>{{ cliente.CLI_ACTIVIDAD }}</td>
+                        <td>
+                            <button class="btn btn-primary mr-1" [routerLink]="['/clientes', cliente.CLI_CODIGO]">
                                                 <i class="fa fa-pen"></i>
                                             </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div *ngIf="!cargando" class="d-flex justify-content-center">
-                                <pagination-controls previousLabel="Prev" nextLabel="Next"
-                                    (pageChange)="onTableDataChange($event)">
-                                </pagination-controls>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="cargando" class="alert alert-info text-center mt-3 animated fadein faster">
-                    <h4 class="alert-heading">Cargando</h4>
-                    <p>
-                        <i class="fa fa-sync-alt fa-spin fa-3x"></i>
-                    </p>
-                    <p class="mb-0">
-                        Espere por favor
-                    </p>
-                </div>
-                <div *ngIf="!cargando && clientes.length === 0"
-                    class="alert alert-warning text-center mt-3 animated fadein faster">
-                    <h4 class="alert-heading">No hay registros</h4>
-                    <p>
-                        <i class="fa fa-exclamation fa-3x"></i>
-                    </p>
-                </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!cargando" class="d-flex justify-content-center">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
             </div>
         </div>
     </div>
+</div>
+
+<div *ngIf="cargando" class="alert alert-info text-center mt-3 animated fadein faster">
+    <h4 class="alert-heading">Cargando</h4>
+    <p>
+        <i class="fa fa-sync-alt fa-spin fa-3x"></i>
+    </p>
+    <p class="mb-0">
+        Espere por favor
+    </p>
+</div>
+<div *ngIf="!cargando && clientes.length === 0" class="alert alert-warning text-center mt-3 animated fadein faster">
+    <h4 class="alert-heading">No hay registros</h4>
+    <p>
+        <i class="fa fa-exclamation fa-3x"></i>
+    </p>
 </div>

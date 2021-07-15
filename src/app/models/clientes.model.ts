@@ -1,4 +1,5 @@
 export class Cliente {
+
   CLI_FECHACREADO: string;
   CLI_OBSERVACION: string;
   CLI_PARTEREL: string;
@@ -6,6 +7,7 @@ export class Cliente {
   CON_CODIGO2: string;
   CLI_GMAPS: string;
   CLI_CIUDAD: string;
+
 
   VEN_CODIGO: string;
   CLI_FECHACONSULTA: string;
