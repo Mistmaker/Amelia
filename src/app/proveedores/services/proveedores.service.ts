@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { urlWsRuc } from '../../../environments/environment.prod';
-import { Proveedor } from './../../models/proveedores.model';
-
 import {
   urlWs,
   urlWsRucAlterno,
-} from './../../../environments/environment.prod';
+  urlWsCedula,
+  urlWsRuc,
+} from '../../../environments/environment.prod';
+import { Proveedor } from './../../models/proveedores.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,7 @@ export class ProveedoresService {
   // endpoint to get data from ruc
   wsSri = urlWsRuc;
   wsSriAlt = urlWsRucAlterno;
+  wsCedula = urlWsCedula;
 
   constructor(private http: HttpClient) {}
 
@@ -42,7 +43,7 @@ export class ProveedoresService {
     });
   }
 
-  deleteProveedor(id: string){
+  deleteProveedor(id: string) {
     return this.http.delete(`${this.route}/proveedores/${id}`);
   }
 
@@ -52,5 +53,9 @@ export class ProveedoresService {
 
   getProveedorSriAlt(ruc: string) {
     return this.http.get(`${this.wsSriAlt}${ruc}`);
+  }
+
+  getProveedorCedula(cedula: string) {
+    return this.http.get(`${this.wsCedula}${cedula}`);
   }
 }

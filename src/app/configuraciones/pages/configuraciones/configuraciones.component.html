@@ -1,0 +1,33 @@
+<div class="card">
+  <div class="card-header card-header-info">
+    <h4 class="card-title">Configuraciones</h4>
+    <p class="card-category">Listado de configuraciones del sistema</p>
+  </div>
+  <div class="card-body">
+    <form (ngSubmit)="f.form.valid && save(f)" #f="ngForm">
+      <div *ngFor="let config of configList; let i = index">
+        <div class="d-flex form-group form-check">
+          <input
+            name="{{ config.codigo_config }}{{ i }}"
+            [checked]="config.codigo == 1"
+            (change)="toggleStatus(i)"
+            type="checkbox"
+            class="form-check-input"
+            id="{{ i }}"
+            style="cursor: pointer;"
+          />
+          <label class="form-check-label" for="{{ i }}" style="cursor: pointer;">
+            {{ config.descripcion }}
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group text-center">
+        <button class="btn btn-primary w-50" type="submit">
+          <i class="fas fa-save"></i> Guardar
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

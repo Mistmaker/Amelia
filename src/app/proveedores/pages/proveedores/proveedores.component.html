@@ -16,9 +16,16 @@
                     <button routerLink="/proveedores/nuevo" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar</button>
                 </div>
             </div>
-        </div>
-        <div class="table-responsive">
-            <table *ngIf="!loading && suppliers.length > 0" class="table table-hover animated fadein faster">
+
+          </div>
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <table
+                *ngIf="!loading && suppliers.length > 0"
+                class="table table-striped table-hover animated fadein faster"
+              >
+
                 <thead class="text-primary">
                     <th>RUC</th>
                     <th>Nombre</th>

@@ -2,13 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 // import { formatDate } from '@angular/common';
-
 import Swal from 'sweetalert2';
 
-import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../../models/clientes.model';
-import { TipoClientesService } from '../../services/tipo-clientes.service';
+import { ClientesService } from '../../services/clientes.service';
 import { TipoCliente } from '../../../models/tipoClientes';
+import { TipoClientesService } from '../../services/tipo-clientes.service';
+import { Ciudad } from './../../../models/ciudades.models';
+import { CiudadesService } from '../../services/ciudades.service';
+import { Vendedores } from './../../../models/vendedores';
+import { VendedoresService } from '../../services/vendedores.service';
+import { CuentaContable } from './../../../models/cuentasContables';
+import { CuentaContableService } from '../../services/cuentas-contables.service';
+import { ConfiguracionesService } from 'src/app/configuraciones/service/configuraciones.service';
 
 @Component({
   selector: 'app-cliente',
@@ -18,30 +24,97 @@ import { TipoCliente } from '../../../models/tipoClientes';
 export class ClienteComponent implements OnInit {
   cliente = new Cliente();
   tipoClientes: TipoCliente[] = [];
+  provinciaCodigo: string = '';
+  cantonCodigo: string = '';
+  provincias: Ciudad[] = [];
+  cantones: Ciudad[] = [];
+  vendedores: Vendedores[] = [];
+  cuentasContables: CuentaContable[] = [];
+  showMore: boolean;
   mostrarBtn: boolean = false;
+
+  routeStr: string;
+  coordinateX: string = '0';
+  coordinateY: string = '0';
   showDeleteButton: boolean = false;
+
 
   constructor(
     private route: ActivatedRoute,
     private clientesService: ClientesService,
     private tipoClientesService: TipoClientesService,
+    private citiesService: CiudadesService,
+    private vendedoresService: VendedoresService,
+    private cuentaContableService: CuentaContableService,
+    private configService: ConfiguracionesService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id !== 'nuevo' && id !== null) {
-      console.log(id);
-      this.clientesService.getCliente(id).subscribe((resp) => {
+    this.routeStr = this.route.snapshot.paramMap.get('id');
+    if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
+      console.log(this.routeStr);
+      this.clientesService.getCliente(this.routeStr).subscribe((resp) => {
+
         this.cliente = resp;
         this.showDeleteButton = true;
         console.log(resp);
+        this.cliente.CLI_ESTADO = resp.CLI_ESTADO || '1';
+        this.getCoordinates();
+        this.getCiudad();
       });
     }
+    // default values
+    this.cliente.CLI_PARTEREL = this.cliente.CLI_PARTEREL || 'n';
+
     this.tipoClientesService.getTipos().subscribe((resp) => {
       console.log(resp);
       this.tipoClientes = resp;
     });
+    // get all provincias
+    this.citiesService.getAllProvincias().subscribe((resp) => {
+      this.provincias = resp;
+    });
+    // get all vendedores
+    this.vendedoresService.getAllVendedores().subscribe((resp) => {
+      this.vendedores = resp;
+    });
+    // get all cuentas contables
+    this.cuentaContableService.getAllCuentas().subscribe((resp) => {
+      this.cuentasContables = resp;
+    });
+    // get config
+    this.configService.getConfigClientes().subscribe((resp) => {
+      console.log('config', resp);
+      this.showMore = resp.codigo === 1 ? true : false;
+    });
+  }
+
+  getCiudad() {
+    if (this.cliente.CLI_CIUDAD) {
+      const data = this.cliente.CLI_CIUDAD.split('.');
+      console.log(data);
+      this.provinciaCodigo = data[0];
+      this.getAllCantones(this.provinciaCodigo);
+      this.cantonCodigo = this.cliente.CLI_CIUDAD;
+    }
+  }
+
+  onChangeProvincia(id: string) {
+    this.getAllCantones(id);
+  }
+
+  getAllCantones(id: string) {
+    // get all cantones
+    this.citiesService.getAllCantonesByProvincia(id).subscribe((resp) => {
+      this.cantones = resp;
+    });
+  }
+
+  getCoordinates() {
+    let coordinates = this.cliente.CLI_GMAPS.split(',');
+    this.coordinateX = coordinates[0].replace(',', '').replace(' ', '');
+    this.coordinateY = coordinates[1].replace(',', '').replace(' ', '');
   }
 
   guardar(form: NgForm) {
@@ -49,65 +122,62 @@ export class ClienteComponent implements OnInit {
       return;
     }
 
-    if (this.cliente.CLI_CODIGO) {
+    console.log('guardar', this.cliente);
+
+    // put null on dates containing undefined string
+    if (
+      this.cliente.CLI_FECINIACTIVIDADES &&
+      this.cliente.CLI_FECINIACTIVIDADES.includes('undefined')
+    )
+      this.cliente.CLI_FECINIACTIVIDADES = null;
+    if (
+      this.cliente.CLI_FECCESACTIVIDADES &&
+      this.cliente.CLI_FECCESACTIVIDADES.includes('undefined')
+    )
+      this.cliente.CLI_FECCESACTIVIDADES = null;
+    if (
+      this.cliente.CLI_FECREIACTIVIDADES &&
+      this.cliente.CLI_FECREIACTIVIDADES.includes('undefined')
+    )
+      this.cliente.CLI_FECREIACTIVIDADES = null;
+    if (
+      this.cliente.CLI_FECACTUALIZACION &&
+      this.cliente.CLI_FECACTUALIZACION.includes('undefined')
+    )
+      this.cliente.CLI_FECACTUALIZACION = null;
+
+    // merge coordinates
+    this.cliente.CLI_GMAPS = this.coordinateX + ',' + this.coordinateY;
+    console.log('provincia', this.provinciaCodigo);
+    console.log('canton', this.cantonCodigo);
+
+    this.cliente.CLI_CIUDAD = this.cantonCodigo;
+    console.log('ciudad', this.cliente.CLI_CIUDAD);
+
+    if (this.routeStr !== 'nuevo') {
       this.clientesService
         .putCliente(this.cliente.CLI_CODIGO, this.cliente)
         .subscribe(
-          (resp: any) => {
-            console.log(resp);
-            if (resp['err']) {
-              Swal.fire({
-                title: 'Error',
-                text: resp['mensaje'],
-                icon: 'error',
-              });
-            } else {
-              Swal.fire({
-                title: 'Listo',
-                text: 'Actualizado exitozamente',
-                icon: 'success',
-              }).then((r) => {
-                this.router.navigateByUrl('clientes');
-              });
-            }
+          (res: any) => {
+            console.log('response post', res);
+            Swal.fire('Éxito', 'Se actualizo el cliente con éxito', 'success');
           },
           (err) => {
-            console.error(err);
-            Swal.fire({
-              title: 'Error',
-              text: 'Ocurrió un error al guardar la Información ',
-              icon: 'error',
-            });
+            console.log('error post', err);
+            Swal.fire('Error', err.error.msg, 'error');
+
           }
         );
     } else {
       this.clientesService.postCliente(this.cliente).subscribe(
-        (resp: any) => {
-          console.log(resp);
-          this.cliente.CLI_CODIGO = resp.CLI_CODIGO;
-          if (resp['err']) {
-            Swal.fire({
-              title: 'Error',
-              text: resp['mensaje'],
-              icon: 'error',
-            });
-          } else {
-            Swal.fire({
-              title: 'Listo',
-              text: 'Realizado exitozamente',
-              icon: 'success',
-            }).then((r) => {
-              this.router.navigateByUrl('clientes');
-            });
-          }
+        (res: any) => {
+          console.log('response put', res);
+          Swal.fire('Éxito', 'Se creo el cliente con éxito', 'success');
         },
         (err) => {
-          console.log(err);
-          Swal.fire({
-            title: 'Error',
-            text: 'Ocurrió un error al guardar la Información ',
-            icon: 'error',
-          });
+          console.log('error put', err);
+          Swal.fire('Error', err.error.msg, 'error');
+
         }
       );
     }
@@ -122,7 +192,7 @@ export class ClienteComponent implements OnInit {
   }
 
   buscarDatosOnLine() {
-    if (!this.cliente.CLI_RUCIDE)
+    if (!this.cliente.CLI_CODIGO)
       Swal.fire(
         'Advertencia',
         'Ingrese un número de identificación',
@@ -130,8 +200,8 @@ export class ClienteComponent implements OnInit {
       );
 
     if (
-      this.cliente.CLI_RUCIDE.length !== 10 &&
-      this.cliente.CLI_RUCIDE.length !== 13
+      this.cliente.CLI_CODIGO.length !== 10 &&
+      this.cliente.CLI_CODIGO.length !== 13
     )
       Swal.fire(
         'Advertencia',
@@ -139,22 +209,22 @@ export class ClienteComponent implements OnInit {
         'warning'
       );
 
-    if (this.cliente.CLI_RUCIDE.length === 10) {
+    if (this.cliente.CLI_CODIGO.length === 10) {
       this.clientesService
-        .getClienteCedula(this.cliente.CLI_RUCIDE)
+        .getClienteCedula(this.cliente.CLI_CODIGO)
         .subscribe((resp) => {
           this.procesarDatos('C', resp['result'][0]);
         });
     }
 
-    if (this.cliente.CLI_RUCIDE.length === 13) {
-      this.clientesService.getClienteSri(this.cliente.CLI_RUCIDE).subscribe(
+    if (this.cliente.CLI_CODIGO.length === 13) {
+      this.clientesService.getClienteSri(this.cliente.CLI_CODIGO).subscribe(
         (resp) => {
           this.procesarDatos('R', resp);
         },
         (error) => {
           this.clientesService
-            .getClienteSriAlt(this.cliente.CLI_RUCIDE)
+            .getClienteSriAlt(this.cliente.CLI_CODIGO)
             .subscribe((resp) => {
               this.procesarDatos('R', resp);
             });
@@ -210,6 +280,8 @@ export class ClienteComponent implements OnInit {
             : datos['RAZON_SOCIAL'];
         this.cliente.CLI_ACTIVIDAD = datos['ACTIVIDAD_ECONOMICA'];
       }
+
+      this.cliente.CLI_FECHACONSULTA = new Date().toDateString();
     }
   }
 
@@ -266,4 +338,5 @@ export class ClienteComponent implements OnInit {
       }
     });
   }
+
 }

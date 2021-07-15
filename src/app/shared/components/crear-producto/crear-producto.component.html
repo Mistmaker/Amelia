@@ -1,14 +1,14 @@
-<div class="modal-header">
-  <h5 mat-dialog-title class="modal-title" id="exampleModalLabel">
-    Modal title
+<div class="d-flex justify-content-between">
+  <h5 mat-dialog-title class="" id="exampleModalLabel">
+    Nuevo Producto
   </h5>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <button type="button" class="close" (click)="onNoClick()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <form
+  class="mt-4"
   mat-dialog-content
-  class="modal-body"
   (ngSubmit)="f.form.valid && addProduct(f)"
   #f="ngForm"
 >
@@ -78,10 +78,10 @@
       </div>
     </div>
   </div>
+  <div mat-dialog-actions class="d-flex justify-content-end">
+    <button type="button" class="btn btn-secondary mr-2" (click)="onNoClick()">
+      Cerrar
+    </button>
+    <button type="submit" class="btn btn-primary">Añadir producto</button>
+  </div>
 </form>
-<div mat-dialog-actions class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="onNoClick()">
-    Cerrar
-  </button>
-  <button type="button" class="btn btn-primary">Añadir producto</button>
-</div>
