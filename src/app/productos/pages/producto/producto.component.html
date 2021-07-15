@@ -162,17 +162,14 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr *ngFor="
-                                      let precio of producto.precios;
-                                      let i = index
-                                    ">
+                                                    <tr *ngFor="let precio of producto.precios;let i = index">
                                                         <td scope="row">
                                                             <div class="form-group">
                                                                 <select name="tipoPrecio{{ i }}" [(ngModel)]="precio.ARTPRE_CODIGO" class="form-control form-control-sm">
-                                  <option *ngFor="let tipo of tipoPrecios" [value]="tipo.id_tipre">
-                                    {{ tipo.tipre_nombre }}
-                                  </option>
-                                </select>
+                                                                    <option *ngFor="let tipo of tipoPrecios" [value]="tipo.id_tipre">
+                                                                        {{ tipo.tipre_nombre }}
+                                                                    </option>
+                                                                </select>
                                                             </div>
                                                         </td>
                                                         <td>
@@ -183,16 +180,16 @@
                                                         <td>
                                                             <div class="form-group">
                                                                 <select name="tipoUnidad{{ i }}" [(ngModel)]="precio.UNI_CODIGO" class="form-control form-control-sm">
-                                  <option *ngFor="let unidad of tipoUnidades" [value]="unidad.UNI_CODIGO">
-                                    {{ unidad.UNI_NOMBRE }}
-                                  </option>
-                                </select>
+                                                                    <option *ngFor="let unidad of tipoUnidades" [value]="unidad.UNI_CODIGO">
+                                                                        {{ unidad.UNI_NOMBRE }}
+                                                                    </option>
+                                                                </select>
                                                             </div>
                                                         </td>
                                                         <td class="d-flex justify-content-end">
                                                             <button type="button" class="btn btn-danger mr-1" (click)="removePrice(i)">
-                                <i class="fas fa-trash-alt"></i>
-                              </button>
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
