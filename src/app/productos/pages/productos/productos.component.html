@@ -4,18 +4,15 @@
         <p class="card-category"> Listado de productos registrados</p>
     </div>
 
-
-
-
     <div class="card-body">
-
         <div class="row mb-3">
             <div class="col-md-6">
                 <input type="text" class="form-control" [(ngModel)]="textoBusqueda" placeholder="Buscar...">
             </div>
             <div class="col-md-6">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <button routerLink="/productos/nuevo" class="btn btn-primary"><i class="fas fa-plus"></i> Agregar</button>
+                    <button routerLink="/productos/nuevo" class="btn btn-primary"><i class="fas fa-plus"></i>
+                        Agregar</button>
                 </div>
             </div>
         </div>
@@ -28,17 +25,13 @@
                     <th>Accion</th>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let producto of productos | filtroSimple: textoBusqueda | paginate : {
-                                        itemsPerPage: tableSize,
-                                        currentPage: page,
-                                        totalItems: count
-                                      };">
+                    <tr *ngFor="let producto of productos | filtroSimple: textoBusqueda | paginate : {itemsPerPage: tableSize,currentPage: page,totalItems: count};">
                         <td>{{ producto.ART_CODIGO }}</td>
                         <td>{{ producto.ART_NOMBRE }}</td>
                         <td>
                             <button class="btn btn-primary mr-1" [routerLink]="['/productos', producto.ART_CODIGO]">
-                                                <i class="fa fa-pen"></i>
-                                            </button>
+                                <i class="fa fa-pen"></i>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
@@ -52,16 +45,10 @@
 </div>
 <div *ngIf="cargando" class="alert alert-info text-center mt-3 animated fadein faster">
     <h4 class="alert-heading">Cargando</h4>
-    <p>
-        <i class="fa fa-sync-alt fa-spin fa-3x"></i>
-    </p>
-    <p class="mb-0">
-        Espere por favor
-    </p>
+    <p><i class="fa fa-sync-alt fa-spin fa-3x"></i></p>
+    <p class="mb-0">Espere por favor</p>
 </div>
 <div *ngIf="!cargando && productos.length === 0" class="alert alert-warning text-center mt-3 animated fadein faster">
     <h4 class="alert-heading">No hay registros</h4>
-    <p>
-        <i class="fa fa-exclamation fa-3x"></i>
-    </p>
+    <p><i class="fa fa-exclamation fa-3x"></i></p>
 </div>

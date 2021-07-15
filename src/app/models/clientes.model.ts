@@ -24,7 +24,7 @@ export class Cliente {
   CLI_DIRECCION2: string;
   CLI_TELEFONO1: string;
   CLI_TELEFONO2: string;
-  CLI_CORREO1: string;
+  CLI_CORREO: string;
   CLI_CORREO2: string;
   CLI_ACTIVIDAD: string;
   CLI_CLASECONTRIBUYENTE: string;
