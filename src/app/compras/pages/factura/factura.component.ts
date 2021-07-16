@@ -35,6 +35,9 @@ export class FacturaComponent implements OnInit {
       console.log('type cliente', resp);
       this.typeClient = resp;
     });
+    // default values
+    this.invoice.ENCFACPRO_TOTAL = '0.00';
+
   }
 
   onChangeSelect(value: string) {
@@ -53,13 +56,19 @@ export class FacturaComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(CrearProductoComponent, {
-      width: '60%',
+      width: '100%',
+      maxWidth: '100%',
+      position: {
+        bottom: '0px',
+      },
       data: '',
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed', result);
-      this.invoice.itemsInvoice.push(result);
+      if (result) {
+        this.invoice.itemsInvoice.push(result);
+      }
     });
   }
 
@@ -67,13 +76,36 @@ export class FacturaComponent implements OnInit {
     this.invoice.itemsInvoice.push(new DetalleFactura());
   }
 
-  calculateTotalValues() {
-    this.invoice.itemsInvoice.forEach((item) => {
-
-    });
-  }
-
   removeProduct(index: number) {
     this.invoice.itemsInvoice.splice(index, 1);
   }
+
+  // operations for each row
+  onChangeSelectPrice(pos: number, price: number) {
+    this.invoice.itemsInvoice[pos].DETFACPRO_COSTO = price;
+    this.calculateTotalItem(pos);
+  }
+
+  calculateTotalItem(pos: number) {
+    this.invoice.itemsInvoice[pos].DETFACPRO_TOTAL = this.getTotalItem(
+      this.invoice.itemsInvoice[pos]
+    );
+  }
+
+  getTotalItem(invoiceDetail: DetalleFactura): number {
+    let total =
+      invoiceDetail.DETFACPRO_COSTO * invoiceDetail.DETFACPRO_CANTIDAD;
+
+    let discount =
+      total * parseFloat(invoiceDetail.DETFACPRO_PORDES.toString());
+    console.log(discount);
+
+    return total - discount;
+  }
+
+  // operations for all invoice
+  calculateTotalValues() {
+    this.invoice.itemsInvoice.forEach((item) => {});
+  }
+
 }

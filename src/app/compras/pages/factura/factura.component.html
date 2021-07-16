@@ -10,7 +10,7 @@
                 <div class="row">
                   <div class="col-sm-12 col-md-3">
                     <div class="form-group">
-                      <label>Tipo de Identificación</label>
+                      <label>Tipo de Identificación*</label>
                       <select
                         [(ngModel)]="supplier.PRO_TIPOIDE"
                         name="typeTaxpayer"
@@ -28,7 +28,7 @@
                     </div>
                   </div>
                   <div class="col-sm-12 col-md-3">
-                    <label>Ruc</label>
+                    <label>Ruc*</label>
                     <div class="row">
                       <div class="col-sm-10 col-md-10">
                         <input
@@ -72,7 +72,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>Nombre</label>
+                      <label>Nombre*</label>
                       <input
                         [(ngModel)]="supplier.PRO_NOMBRE"
                         name="name"
@@ -101,7 +101,7 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>Nombre Comercial</label>
+                      <label>Nombre Comercial*</label>
                       <input
                         [(ngModel)]="supplier.PRO_NOMBREC"
                         name="comercialName"
@@ -217,12 +217,13 @@
                           type="number"
                           min="1"
                           required
+                          (change)="calculateTotalItem(i)"
                         />
                       </td>
                       <td>{{ item.DETFACPRO_CODIGO }}</td>
                       <td>{{ item.DETFACPRO_DESCRIPCION }}</td>
                       <td>
-                        <input
+                        <!-- <input
                           name="{{ item.DETFACPRO_COSTO }}{{ i }}"
                           [(ngModel)]="item.DETFACPRO_COSTO"
                           [value]="item.DETFACPRO_COSTO"
@@ -231,21 +232,42 @@
                           type="number"
                           min="1"
                           required
-                        />
+                        /> -->
+                        <select
+                          [(ngModel)]="item.DETFACPRO_COSTO"
+                          name="priceProduct{{ i }}"
+                          #priceProduct="ngModel"
+                          (change)="onChangeSelectPrice(i, priceProduct.value)"
+                          class="form-control"
+                        >
+                          <option
+                            *ngFor="
+                              let prices of item.precios;
+                              let index = index
+                            "
+                            [value]="prices.ARTPRE_PRECIO"
+                          >
+                            ${{ prices.ARTPRE_PRECIO }} |
+                            {{ prices.UNI_CODIGO }}
+                          </option>
+                        </select>
                       </td>
                       <td>
                         <input
                           name="{{ item.DETFACPRO_PORDES }}{{ i }}"
                           [(ngModel)]="item.DETFACPRO_PORDES"
                           [value]="item.DETFACPRO_PORDES"
+                          (change)="calculateTotalItem(i)"
                           class="form-control"
                           placeholder="1"
                           type="number"
                           min="0"
+                          max="1"
+                          step="0.01"
                           required
                         />
                       </td>
-                      <td>{{ item.DETFACPRO_TOTAL }}</td>
+                      <td>{{ item.DETFACPRO_TOTAL.toFixed(2) }}</td>
                       <td>
                         <button
                           type="button"
@@ -263,13 +285,13 @@
                 <div class="col-md-8">
                   <div class="form-group">
                     <label>Observación</label>
-                    <input
+                    <textarea
                       name="observation"
                       placeholder="Observación..."
                       type="text"
                       class="form-control"
                       minlength="4"
-                    />
+                    ></textarea>
                   </div>
                 </div>
                 <div class="col-md-4 d-flex flex-column">
@@ -277,7 +299,7 @@
                     <p class="col-8 d-flex justify-content-end">
                       SubTotal Sin Impuesto
                     </p>
-                    <p class="col-4">0.00</p>
+                    <p class="col-4">{{ invoice.ENCFACPRO_TOTAL }}</p>
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">SubTotal 12%</p>
