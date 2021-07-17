@@ -13,10 +13,12 @@
                   <div class="form-group form-check">
                     <input
                       [checked]="isNewSupplier"
-                      (change)="isNewSupplier = !isNewSupplier"
+                      (change)="toggleCheckBox()"
+                      name="isNewSupplier"
                       type="checkbox"
                       class="form-check-input"
                       id="newSupplierCK"
+                      style="cursor: pointer"
                     />
                     <label class="form-check-label" for="newSupplierCK">
                       Nuevo proveedor
@@ -51,7 +53,7 @@
                           [(ngModel)]="supplier.PRO_CODIGO"
                           type="text"
                           class="form-control"
-                          name="documento"
+                          name="proCodigo"
                           placeholder="9999999999"
                           maxlength="13"
                           required
@@ -60,10 +62,12 @@
                       <div class="col-sm-2 col-md-2">
                         <button
                           type="button"
-                          class="btn btn-primary"
+                          class="btn btn-primary d-flex align-items-center"
                           (click)="searchSupplier()"
                         >
                           <i class="fas fa-search"></i>
+                          <div *ngIf="isNewSupplier == false" style="margin-left: 0.5rem;">Existente</div>
+                          <div *ngIf="isNewSupplier" style="margin-left: 0.5rem;">Nuevo</div>
                         </button>
                       </div>
                     </div>

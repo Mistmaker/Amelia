@@ -1,3 +1,4 @@
+import { Proveedor } from './proveedores.model';
 import { DetalleFactura } from './detalleFactura';
 export class EncabezadoFactura {
   ENCFACPRO_NUMERO: string;
@@ -89,6 +90,8 @@ export class EncabezadoFactura {
   ENCFACPRO_REGIMENTRANSPOR: string;
   // array to invoice items
   itemsInvoice: DetalleFactura[] = [];
+  isNewSupplier: boolean = false;
+  supplier: Proveedor;
 
   constructor() {}
 }

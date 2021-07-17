@@ -37,8 +37,8 @@ export class FacturaComponent implements OnInit {
   ngOnInit(): void {
     // get type client
     this.typeClientService.getTipos().subscribe((resp) => {
-      console.log('type cliente', resp);
       this.typeClient = resp;
+      this.supplier.PRO_TIPOIDE = this.typeClient[0].ticli_codigo;
     });
     // default values
     this.invoice.ENCFACPRO_BASEIVA = 0;
@@ -53,17 +53,122 @@ export class FacturaComponent implements OnInit {
     this.invoice.ENCFACPRO_TOTAL = 0;
   }
 
+  toggleCheckBox() {
+    this.isNewSupplier = !this.isNewSupplier;
+  }
+
   searchSupplier() {
+    if (!this.supplier.PRO_CODIGO) {
+      return Swal.fire(
+        'Advertencia',
+        'Ingrese un número de identificación (Ruc)',
+        'warning'
+      );
+    }
+
+    if (
+      this.supplier.PRO_CODIGO.length !== 10 &&
+      this.supplier.PRO_CODIGO.length !== 13
+    )
+      return Swal.fire(
+        'Advertencia',
+        'Cédula o RUC deben tener 10 o 13 dígitos',
+        'warning'
+      );
+
     if (!this.isNewSupplier) {
       this.supplierService.getProveedor(this.supplier.PRO_CODIGO).subscribe(
         (res) => {
           this.supplier = res;
         },
         (err) => {
-          console.log(err);
+          console.log('get data from database', err);
+        }
+      );
+    } else {
+      this.searchDataOnline();
+    }
+  }
+
+  searchDataOnline() {
+    if (this.supplier.PRO_CODIGO.length === 10) {
+      this.supplierService
+        .getProveedorCedula(this.supplier.PRO_CODIGO)
+        .subscribe((response) => {
+          console.log('cedula', response);
+          this.formatData(response['result'][0], 'C');
+        });
+    }
+
+    if (this.supplier.PRO_CODIGO.length === 13) {
+      this.supplierService.getProveedorSri(this.supplier.PRO_CODIGO).subscribe(
+        (res) => {
+          console.log(res);
+          this.formatData(res, 'R');
+        },
+        (err) => {
+          this.supplierService
+            .getProveedorSriAlt(this.supplier.PRO_CODIGO)
+            .subscribe((res) => {
+              console.log(res);
+              this.formatData(res, 'R');
+            });
         }
       );
     }
+  }
+
+  formatData(data: any, type: string) {
+    if (type === 'C') {
+      if (data['identity']) {
+        this.supplier.PRO_NOMBRE = data['name'];
+        this.supplier.PRO_NOMBREC = data['name'];
+        this.supplier.PRO_DIRECCION1 =
+          data['residence'] + ' ' + data['streets'] + ' ' + data['homenumber'];
+      }
+    }
+
+    if (type === 'R') {
+      if (data['RUC:']) {
+        this.supplier.PRO_NOMBRE = data['Raz\u00f3n Social:'];
+        this.supplier.PRO_NOMBREC =
+          data['Nombre Comercial:'] !== ''
+            ? data['Nombre Comercial:']
+            : data['Raz\u00f3n Social:'];
+        // this.cliente.CLI_CLASECONTRIBUYENTE = data["Clase de Contribuyente"];
+        this.supplier.PRO_CLASECONTRIBUYENTE = data['Tipo de Contribuyente'];
+        this.supplier.PRO_FECINIACTIVIDADES = this.formatDate(
+          data['Fecha de inicio de actividades']
+        );
+        this.supplier.PRO_FECCESACTIVIDADES = this.formatDate(
+          data['Fecha de cese de actividades']
+        );
+        this.supplier.PRO_FECREIACTIVIDADES = this.formatDate(
+          data['Fecha reinicio de actividades']
+        );
+        this.supplier.PRO_FECACTUALIZACION = this.formatDate(
+          data['Fecha actualizaci\u00f3n']
+        );
+      }
+      if (data['NUMERO_RUC']) {
+        this.supplier.PRO_NOMBRE = data['Raz\u00f3n Social:'];
+        this.supplier.PRO_NOMBREC =
+          data['Nombre Comercial:'] !== ''
+            ? data['Nombre Comercial:']
+            : data['Raz\u00f3n Social:'];
+      }
+    }
+    this.supplier.PRO_FECHACONSULTA = new Date().toDateString();
+  }
+
+  formatDate(fecha: string): string {
+    const regex = /\r\n|\r|\n|\t|\s/gi;
+
+    let f = fecha;
+    f = f.replace(regex, '');
+    let date = f.split('-');
+
+    return `${date[2]}-${date[1]}-${date[0]}`;
   }
 
   onChangeSelect(value: string) {}
@@ -72,6 +177,33 @@ export class FacturaComponent implements OnInit {
     if (form.invalid) {
       console.log('invalid form');
       return;
+    }
+
+    if (this.isNewSupplier) {
+      // put null on dates containing undefined string
+      if (
+        this.supplier.PRO_FECINIACTIVIDADES &&
+        this.supplier.PRO_FECINIACTIVIDADES.includes('undefined')
+      )
+        this.supplier.PRO_FECINIACTIVIDADES = null;
+      if (
+        this.supplier.PRO_FECCESACTIVIDADES &&
+        this.supplier.PRO_FECCESACTIVIDADES.includes('undefined')
+      )
+        this.supplier.PRO_FECCESACTIVIDADES = null;
+      if (
+        this.supplier.PRO_FECREIACTIVIDADES &&
+        this.supplier.PRO_FECREIACTIVIDADES.includes('undefined')
+      )
+        this.supplier.PRO_FECREIACTIVIDADES = null;
+      if (
+        this.supplier.PRO_FECACTUALIZACION &&
+        this.supplier.PRO_FECACTUALIZACION.includes('undefined')
+      )
+        this.supplier.PRO_FECACTUALIZACION = null;
+
+      this.invoice.isNewSupplier = this.isNewSupplier;
+      this.invoice.supplier = this.supplier;
     }
 
     this.invoice.ENCFACPRO_FECHAEMISION = new Date();
