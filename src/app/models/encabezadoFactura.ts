@@ -9,16 +9,23 @@ export class EncabezadoFactura {
   PRO_CODIGO: string;
   ENCFACPRO_CONTACTO: string;
   ENCFACPRO_REFERENCIA: string;
-  ENCFACPRO_TOTAL: string;
-  ENCFACPRO_TOTALNETO: string;
-  ENCFACPRO_VALORDES: string;
-  ENCFACPRO_PORCEDES: string;
-  ENCFACPRO_VALORIVA: string;
-  ENCFACPRO_PORCEIVA: string;
-  ENCFACPRO_VALORICE: string;
-  ENCFACPRO_BASEIVA: string;
-  ENCFACPRO_BASEICE: string;
-  ENCFACPRO_BASECERO: string;
+
+  ENCFACPRO_BASEIVA: number; // subtotal 12%
+  ENCFACPRO_BASECERO: number; // subtotal 0%
+  ENCFACPRO_BASENOOBJIVA: number; // subtotal No Objeto iva
+  ENCFACPRO_PORCEIVA: number; // subtotal exento iva
+  ENCFACPRO_PORCEDES: number; // descuento
+  ENCFACPRO_VALORICE: number; // valor ice
+
+  // valor IRBPNR
+  ENCFACPRO_VALORIVA: number; // iva 12%
+  // propina
+  ENCFACPRO_TOTAL: number; // valor total
+
+  ENCFACPRO_BASEICE: number;
+  ENCFACPRO_TOTALNETO: number;
+  ENCFACPRO_VALORDES: number;
+
   ENCFACPRO_COMENTARIO: string;
   ENCFACPRO_OTROS: string;
   ASI_NRO: string;
@@ -67,7 +74,6 @@ export class EncabezadoFactura {
   COM_TIPOAMBFACTELEC: string;
   ENCFACPRO_PATHXMLNOAUTO_FE: string;
   ENCFACPRO_BLOQUEFACXML: string;
-  ENCFACPRO_BASENOOBJIVA: string;
   ENCFACPRO_PATHPDF_FE: string;
   ENCFACPRO_PAGOREGFISCAL: string;
   ENCFACPRO_TIPOREGFISCAL: string;

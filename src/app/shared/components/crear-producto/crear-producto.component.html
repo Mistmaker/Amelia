@@ -78,6 +78,7 @@
             type="number"
             class="form-control"
             min="1"
+            step="0.000001"
             required
           />
           <div *ngIf="f.submitted && count.invalid" class="alert bg-warning">
@@ -89,34 +90,70 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label>Descuento*</label>
-          <input
-            [(ngModel)]="invoiceDetail.DETFACPRO_PORDES"
-            name="discount"
-            #discount="ngModel"
-            placeholder="0"
-            type="number"
-            class="form-control"
-            min="0"
-            max="1"
-            step="0.01"
-            [defaultValue]="0"
-            required
-          />
-          <div *ngIf="f.submitted && discount.invalid" class="alert bg-warning">
-            <div *ngIf="discount.errors.required">
-              Se debe ingresar un valor
+      <div class="row col-md-6">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Descuento ($ valor)</label>
+            <input
+              [(ngModel)]="invoiceDetail.DETFACPRO_VALDES"
+              name="discountValue"
+              #discountValue="ngModel"
+              placeholder="0"
+              type="number"
+              class="form-control"
+              min="0"
+              step="0.01"
+              (change)="discountValueToPercent()"
+              required
+            />
+            <div
+              *ngIf="f.submitted && discountValue.invalid"
+              class="alert bg-warning"
+            >
+              <div *ngIf="discountValue.errors.required">
+                Se debe ingresar un valor
+              </div>
+              <div *ngIf="discountValue.errors.min">
+                Puede tener como mínimo $0.00 de descuento
+              </div>
+              <div *ngIf="discountValue.errors.forbiddenName">
+                No puede colocar ese valor
+              </div>
             </div>
-            <div *ngIf="discount.errors.min">
-              Puede tener como mínimo 0% de descuento
-            </div>
-            <div *ngIf="discount.errors.max">
-              Puede tener como máximo 100% de descuento
-            </div>
-            <div *ngIf="discount.errors.forbiddenName">
-              No puede colocar ese valor
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Descuento (% porcentaje)</label>
+            <input
+              [(ngModel)]="invoiceDetail.DETFACPRO_PORDES"
+              name="discountPercent"
+              #discountPercent="ngModel"
+              placeholder="0"
+              type="number"
+              class="form-control"
+              min="0"
+              max="100"
+              [defaultValue]="0"
+              (change)="discountPercentToValue()"
+              required
+            />
+            <div
+              *ngIf="f.submitted && discountPercent.invalid"
+              class="alert bg-warning"
+            >
+              <div *ngIf="discountPercent.errors.required">
+                Se debe ingresar un valor
+              </div>
+              <div *ngIf="discountPercent.errors.min">
+                Puede tener como mínimo 0% de descuento
+              </div>
+              <div *ngIf="discountPercent.errors.max">
+                Puede tener como máximo 100% de descuento
+              </div>
+              <div *ngIf="discount.errors.forbiddenName">
+                No puede colocar ese valor
+              </div>
             </div>
           </div>
         </div>
@@ -124,7 +161,12 @@
     </div>
   </div>
   <div mat-dialog-actions class="d-flex justify-content-end mt-4">
-    <button type="button" class="btn btn-secondary mr-4" (click)="onNoClick()">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      style="margin-right: 1rem"
+      (click)="onNoClick()"
+    >
       Cerrar
     </button>
     <button type="submit" class="btn btn-primary">Añadir producto</button>

@@ -51,6 +51,7 @@ export class DetalleFactura {
   DETFACPRO_FRACCIONES: number;
 
   precios: Precio[] = [];
+  tributaIva:string;
 
   constructor() {}
 }

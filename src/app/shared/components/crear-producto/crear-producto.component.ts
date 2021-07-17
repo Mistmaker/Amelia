@@ -19,7 +19,7 @@ export class CrearProductoComponent implements OnInit {
   positionOfProduct: number = -1;
   invoiceDetail = new DetalleFactura();
   // product price
-  positionOfPrice:number = -1;
+  positionOfPrice: number = -1;
   price = new Precio();
   pricesList: Precio[] = [];
   productSelected = false;
@@ -31,7 +31,10 @@ export class CrearProductoComponent implements OnInit {
     private pricesService: PreciosService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.invoiceDetail.DETFACPRO_PORDES = 0;
+    this.invoiceDetail.DETFACPRO_VALDES = 0;
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -76,6 +79,16 @@ export class CrearProductoComponent implements OnInit {
     this.invoiceDetail.DETFACPRO_CODIGO =
       this.productsList[this.positionOfProduct].ART_CODIGO;
     this.invoiceDetail.DETFACPRO_COSTO = this.price.ARTPRE_PRECIO;
+    // tributa ice
+    this.invoiceDetail.DETFACPRO_TRIBICE =
+      this.productsList[this.positionOfProduct].ART_TRIBUTAICE;
+    this.invoiceDetail.DETFACPRO_ICE =
+      this.productsList[this.positionOfProduct].ART_VALORICE;
+
+    // graba iva
+    this.invoiceDetail.tributaIva =
+      this.productsList[this.positionOfProduct].ART_TRIBUTAIVA;
+
     // TODO: calcular el total de la factura con el descuento
     this.invoiceDetail.DETFACPRO_TOTAL = this.getTotal();
     this.invoiceDetail.precios = this.pricesList;
@@ -88,9 +101,38 @@ export class CrearProductoComponent implements OnInit {
       this.invoiceDetail.DETFACPRO_CANTIDAD;
 
     let discount =
-      total * parseFloat(this.invoiceDetail.DETFACPRO_PORDES.toString());
+      total *
+      (parseFloat(this.invoiceDetail.DETFACPRO_PORDES.toString()) / 100);
     console.log(discount);
 
     return total - discount;
+  }
+
+  discountValueToPercent() {
+    let valorDescuento = parseFloat(
+      this.invoiceDetail.DETFACPRO_VALDES.toString()
+    );
+
+    let costo =
+      parseFloat(this.price.ARTPRE_PRECIO.toString()) *
+      this.invoiceDetail.DETFACPRO_CANTIDAD;
+
+    let value = (valorDescuento / costo) * 100;
+
+    this.invoiceDetail.DETFACPRO_PORDES = parseFloat(value.toFixed(6));
+  }
+
+  discountPercentToValue() {
+    let porcentajeDescuento = parseFloat(
+      this.invoiceDetail.DETFACPRO_PORDES.toString()
+    );
+
+    let costo =
+      parseFloat(this.price.ARTPRE_PRECIO.toString()) *
+      this.invoiceDetail.DETFACPRO_CANTIDAD;
+
+    let value = costo * (porcentajeDescuento / 100);
+
+    this.invoiceDetail.DETFACPRO_VALDES = parseFloat(value.toFixed(6));
   }
 }

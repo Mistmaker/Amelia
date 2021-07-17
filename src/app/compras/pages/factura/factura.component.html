@@ -7,10 +7,26 @@
             <div class="card-header">Proveedor</div>
             <div class="card-body">
               <div class="form-group">
+                <div
+                  class="col-sm-12 col-md-3 mt-1 mb-1 d-flex align-items-center"
+                >
+                  <div class="form-group form-check">
+                    <input
+                      [checked]="isNewSupplier"
+                      (change)="isNewSupplier = !isNewSupplier"
+                      type="checkbox"
+                      class="form-check-input"
+                      id="newSupplierCK"
+                    />
+                    <label class="form-check-label" for="newSupplierCK">
+                      Nuevo proveedor
+                    </label>
+                  </div>
+                </div>
                 <div class="row">
                   <div class="col-sm-12 col-md-3">
                     <div class="form-group">
-                      <label>Tipo de Identificación*</label>
+                      <label>Tipo de Identificación *</label>
                       <select
                         [(ngModel)]="supplier.PRO_TIPOIDE"
                         name="typeTaxpayer"
@@ -20,15 +36,15 @@
                       >
                         <option
                           *ngFor="let type of typeClient"
-                          [value]="type.TCL_CODIGO"
+                          [value]="type.ticli_codigo"
                         >
-                          {{ type.TCL_NOMBRE }}
+                          {{ type.ticli_nombre }}
                         </option>
                       </select>
                     </div>
                   </div>
                   <div class="col-sm-12 col-md-3">
-                    <label>Ruc*</label>
+                    <label>Ruc *</label>
                     <div class="row">
                       <div class="col-sm-10 col-md-10">
                         <input
@@ -43,26 +59,13 @@
                       </div>
                       <div class="col-sm-2 col-md-2">
                         <button
-                          *ngIf="showButton"
                           type="button"
                           class="btn btn-primary"
-                          (click)="searchDataOnline()"
+                          (click)="searchSupplier()"
                         >
                           <i class="fas fa-search"></i>
                         </button>
                       </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-12 col-md-3 d-flex align-items-center">
-                    <div class="form-group form-check">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="newSupplierCK"
-                      />
-                      <label class="form-check-label" for="newSupplierCK">
-                        Nuevo proveedor
-                      </label>
                     </div>
                   </div>
                 </div>
@@ -72,7 +75,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>Nombre*</label>
+                      <label>Nombre *</label>
                       <input
                         [(ngModel)]="supplier.PRO_NOMBRE"
                         name="name"
@@ -101,7 +104,7 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>Nombre Comercial*</label>
+                      <label>Nombre Comercial *</label>
                       <input
                         [(ngModel)]="supplier.PRO_NOMBREC"
                         name="comercialName"
@@ -170,6 +173,33 @@
                   </div>
                 </div>
               </div>
+
+              <div class="form-group">
+                <label>Número de factura *</label>
+                <input
+                  [(ngModel)]="invoice.ENCFACPRO_NUMERO"
+                  name="invoiceNumber"
+                  #invoiceNumber="ngModel"
+                  placeholder="000000026"
+                  type="text"
+                  class="form-control"
+                  required
+                />
+                <div
+                  *ngIf="f.submitted && invoiceNumber.invalid"
+                  class="alert bg-warning"
+                >
+                  <div *ngIf="invoiceNumber.errors.required">
+                    Número de factura requerido
+                  </div>
+                  <!-- <div *ngIf="invoiceNumber.errors.minlength">
+                    Debe tener mínimo 4 letras
+                  </div> -->
+                  <div *ngIf="invoiceNumber.errors.forbiddenName">
+                    No puede colocar ese valor
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -192,14 +222,15 @@
                   </button>
                 </div>
               </div>
-              <div class="table-responsive">
+              <div class="table-responsive mt-2">
                 <table class="table table-hover animated fadein faster">
                   <thead class="text-primary">
-                    <th>Cantidad*</th>
+                    <th>Cantidad *</th>
                     <th>Código</th>
                     <th>Descripción</th>
                     <th>Precio</th>
-                    <th>Descuento</th>
+                    <th>Descuento $</th>
+                    <th>Descuento %</th>
                     <th>Total</th>
                     <th>Acción</th>
                   </thead>
@@ -254,16 +285,28 @@
                       </td>
                       <td>
                         <input
-                          name="{{ item.DETFACPRO_PORDES }}{{ i }}"
-                          [(ngModel)]="item.DETFACPRO_PORDES"
-                          [value]="item.DETFACPRO_PORDES"
-                          (change)="calculateTotalItem(i)"
+                          name="{{ item.DETFACPRO_VALDES }}value{{ i }}"
+                          [(ngModel)]="item.DETFACPRO_VALDES"
+                          [value]="item.DETFACPRO_VALDES"
+                          (change)="calculateTotalItem(i, 'value')"
                           class="form-control"
-                          placeholder="1"
+                          placeholder="0"
                           type="number"
                           min="0"
-                          max="1"
-                          step="0.01"
+                          required
+                        />
+                      </td>
+                      <td>
+                        <input
+                          name="{{ item.DETFACPRO_PORDES }}percent{{ i }}"
+                          [(ngModel)]="item.DETFACPRO_PORDES"
+                          [value]="item.DETFACPRO_PORDES"
+                          (change)="calculateTotalItem(i, 'percent')"
+                          class="form-control"
+                          placeholder="0"
+                          type="number"
+                          min="0"
+                          max="100"
                           required
                         />
                       </td>
@@ -299,35 +342,47 @@
                     <p class="col-8 d-flex justify-content-end">
                       SubTotal Sin Impuesto
                     </p>
-                    <p class="col-4">{{ invoice.ENCFACPRO_TOTAL }}</p>
+                    <p class="col-4">{{ subtotal.toFixed(2) }}</p>
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">SubTotal 12%</p>
-                    <p class="col-4">0.00</p>
+                    <p class="col-4">
+                      {{ invoice.ENCFACPRO_BASEIVA.toFixed(2) }}
+                    </p>
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">SubTotal 0%</p>
-                    <p class="col-4">0.00</p>
+                    <p class="col-4">
+                      {{ invoice.ENCFACPRO_BASECERO.toFixed(2) }}
+                    </p>
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">
                       SubTotal No Objeto IVA
                     </p>
-                    <p class="col-4">0.00</p>
+                    <p class="col-4">
+                      {{ invoice.ENCFACPRO_BASENOOBJIVA.toFixed(2) }}
+                    </p>
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">
                       SubTotal Exento IVA
                     </p>
-                    <p class="col-4">0.00</p>
+                    <p class="col-4">
+                      {{ invoice.ENCFACPRO_PORCEIVA.toFixed(2) }}
+                    </p>
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">Descuento</p>
-                    <p class="col-4">0.00</p>
+                    <p class="col-4">
+                      {{ invoice.ENCFACPRO_PORCEDES.toFixed(2) }}
+                    </p>
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">Valor ICE</p>
-                    <p class="col-4">0.00</p>
+                    <p class="col-4">
+                      {{ invoice.ENCFACPRO_VALORICE.toFixed(2) }}
+                    </p>
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">Valor IRBPNR</p>
@@ -335,7 +390,9 @@
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">IVA 12%</p>
-                    <p class="col-4">0.00</p>
+                    <p class="col-4">
+                      {{ invoice.ENCFACPRO_VALORIVA.toFixed(2) }}
+                    </p>
                   </div>
                   <div class="row col">
                     <p class="col-8 d-flex justify-content-end">Propina</p>
@@ -352,10 +409,17 @@
                     >
                       VALOR TOTAL
                     </p>
-                    <p class="col-4">0.00</p>
+                    <p class="col-4">
+                      {{ invoice.ENCFACPRO_TOTAL.toFixed(2) }}
+                    </p>
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="form-group text-center mb-2 mt-2">
+              <button class="btn btn-primary w-50" type="submit">
+                <i class="fas fa-save"></i> Guardar
+              </button>
             </div>
           </div>
         </form>
