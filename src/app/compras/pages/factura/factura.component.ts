@@ -343,7 +343,7 @@ export class FacturaComponent implements OnInit {
         sumTotalIva += totalIva;
       }
     });
-    return sumTotalIva;
+    return parseFloat(sumTotalIva.toFixed(6));
   }
 
   calculateSubtotalNoIva(): number {
@@ -353,7 +353,7 @@ export class FacturaComponent implements OnInit {
         totalNoIva += item.DETFACPRO_TOTAL;
       }
     });
-    return totalNoIva;
+    return parseFloat(totalNoIva.toFixed(6));
   }
 
   calculateDescuento(): number {
@@ -361,7 +361,7 @@ export class FacturaComponent implements OnInit {
     this.invoice.itemsInvoice.forEach((item) => {
       descuento += item.DETFACPRO_VALDES;
     });
-    return descuento;
+    return parseFloat(descuento.toFixed(6));
   }
 
   calculateValorIce(): number {
@@ -371,20 +371,21 @@ export class FacturaComponent implements OnInit {
         valorIce += item.DETFACPRO_ICE * item.DETFACPRO_CANTIDAD;
       }
     });
-    return valorIce;
+    return parseFloat(valorIce.toFixed(6));
   }
 
   calculateIva12P(): number {
-    return (
-      (this.invoice.ENCFACPRO_BASEIVA + this.invoice.ENCFACPRO_VALORICE) * 0.12
-    );
+    let iva12P =
+      (this.invoice.ENCFACPRO_BASEIVA + this.invoice.ENCFACPRO_VALORICE) * 0.12;
+
+    return parseFloat(iva12P.toFixed(6));
   }
 
   calculateValorTotal(): number {
-    return (
+    let total =
       this.subtotal +
       this.invoice.ENCFACPRO_VALORICE +
-      this.invoice.ENCFACPRO_VALORIVA
-    );
+      this.invoice.ENCFACPRO_VALORIVA;
+    return parseFloat(total.toFixed(6));
   }
 }
