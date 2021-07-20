@@ -207,7 +207,7 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card mt-2">
             <div class="card-header">Producto</div>
             <div class="card-body">
               <div class="form-group">
@@ -258,7 +258,7 @@
                       <td>{{ item.DETFACPRO_CODIGO }}</td>
                       <td>{{ item.DETFACPRO_DESCRIPCION }}</td>
                       <td>
-                        <!-- <input
+                        <input
                           name="{{ item.DETFACPRO_COSTO }}{{ i }}"
                           [(ngModel)]="item.DETFACPRO_COSTO"
                           [value]="item.DETFACPRO_COSTO"
@@ -267,8 +267,8 @@
                           type="number"
                           min="1"
                           required
-                        /> -->
-                        <select
+                        />
+                        <!-- <select
                           [(ngModel)]="item.DETFACPRO_COSTO"
                           name="priceProduct{{ i }}"
                           #priceProduct="ngModel"
@@ -285,7 +285,7 @@
                             ${{ prices.ARTPRE_PRECIO }} |
                             {{ prices.UNI_CODIGO }}
                           </option>
-                        </select>
+                        </select> -->
                       </td>
                       <td>
                         <input

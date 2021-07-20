@@ -6,7 +6,7 @@ export class Producto {
   ART_NOMBRE: string;
   ART_MARCA: string;
   ART_MODELO: string;
-  ART_TRIBUTAIVA: string;
+  ART_TRIBUTAIVA: string = 'N';
   ART_TRIBUTAICE: string;
   ART_OBSERVACION: string;
   ART_ACTIVO: string = '1';

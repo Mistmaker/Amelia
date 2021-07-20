@@ -19,6 +19,7 @@ export class CrearProductoComponent implements OnInit {
   positionOfProduct: number = -1;
   invoiceDetail = new DetalleFactura();
   // product price
+  showListPrice = false;
   positionOfPrice: number = -1;
   price = new Precio();
   pricesList: Precio[] = [];
@@ -29,7 +30,10 @@ export class CrearProductoComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private productService: ProductosService,
     private pricesService: PreciosService
-  ) {}
+  ) {
+    console.log('data', data);
+    this.showListPrice = data.showListPrice;
+  }
 
   ngOnInit(): void {
     this.invoiceDetail.DETFACPRO_PORDES = 0;
@@ -48,12 +52,13 @@ export class CrearProductoComponent implements OnInit {
   onChangeProductSelect(position: number) {
     this.positionOfProduct = position;
     this.query = this.productsList[position].ART_NOMBRE;
-
-    this.pricesService
-      .getPreciosPorProducto(this.productsList[position].ART_CODIGO)
-      .subscribe((res) => {
-        this.pricesList = res;
-      });
+    if (this.showListPrice) {
+      this.pricesService
+        .getPreciosPorProducto(this.productsList[position].ART_CODIGO)
+        .subscribe((res) => {
+          this.pricesList = res;
+        });
+    }
     this.productSelected = true;
   }
 
@@ -78,7 +83,9 @@ export class CrearProductoComponent implements OnInit {
       this.productsList[this.positionOfProduct].ART_NOMBRE;
     this.invoiceDetail.DETFACPRO_CODIGO =
       this.productsList[this.positionOfProduct].ART_CODIGO;
-    this.invoiceDetail.DETFACPRO_COSTO = this.price.ARTPRE_PRECIO;
+    if (this.showListPrice) {
+      this.invoiceDetail.DETFACPRO_COSTO = this.price.ARTPRE_PRECIO;
+    }
     // tributa ice
     this.invoiceDetail.DETFACPRO_TRIBICE =
       this.productsList[this.positionOfProduct].ART_TRIBUTAICE;
@@ -114,12 +121,12 @@ export class CrearProductoComponent implements OnInit {
     );
 
     let costo =
-      parseFloat(this.price.ARTPRE_PRECIO.toString()) *
+      parseFloat(this.invoiceDetail.DETFACPRO_COSTO.toString()) *
       this.invoiceDetail.DETFACPRO_CANTIDAD;
 
-    let value = (valorDescuento / costo) * 100;
+    let percent = (valorDescuento / costo) * 100;
 
-    this.invoiceDetail.DETFACPRO_PORDES = parseFloat(value.toFixed(6));
+    this.invoiceDetail.DETFACPRO_PORDES = parseFloat(percent.toFixed(6));
   }
 
   discountPercentToValue() {
@@ -128,7 +135,7 @@ export class CrearProductoComponent implements OnInit {
     );
 
     let costo =
-      parseFloat(this.price.ARTPRE_PRECIO.toString()) *
+      parseFloat(this.invoiceDetail.DETFACPRO_COSTO.toString()) *
       this.invoiceDetail.DETFACPRO_CANTIDAD;
 
     let value = costo * (porcentajeDescuento / 100);

@@ -51,8 +51,22 @@
   </div>
   <div *ngIf="productSelected" class="col-sm-12">
     <div class="form-group">
-      <label>Seleccione un precio*</label>
+      <label *ngIf="!showListPrice">Precio del producto *</label>
+      <input
+        *ngIf="!showListPrice"
+        [(ngModel)]="invoiceDetail.DETFACPRO_COSTO"
+        name="price"
+        #price="ngModel"
+        placeholder="0"
+        type="number"
+        class="form-control"
+        step="0.000001"
+        required
+      />
+
+      <label *ngIf="showListPrice">Seleccione un precio *</label>
       <select
+        *ngIf="showListPrice"
         [(ngModel)]="positionOfPrice"
         name="priceProduct"
         #priceProduct

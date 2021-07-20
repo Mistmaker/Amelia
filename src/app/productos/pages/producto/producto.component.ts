@@ -88,6 +88,8 @@ export class ProductoComponent implements OnInit {
   guardar(form: NgForm) {
     // console.log(form);
     if (form.invalid) {
+      console.log('invalid');
+
       return;
     }
 
