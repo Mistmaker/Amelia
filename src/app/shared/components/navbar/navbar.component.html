@@ -11,8 +11,25 @@
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/']"
             [routerLinkActiveOptions]="{exact: true}">Inicio</a>
         </li>
-        <li class="nav-item">
+
+        <!-- <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/clientes']">Clientes</a>
+        </li> -->
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="clientesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Clientes
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="clientesDropdown">
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:
+              true}" routerLinkActive="active" [routerLink]="['/clientes']">Listado</a></li>
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:
+              true}" routerLinkActive="active" [routerLink]="['/clientes/tipos-clientes']">Tipo Clientes</a></li>
+            <!-- <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:
+              true}" routerLinkActive="active" [routerLink]="['/productos/unidad-productos']">Unidad de Productos</a></li> -->
+            <!-- <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li> -->
+          </ul>
         </li>
 
         <li class="nav-item dropdown">

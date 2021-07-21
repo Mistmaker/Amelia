@@ -1,34 +1,33 @@
 import { NgForm } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import Swal  from 'sweetalert2';
-
-import { GrupoProductosService } from './../../services/grupo-productos.service';
-import { GrupoProducto } from './../../../models/grupoProductos';
 import { ActivatedRoute, Router } from '@angular/router';
+import Swal from 'sweetalert2';
+
+import { TipoClientesService } from './../../services/tipo-clientes.service';
+import { TipoCliente } from './../../../models/tipoClientes';
 
 @Component({
-  selector: 'app-crear-grupo-producto',
-  templateUrl: './crear-grupo-producto.component.html',
-  styleUrls: ['./crear-grupo-producto.component.css'],
+  selector: 'app-tipo-cliente',
+  templateUrl: './tipo-cliente.component.html',
+  styleUrls: ['./tipo-cliente.component.css'],
 })
-export class CrearGrupoProductoComponent implements OnInit {
-  grupoProducto = new GrupoProducto();
+export class TipoClienteComponent implements OnInit {
+  tipoCliente = new TipoCliente();
   routeStr: string = '';
   showDeleteButton = false;
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private grupoProductosService: GrupoProductosService
+    private tipoClientesService: TipoClientesService
   ) {}
 
   ngOnInit(): void {
     this.routeStr = this.route.snapshot.paramMap.get('id');
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
-      this.grupoProductosService.getGrupo(this.routeStr).subscribe(
+      this.tipoClientesService.getTipoCliente(this.routeStr).subscribe(
         (res) => {
           console.log(res);
-          this.grupoProducto = res;
+          this.tipoCliente = res;
         },
         (err) => {
           console.log(err);
@@ -38,20 +37,20 @@ export class CrearGrupoProductoComponent implements OnInit {
     }
   }
 
-  guardarGrupo(form: NgForm) {
+  guardarTipo(form: NgForm) {
     if (form.invalid) {
       return;
     }
-    console.log('me guardo', this.grupoProducto);
+    console.log('me guardo', this.tipoCliente);
     if (this.routeStr !== 'nuevo') {
-      this.grupoProductosService
-        .putGrupo(this.grupoProducto.GRUP_CODIGO, this.grupoProducto)
+      this.tipoClientesService
+        .putTipoCliente(this.tipoCliente.ticli_codigo, this.tipoCliente)
         .subscribe(
           (res) => {
             console.log(res);
             Swal.fire(
               'Éxito',
-              'Se actualizo el grupo de productos con éxito',
+              'Se actualizo el tipo de cliente con éxito',
               'success'
             );
           },
@@ -61,12 +60,12 @@ export class CrearGrupoProductoComponent implements OnInit {
           }
         );
     } else {
-      this.grupoProductosService.postGrupo(this.grupoProducto).subscribe(
+      this.tipoClientesService.postTipoCliente(this.tipoCliente).subscribe(
         (res) => {
           console.log(res);
           Swal.fire(
             'Éxito',
-            'Se creo el grupo de productos con éxito',
+            'Se creo el tipo de cliente con éxito',
             'success'
           );
         },
@@ -80,24 +79,24 @@ export class CrearGrupoProductoComponent implements OnInit {
 
   deleteGrupo() {
     Swal.fire({
-      title: `¿Estas seguro de borrar el grupo ${this.grupoProducto.GRUP_NOMBRE}?`,
+      title: `¿Estas seguro de borrar el tipo de cliente ${this.tipoCliente.ticli_nombre}?`,
       showCancelButton: true,
       confirmButtonText: `Eliminar`,
       cancelButtonText: `Cancelar`,
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        this.grupoProductosService
-          .deleteGrupo(this.grupoProducto.GRUP_CODIGO)
+        this.tipoClientesService
+          .deleteTipoCliente(this.tipoCliente.ticli_codigo)
           .subscribe(
             (res) => {
               console.log('response delete', res);
               Swal.fire(
                 'Eliminado',
-                'Se elimino el grupo con éxito',
+                'Se elimino el tipo de cliente con éxito',
                 'success'
               );
-              this.router.navigate(['/productos/grupo-productos']);
+              this.router.navigate(['/clientes/tipos-clientes']);
             },
             (err) => {
               console.log('error delete', err);
