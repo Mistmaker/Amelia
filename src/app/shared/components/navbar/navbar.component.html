@@ -14,9 +14,26 @@
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/clientes']">Clientes</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/productos']">Productos</a>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Productos
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="productosDropdown">
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:
+              true}" routerLinkActive="active" [routerLink]="['/productos']">Listado</a></li>
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:
+              true}" routerLinkActive="active" [routerLink]="['/productos/grupo-productos']">Grupo Productos</a></li>
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:
+              true}" routerLinkActive="active" [routerLink]="['/productos/unidad-productos']">Unidad de Productos</a></li>
+            <!-- <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li> -->
+          </ul>
         </li>
+
+        <!-- <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/productos']">Productos</a>
+        </li> -->
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/ventas']">Ventas</a>
         </li>

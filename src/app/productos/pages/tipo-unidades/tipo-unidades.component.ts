@@ -1,16 +1,15 @@
+import { TipoUnidadesService } from './../../services/tipo-unidades.service';
+import { TipoUnidad } from 'src/app/models/tipoUnidad.models';
 import { Component, OnInit } from '@angular/core';
 
-import { GrupoProducto } from './../../../models/grupoProductos';
-import { GrupoProductosService } from './../../services/grupo-productos.service';
-
 @Component({
-  selector: 'app-grupo-productos',
-  templateUrl: './grupo-productos.component.html',
-  styleUrls: ['./grupo-productos.component.css'],
+  selector: 'app-tipo-unidades',
+  templateUrl: './tipo-unidades.component.html',
+  styleUrls: ['./tipo-unidades.component.css'],
 })
-export class GrupoProductosComponent implements OnInit {
+export class TipoUnidadesComponent implements OnInit {
   textoBusqueda = '';
-  gruposProductos: GrupoProducto[] = [];
+  tipoUnidades: TipoUnidad[] = [];
   cargando = false;
 
   // Para paginación
@@ -19,13 +18,13 @@ export class GrupoProductosComponent implements OnInit {
   tableSize = 7;
   tableSizes = [3, 6, 9, 12];
 
-  constructor(private grupoProductosService: GrupoProductosService) {}
+  constructor(private tipoUnidadesService: TipoUnidadesService) {}
 
   ngOnInit(): void {
     this.cargando = true;
-    this.grupoProductosService.getGrupos().subscribe(
+    this.tipoUnidadesService.getAllUnidades().subscribe(
       (res) => {
-        this.gruposProductos = res;
+        this.tipoUnidades = res;
         this.cargando = false;
       },
       (err) => {
@@ -38,15 +37,15 @@ export class GrupoProductosComponent implements OnInit {
     setTimeout(() => {
       this.textoBusqueda = event.target.value;
       if (this.textoBusqueda !== '') {
-        this.grupoProductosService
-          .getGruposByNombre(this.textoBusqueda)
+        this.tipoUnidadesService
+          .getUnidadesByNombre(this.textoBusqueda)
           .subscribe((res) => {
-            this.gruposProductos = res;
+            this.tipoUnidades = res;
             this.page = 1;
           });
       } else {
-        this.grupoProductosService.getGrupos().subscribe((res) => {
-          this.gruposProductos = res;
+        this.tipoUnidadesService.getAllUnidades().subscribe((res) => {
+          this.tipoUnidades = res;
           this.page = 1;
           this.cargando = false;
         });

@@ -252,7 +252,7 @@
                           type="number"
                           min="1"
                           required
-                          (change)="calculateTotalItem(i)"
+                          (change)="calcularTotalPorFila(i)"
                         />
                       </td>
                       <td>{{ item.DETFACPRO_CODIGO }}</td>
@@ -267,6 +267,7 @@
                           type="number"
                           min="1"
                           required
+                          (change)="calcularTotalPorFila(i)"
                         />
                         <!-- <select
                           [(ngModel)]="item.DETFACPRO_COSTO"
@@ -292,7 +293,7 @@
                           name="{{ item.DETFACPRO_VALDES }}value{{ i }}"
                           [(ngModel)]="item.DETFACPRO_VALDES"
                           [value]="item.DETFACPRO_VALDES"
-                          (change)="calculateTotalItem(i, 'value')"
+                          (change)="calcularTotalPorFila(i, 'value')"
                           class="form-control"
                           placeholder="0"
                           type="number"
@@ -305,7 +306,7 @@
                           name="{{ item.DETFACPRO_PORDES }}percent{{ i }}"
                           [(ngModel)]="item.DETFACPRO_PORDES"
                           [value]="item.DETFACPRO_PORDES"
-                          (change)="calculateTotalItem(i, 'percent')"
+                          (change)="calcularTotalPorFila(i, 'percent')"
                           class="form-control"
                           placeholder="0"
                           type="number"

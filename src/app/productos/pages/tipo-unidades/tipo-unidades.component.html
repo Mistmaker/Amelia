@@ -1,7 +1,7 @@
 <div class="card">
   <div class="card-header card-header-info">
-    <h4 class="card-title">Grupo Productos</h4>
-    <p class="card-category">Listado de grupos</p>
+    <h4 class="card-title">Tipo de Unidades de Productos</h4>
+    <p class="card-category">Listado de unidades</p>
   </div>
 
   <div class="card-body">
@@ -17,7 +17,7 @@
       </div>
       <div class="col-md-6">
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <button routerLink="/productos/grupo-productos/nuevo" class="btn btn-primary">
+          <button routerLink="/productos/unidad-productos/nuevo" class="btn btn-primary">
             <i class="fas fa-plus"></i> Agregar
           </button>
         </div>
@@ -36,7 +36,7 @@
         <tbody>
           <tr
             *ngFor="
-              let grupo of gruposProductos
+              let unidad of tipoUnidades
                 | filtroSimple: textoBusqueda
                 | paginate
                   : {
@@ -46,12 +46,12 @@
                     }
             "
           >
-            <td>{{ grupo.GRUP_CODIGO }}</td>
-            <td>{{ grupo.GRUP_NOMBRE }}</td>
+            <td>{{ unidad.UNI_CODIGO }}</td>
+            <td>{{ unidad.UNI_NOMBRE }}</td>
             <td>
               <button
                 class="btn btn-primary mr-1"
-                [routerLink]="['/productos/grupo-productos', grupo.GRUP_CODIGO]"
+                [routerLink]="['/productos/unidad-productos', unidad.UNI_CODIGO]"
               >
                 <i class="fa fa-pen"></i>
               </button>
@@ -79,7 +79,7 @@
   <p class="mb-0">Espere por favor</p>
 </div>
 <div
-  *ngIf="!cargando && gruposProductos.length === 0"
+  *ngIf="!cargando && tipoUnidades.length === 0"
   class="alert alert-warning text-center mt-3 animated fadein faster"
 >
   <h4 class="alert-heading">No hay registros</h4>
