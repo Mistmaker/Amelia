@@ -1,0 +1,167 @@
+<div class="card">
+  <div class="card-header card-header-info">
+    <h4 class="card-title">Vendedores</h4>
+    <p class="card-category">Creación/Mantenimiento de vendedores</p>
+  </div>
+
+  <div class="card-body">
+    <div class="text-right mr-3">
+      <button routerLink="/vendedores" class="btn btn-primary mt-1">
+        <i class="fas fa-long-arrow-alt-left"></i> Regresar
+      </button>
+    </div>
+    <form (ngSubmit)="f.form.valid && guardarVendedor(f)" #f="ngForm">
+      <div class="form-group">
+        <label>Código *</label>
+        <input
+          [(ngModel)]="vendedor.VEN_CODIGO"
+          name="codigo"
+          #codigo="ngModel"
+          placeholder="Código del grupo"
+          type="text"
+          class="form-control"
+          minlength="1"
+          required
+        />
+        <div *ngIf="f.submitted && codigo.invalid" class="alert bg-warning">
+          <div *ngIf="codigo.errors.required">Código requerido</div>
+          <div *ngIf="codigo.errors.minlength">Debe tener mínimo 1 letras</div>
+          <div *ngIf="codigo.errors.forbiddenName">
+            No puede colocar ese nombre
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Nombre del vendedor *</label>
+        <input
+          [(ngModel)]="vendedor.VEN_NOMBRE"
+          name="name"
+          #name="ngModel"
+          placeholder="Nombre del grupo"
+          type="text"
+          class="form-control"
+          minlength="4"
+          required
+        />
+        <div *ngIf="f.submitted && name.invalid" class="alert bg-warning">
+          <div *ngIf="name.errors.required">Nombre requerido</div>
+          <div *ngIf="name.errors.minlength">Debe tener mínimo 4 letras</div>
+          <div *ngIf="name.errors.forbiddenName">
+            No puede colocar ese nombre
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Dirección</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="vendedor.VEN_DIRECCION1"
+                name="direccion"
+                placeholder="Dirección"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="vendedor.VEN_TELEFONO1"
+                name="telefono"
+                placeholder="Teléfono"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Teléfono 2</label>
+              <input
+                [(ngModel)]="vendedor.VEN_TELEFONO2"
+                name="phone2"
+                placeholder="Teléfono"
+                type="text"
+                class="form-control form-control-sm"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Email</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="vendedor.VEN_CORREO"
+                name="email"
+                placeholder="Email"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Provincia</label>
+              <select
+                [(ngModel)]="provinciaCodigo"
+                name="provincia"
+                #provincia
+                (change)="onChangeProvincia(provincia.value)"
+                class="form-control form-control-sm"
+              >
+                <option
+                  *ngFor="let provincia of provincias"
+                  [value]="provincia.UBIGEO_CODIGO"
+                >
+                  {{ provincia.UBIGEO_NOMBRE }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-4" *ngIf="provinciaCodigo !== ''">
+            <div class="form-group">
+              <label>Zona (cantón)</label>
+              <select
+                [(ngModel)]="cantonCodigo"
+                name="canton"
+                #canton
+                class="form-control form-control-sm"
+              >
+                <option
+                  *ngFor="let canton of cantones"
+                  [value]="canton.UBIGEO_CODIGO"
+                >
+                  {{ canton.UBIGEO_NOMBRE }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+      <div class="form-group text-center">
+        <button class="btn btn-primary w-50" type="submit">
+          <i class="fas fa-save"></i> Guardar
+        </button>
+        <button
+          *ngIf="showDeleteButton"
+          (click)="deleteVendedor()"
+          class="btn btn-danger w-50"
+          type="button"
+        >
+          <i class="fas fa-trash-alt"></i> Borrar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

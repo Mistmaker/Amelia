@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
-import { TipoClientesService } from './../../services/tipo-clientes.service';
 import { TipoCliente } from './../../../models/tipoClientes';
+import { TipoClientesService } from './../../services/tipo-clientes.service';
 
 @Component({
   selector: 'app-tipo-cliente',

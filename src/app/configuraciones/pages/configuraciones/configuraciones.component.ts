@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 import { Configuracion } from './../../../models/configuracion';
-import { ConfiguracionesService } from '../../service/configuraciones.service';
+import { ConfiguracionesService } from './../../services/configuraciones.service';
 
 @Component({
   selector: 'app-configuraciones',

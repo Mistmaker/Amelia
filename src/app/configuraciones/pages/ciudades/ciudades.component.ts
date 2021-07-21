@@ -1,17 +1,18 @@
+import { CiudadesService } from './../../services/ciudades.service';
 import { Component, OnInit } from '@angular/core';
 
-import { TipoCliente } from './../../../models/tipoClientes';
-import { TipoClientesService } from './../../services/tipo-clientes.service';
+import { Ciudad } from './../../../models/ciudades.models';
 
 @Component({
-  selector: 'app-tipos-clientes',
-  templateUrl: './tipos-clientes.component.html',
-  styleUrls: ['./tipos-clientes.component.css'],
+  selector: 'app-ciudades',
+  templateUrl: './ciudades.component.html',
+  styleUrls: ['./ciudades.component.css'],
 })
-export class TiposClientesComponent implements OnInit {
+export class CiudadesComponent implements OnInit {
   textoBusqueda = '';
-  tiposClientes: TipoCliente[] = [];
+  ciudades: Ciudad[] = [];
   cargando = false;
+  searchType = 0; // 0: provincias, 1: canton, 2: parroquias
 
   // Para paginación
   page = 1;
@@ -19,15 +20,13 @@ export class TiposClientesComponent implements OnInit {
   tableSize = 7;
   tableSizes = [3, 6, 9, 12];
 
-  constructor(private tipoClientesService: TipoClientesService) {}
+  constructor(private ciudadesService: CiudadesService) {}
 
   ngOnInit(): void {
     this.cargando = true;
-    this.tipoClientesService.getTipos().subscribe(
+    this.ciudadesService.getAllProvincias().subscribe(
       (res) => {
-        console.log(res);
-
-        this.tiposClientes = res;
+        this.ciudades = res;
         this.cargando = false;
       },
       (err) => {
@@ -40,15 +39,15 @@ export class TiposClientesComponent implements OnInit {
     setTimeout(() => {
       this.textoBusqueda = event.target.value;
       if (this.textoBusqueda !== '') {
-        this.tipoClientesService
-          .getTiposClientesByNombre(this.textoBusqueda)
+        this.ciudadesService
+          .getCiudadesByNombre(this.textoBusqueda)
           .subscribe((res) => {
-            this.tiposClientes = res;
+            this.ciudades = res;
             this.page = 1;
           });
       } else {
-        this.tipoClientesService.getTipos().subscribe((res) => {
-          this.tiposClientes = res;
+        this.ciudadesService.getAllProvincias().subscribe((res) => {
+          this.ciudades = res;
           this.page = 1;
           this.cargando = false;
         });

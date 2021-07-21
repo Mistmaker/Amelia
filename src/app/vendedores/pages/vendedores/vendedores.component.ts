@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 
-import { TipoCliente } from './../../../models/tipoClientes';
-import { TipoClientesService } from './../../services/tipo-clientes.service';
+import { Vendedores } from './../../../models/vendedores';
+import { VendedoresService } from './../../services/vendedores.service';
 
 @Component({
-  selector: 'app-tipos-clientes',
-  templateUrl: './tipos-clientes.component.html',
-  styleUrls: ['./tipos-clientes.component.css'],
+  selector: 'app-vendedores',
+  templateUrl: './vendedores.component.html',
+  styleUrls: ['./vendedores.component.css']
 })
-export class TiposClientesComponent implements OnInit {
+export class VendedoresComponent implements OnInit {
+
   textoBusqueda = '';
-  tiposClientes: TipoCliente[] = [];
+  vendedores: Vendedores[] = [];
   cargando = false;
 
   // Para paginación
@@ -19,15 +20,13 @@ export class TiposClientesComponent implements OnInit {
   tableSize = 7;
   tableSizes = [3, 6, 9, 12];
 
-  constructor(private tipoClientesService: TipoClientesService) {}
+  constructor(private vendedoresService:VendedoresService) { }
 
   ngOnInit(): void {
     this.cargando = true;
-    this.tipoClientesService.getTipos().subscribe(
+    this.vendedoresService.getAllVendedores().subscribe(
       (res) => {
-        console.log(res);
-
-        this.tiposClientes = res;
+        this.vendedores = res;
         this.cargando = false;
       },
       (err) => {
@@ -40,15 +39,15 @@ export class TiposClientesComponent implements OnInit {
     setTimeout(() => {
       this.textoBusqueda = event.target.value;
       if (this.textoBusqueda !== '') {
-        this.tipoClientesService
-          .getTiposClientesByNombre(this.textoBusqueda)
+        this.vendedoresService
+          .getVendedorByNombre(this.textoBusqueda)
           .subscribe((res) => {
-            this.tiposClientes = res;
+            this.vendedores = res;
             this.page = 1;
           });
       } else {
-        this.tipoClientesService.getTipos().subscribe((res) => {
-          this.tiposClientes = res;
+        this.vendedoresService.getAllVendedores().subscribe((res) => {
+          this.vendedores = res;
           this.page = 1;
           this.cargando = false;
         });
@@ -64,4 +63,5 @@ export class TiposClientesComponent implements OnInit {
     this.tableSize = event.target.value;
     this.page = 1;
   }
+
 }

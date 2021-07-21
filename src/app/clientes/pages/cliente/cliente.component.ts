@@ -9,12 +9,12 @@ import { ClientesService } from '../../services/clientes.service';
 import { TipoCliente } from '../../../models/tipoClientes';
 import { TipoClientesService } from '../../services/tipo-clientes.service';
 import { Ciudad } from './../../../models/ciudades.models';
-import { CiudadesService } from '../../services/ciudades.service';
+import { CiudadesService } from './../../../configuraciones/services/ciudades.service';
 import { Vendedores } from './../../../models/vendedores';
-import { VendedoresService } from '../../services/vendedores.service';
+import { VendedoresService } from './../../../vendedores/services/vendedores.service';
 import { CuentaContable } from './../../../models/cuentasContables';
 import { CuentaContableService } from '../../services/cuentas-contables.service';
-import { ConfiguracionesService } from 'src/app/configuraciones/service/configuraciones.service';
+import { ConfiguracionesService } from './../../../configuraciones/services/configuraciones.service';
 
 @Component({
   selector: 'app-cliente',
