@@ -7,11 +7,12 @@ import { Proveedor } from './../../../models/proveedores.model';
 import { ProveedoresService } from './../../services/proveedores.service';
 import { TipoCliente } from './../../../models/tipoClientes';
 import { TipoClientesService } from './../../../clientes/services/tipo-clientes.service';
-import { ConfiguracionesService } from 'src/app/configuraciones/service/configuraciones.service';
+import { ConfiguracionesService } from './../../../configuraciones/services/configuraciones.service';
 import { CuentaContable } from './../../../models/cuentasContables';
 import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
 import { Ciudad } from './../../../models/ciudades.models';
-import { CiudadesService } from './../../../clientes/services/ciudades.service';
+import { CiudadesService } from './../../../configuraciones/services/ciudades.service';
+
 
 @Component({
   selector: 'app-proveedor',

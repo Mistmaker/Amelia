@@ -13,7 +13,7 @@ import { Precio } from '../../../models/precios';
 import { PreciosService } from '../../services/precios.service';
 import { TipoUnidad } from 'src/app/models/tipoUnidad.models';
 import { TipoUnidadesService } from '../../services/tipo-unidades.service';
-import { ConfiguracionesService } from 'src/app/configuraciones/service/configuraciones.service';
+import { ConfiguracionesService } from './../../../configuraciones/services/configuraciones.service';
 import { CuentaContable } from './../../../models/cuentasContables';
 import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
 
@@ -88,6 +88,8 @@ export class ProductoComponent implements OnInit {
   guardar(form: NgForm) {
     // console.log(form);
     if (form.invalid) {
+      console.log('invalid');
+
       return;
     }
 

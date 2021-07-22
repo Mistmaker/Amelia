@@ -6,13 +6,17 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ClienteComponent } from './pages/cliente/cliente.component';
 import { FormsModule } from '@angular/forms';
 import { PipesModule } from '../shared/pipes/pipes.module';
+import { TiposClientesComponent } from './pages/tipos-clientes/tipos-clientes.component';
+import { TipoClienteComponent } from './pages/tipo-cliente/tipo-cliente.component';
 
 
 
 @NgModule({
   declarations: [
     ClientesComponent,
-    ClienteComponent
+    ClienteComponent,
+    TiposClientesComponent,
+    TipoClienteComponent
   ],
   imports: [
     CommonModule,

@@ -11,12 +11,36 @@
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/']"
             [routerLinkActiveOptions]="{exact: true}">Inicio</a>
         </li>
-        <li class="nav-item">
+
+        <!-- <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/clientes']">Clientes</a>
+        </li> -->
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="clientesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Clientes
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="clientesDropdown">
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/clientes']">Listado</a></li>
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/clientes/tipos-clientes']">Tipo Clientes</a></li>
+            <!-- <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:
+              true}" routerLinkActive="active" [routerLink]="['/productos/unidad-productos']">Unidad de Productos</a></li> -->
+            <!-- <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li> -->
+          </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/productos']">Productos</a>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Productos
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="productosDropdown">
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/productos']">Listado</a></li>
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/productos/grupo-productos']">Grupo Productos</a></li>
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact: true}" routerLinkActive="active" [routerLink]="['/productos/unidad-productos']">Unidad de Productos</a></li>
+          </ul>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/ventas']">Ventas</a>
         </li>
@@ -27,8 +51,19 @@
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/facturas']">Facturas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" [routerLink]="['/configuraciones']">Configuraciones</a>
+          <a class="nav-link" routerLinkActive="active" [routerLink]="['/vendedores']">Vendedores</a>
         </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Configuraciones
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="productosDropdown">
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/configuraciones']">Configuraciones del sistema</a></li>
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/configuraciones/ciudades']">Ubicaciones</a></li>
+          </ul>
+        </li>
+
         <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Dropdown

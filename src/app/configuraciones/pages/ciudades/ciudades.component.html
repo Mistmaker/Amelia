@@ -1,0 +1,130 @@
+<div class="card">
+  <div class="card-header card-header-info">
+    <h4 class="card-title">Ubicaciones (Provincias - Cantones - Parroquias)</h4>
+    <p class="card-category">Listado de Ubicaciones</p>
+  </div>
+
+  <div class="card-body">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="textoBusqueda"
+          (keyup)="search($event)"
+          placeholder="Buscar..."
+        />
+        <!-- <div class="d-flex mt-1">
+          <div class="form-check">
+            <input
+              [checked]="searchType <= 1"
+              (change)="toggleStatus(i)"
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="provinciaCk"
+            />
+            <label class="form-check-label" for="provinciaCk">
+              Provincia
+            </label>
+          </div>
+          <div class="form-check" style="margin-left: 0.5rem">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="cantonCk"
+            />
+            <label class="form-check-label" for="cantonCk"> Cantón </label>
+          </div>
+          <div class="form-check" style="margin-left: 0.5rem">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="parroquiaCk"
+            />
+            <label class="form-check-label" for="parroquiaCk">
+              Parroquia
+            </label>
+          </div>
+        </div> -->
+      </div>
+      <div class="col-md-6">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button
+            routerLink="/configuraciones/ciudades/nuevo"
+            class="btn btn-primary"
+          >
+            <i class="fas fa-plus"></i> Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-hover animated fadein faster">
+        <thead class="text-primary">
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Nivel</th>
+          <th>Capital</th>
+          <th>Acción</th>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let ciudad of ciudades
+                | filtroSimple: textoBusqueda
+                | paginate
+                  : {
+                      itemsPerPage: tableSize,
+                      currentPage: page,
+                      totalItems: count
+                    }
+            "
+          >
+            <td>{{ ciudad.UBIGEO_CODIGO }}</td>
+            <td>{{ ciudad.UBIGEO_NOMBRE }}</td>
+            <td>{{ ciudad.UBIGEO_NIVEL }}</td>
+            <td>{{ ciudad.CAPITAL }}</td>
+            <td>
+              <button
+                class="btn btn-primary mr-1"
+                [routerLink]="[
+                  '/configuraciones/ciudades/',
+                  ciudad.UBIGEO_CODIGO
+                ]"
+              >
+                <i class="fa fa-pen"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="!cargando" class="d-flex justify-content-center">
+        <pagination-controls
+          previousLabel="Prev"
+          nextLabel="Next"
+          (pageChange)="onTableDataChange($event)"
+        >
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  *ngIf="cargando"
+  class="alert alert-info text-center mt-3 animated fadein faster"
+>
+  <h4 class="alert-heading">Cargando</h4>
+  <p><i class="fa fa-sync-alt fa-spin fa-3x"></i></p>
+  <p class="mb-0">Espere por favor</p>
+</div>
+<div
+  *ngIf="!cargando && ciudades.length === 0"
+  class="alert alert-warning text-center mt-3 animated fadein faster"
+>
+  <h4 class="alert-heading">No hay registros</h4>
+  <p><i class="fa fa-exclamation fa-3x"></i></p>
+</div>

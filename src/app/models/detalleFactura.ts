@@ -1,3 +1,4 @@
+import { Precio } from './precios';
 export class DetalleFactura {
   ENCFACPRO_NUMERO: string;
   COM_CODIGO: string;
@@ -48,6 +49,9 @@ export class DetalleFactura {
   DETFACPRO_CODIGOALT: string;
   DETFACPRO_CAJAS: number;
   DETFACPRO_FRACCIONES: number;
+
+  precios: Precio[] = [];
+  tributaIva:string;
 
   constructor() {}
 }

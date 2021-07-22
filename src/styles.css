@@ -2,3 +2,19 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.dialog-responsive {
+  width: 100% !important;
+}
+
+@media only screen and (max-width: 760px) {
+  .dialog-responsive {
+    width: 100%;
+    max-width: 100%!important;
+    position: absolute!important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
