@@ -5,6 +5,10 @@ import {
   urlWsRucAlterno,
   urlWsCedula,
   urlWsRuc,
+  urlWsRucCM,
+  urlWsRucCE,
+  urlWsRucEF,
+  urlWsRucAR,
 } from '../../../environments/environment.prod';
 import { Proveedor } from './../../models/proveedores.model';
 
@@ -57,5 +61,21 @@ export class ProveedoresService {
 
   getProveedorCedula(cedula: string) {
     return this.http.get(`${this.wsCedula}${cedula}`);
+  }
+
+  getIsMicro(id: string) {
+    return this.http.get(`${urlWsRucCM}${id}`);
+  }
+
+  getIsContribuyenteEspecial(id: string) {
+    return this.http.get(`${urlWsRucCE}${id}`);
+  }
+
+  getIsEmpresaFantasma(id: string) {
+    return this.http.get(`${urlWsRucEF}${id}`);
+  }
+
+  getIsAgenteRentencion(id: string) {
+    return this.http.get(`${urlWsRucAR}${id}`);
   }
 }

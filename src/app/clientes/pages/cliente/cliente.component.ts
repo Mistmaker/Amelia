@@ -60,12 +60,20 @@ export class ClienteComponent implements OnInit {
         this.showDeleteButton = true;
         console.log(resp);
         this.cliente.CLI_ESTADO = resp.CLI_ESTADO || '1';
+        this.cliente.CLI_MICROEMPRESA = resp.CLI_MICROEMPRESA || 'NO';
+        this.cliente.CLI_CONTRIESPECIAL = resp.CLI_CONTRIESPECIAL || 'NO';
+        this.cliente.CLI_EMPRESAFANTAS = resp.CLI_EMPRESAFANTAS || 'NO';
+        this.cliente.CLI_AGENRETENCION = resp.CLI_AGENRETENCION || 'NO';
         this.getCoordinates();
         this.getCiudad();
       });
     }
     // default values
     this.cliente.CLI_PARTEREL = this.cliente.CLI_PARTEREL || 'n';
+    this.cliente.CLI_MICROEMPRESA = this.cliente.CLI_MICROEMPRESA || 'NO';
+    this.cliente.CLI_CONTRIESPECIAL = this.cliente.CLI_CONTRIESPECIAL || 'NO';
+    this.cliente.CLI_EMPRESAFANTAS = this.cliente.CLI_EMPRESAFANTAS || 'NO';
+    this.cliente.CLI_AGENRETENCION = this.cliente.CLI_AGENRETENCION || 'NO';
 
     this.tipoClientesService.getTipos().subscribe((resp) => {
       console.log(resp);
@@ -193,7 +201,7 @@ export class ClienteComponent implements OnInit {
 
   buscarDatosOnLine() {
     if (!this.cliente.CLI_CODIGO)
-      Swal.fire(
+      return Swal.fire(
         'Advertencia',
         'Ingrese un número de identificación',
         'warning'
@@ -203,7 +211,7 @@ export class ClienteComponent implements OnInit {
       this.cliente.CLI_CODIGO.length !== 10 &&
       this.cliente.CLI_CODIGO.length !== 13
     )
-      Swal.fire(
+      return Swal.fire(
         'Advertencia',
         'Cédula o RUC deben tener 10 o 13 dígitos',
         'warning'
@@ -231,6 +239,35 @@ export class ClienteComponent implements OnInit {
         }
       );
     }
+
+    this.clientesService
+    .getIsMicro(this.cliente.CLI_CODIGO)
+    .subscribe((res: any) => {
+      console.log(res);
+      this.cliente.CLI_MICROEMPRESA = res.microempresa;
+    });
+
+    this.clientesService
+    .getIsContribuyenteEspecial(this.cliente.CLI_CODIGO)
+    .subscribe((res: any) => {
+      console.log(res);
+      this.cliente.CLI_CONTRIESPECIAL = res.especiales;
+    });
+
+    this.clientesService
+    .getIsEmpresaFantasma(this.cliente.CLI_CODIGO)
+    .subscribe((res: any) => {
+      console.log(res);
+      this.cliente.CLI_EMPRESAFANTAS = res.fantasma;
+    });
+
+    this.clientesService
+    .getIsAgenteRentencion(this.cliente.CLI_CODIGO)
+    .subscribe((res: any) => {
+      console.log(res);
+      this.cliente.CLI_AGENRETENCION = res.agentes;
+    });
+
   }
 
   procesarDatos(tipo: string, datos: any) {

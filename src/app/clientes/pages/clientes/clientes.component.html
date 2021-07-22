@@ -36,7 +36,7 @@
                         <td>{{ cliente.CLI_DIRECCION1 }}</td>
                         <td>{{ cliente.CLI_TELEFONO1 }}</td>
                         <td>{{ cliente.CLI_CORREO }}</td>
-                        <td>{{ cliente.CLI_ACTIVIDAD }}</td>
+                        <td title="{{cliente.CLI_ACTIVIDAD}}">{{ cliente.CLI_ACTIVIDAD.substr(0,50) }}</td>
                         <td>
                             <button class="btn btn-primary mr-1" [routerLink]="['/clientes', cliente.CLI_CODIGO]">
                                 <i class="fa fa-pen"></i>

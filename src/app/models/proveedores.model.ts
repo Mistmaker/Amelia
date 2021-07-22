@@ -16,6 +16,11 @@ export class Proveedor {
   PRO_ESTADO: string = '1';
   PRO_GMAPS: string;
 
+  PRO_MICROEMPRESA: string;
+  PRO_CONTRIESPECIAL: string;
+  PRO_EMPRESAFANTAS: string;
+  PRO_AGENRETENCION: string;
+
   PRO_CODIGO: string;
   GRU_CODIGO: string;
   PRO_NOMBREC: string;

@@ -15,6 +15,11 @@ export class Cliente {
   CLI_BASECERO: string;
   CLI_BASENOBJET: string;
 
+  CLI_MICROEMPRESA: string;
+  CLI_CONTRIESPECIAL: string;
+  CLI_EMPRESAFANTAS: string;
+  CLI_AGENRETENCION: string;
+
   CLI_CODIGO: string;
   CLI_TIPOIDE: number;
   CLI_RUCIDE: string;

@@ -140,6 +140,10 @@
                 </div>
                 <div class="tab-pane fade" id="complementary-data" role="tabpanel" aria-labelledby="complementary-data-tab">
                     <div class="mt-2">
+                      <div *ngIf="cliente.CLI_FECHACONSULTA" class="d-flex">
+                        <label class="fw-bold" style="margin-right: 0.5rem">Fecha de actualización:</label>
+                        <p>{{ cliente.CLI_FECHACONSULTA }}</p>
+                      </div>
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-4">
@@ -154,12 +158,12 @@
                                         <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_ACTIVIDAD" name="actividad" placeholder="Actividad" />
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <!-- <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Clase Contribuyente</label>
                                         <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CLASECONTRIBUYENTE" name="claseContr" placeholder="Clase Contribuyente" />
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Tipo Contribuyente</label>
@@ -232,7 +236,6 @@
                         </div>
 
                         <div class="form-group">
-
                             <div class="row" *ngIf="showMore">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -287,6 +290,43 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="form-group mt-2">
+                          <div class="row">
+                            <div class="col-md-4">
+                              <div class="card">
+                                <label class="card-header">Contribuyente Microempresa</label>
+                                <div class="card-body">
+                                  <p class="card-text">{{cliente.CLI_MICROEMPRESA}}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="card">
+                                <label class="card-header">Contribuyente Especial</label>
+                                <div class="card-body">
+                                  <p class="card-text">{{cliente.CLI_CONTRIESPECIAL}}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="card">
+                                <label class="card-header">Empresa Fantasma</label>
+                                <div class="card-body">
+                                  <p class="card-text">{{cliente.CLI_EMPRESAFANTAS}}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-4">
+                              <div class="card">
+                                <label class="card-header">Agente de Retención</label>
+                                <div class="card-body">
+                                  <p class="card-text">{{cliente.CLI_AGENRETENCION}}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                     </div>
                 </div>

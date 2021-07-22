@@ -13,7 +13,6 @@ import { CuentaContableService } from './../../../clientes/services/cuentas-cont
 import { Ciudad } from './../../../models/ciudades.models';
 import { CiudadesService } from './../../../configuraciones/services/ciudades.service';
 
-
 @Component({
   selector: 'app-proveedor',
   templateUrl: './proveedor.component.html',
@@ -54,12 +53,20 @@ export class ProveedorComponent implements OnInit {
         console.log(response);
         this.supplier = response;
         this.supplier.PRO_ESTADO = response.PRO_ESTADO || '1';
+        this.supplier.PRO_MICROEMPRESA = response.PRO_MICROEMPRESA || 'NO';
+        this.supplier.PRO_CONTRIESPECIAL = response.PRO_CONTRIESPECIAL || 'NO';
+        this.supplier.PRO_EMPRESAFANTAS = response.PRO_EMPRESAFANTAS || 'NO';
+        this.supplier.PRO_AGENRETENCION = response.PRO_AGENRETENCION || 'NO';
         this.getCoordinates();
         this.getCiudad();
       });
     }
     // default values
     this.supplier.PRO_PARTEREL = this.supplier.PRO_PARTEREL || 'n';
+    this.supplier.PRO_MICROEMPRESA = this.supplier.PRO_MICROEMPRESA || 'NO';
+    this.supplier.PRO_CONTRIESPECIAL = this.supplier.PRO_CONTRIESPECIAL || 'NO';
+    this.supplier.PRO_EMPRESAFANTAS = this.supplier.PRO_EMPRESAFANTAS || 'NO';
+    this.supplier.PRO_AGENRETENCION = this.supplier.PRO_AGENRETENCION || 'NO';
 
     this.typeClientService.getTipos().subscribe((resp) => {
       console.log('type cliente', resp);
@@ -209,7 +216,7 @@ export class ProveedorComponent implements OnInit {
 
   searchDataOnline() {
     if (!this.supplier.PRO_CODIGO)
-      Swal.fire(
+      return Swal.fire(
         'Advertencia',
         'Ingrese un número de identificación',
         'warning'
@@ -219,7 +226,7 @@ export class ProveedorComponent implements OnInit {
       this.supplier.PRO_CODIGO.length !== 10 &&
       this.supplier.PRO_CODIGO.length !== 13
     )
-      Swal.fire(
+      return Swal.fire(
         'Advertencia',
         'Cédula o RUC deben tener 10 o 13 dígitos',
         'warning'
@@ -233,7 +240,6 @@ export class ProveedorComponent implements OnInit {
           this.formatData(response['result'][0], 'C');
         });
     }
-
 
     if (this.supplier.PRO_CODIGO.length === 13) {
       this.supplierService.getProveedorSri(this.supplier.PRO_CODIGO).subscribe(
@@ -251,6 +257,34 @@ export class ProveedorComponent implements OnInit {
         }
       );
     }
+
+    this.supplierService
+      .getIsMicro(this.supplier.PRO_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.supplier.PRO_MICROEMPRESA = res.microempresa;
+      });
+
+    this.supplierService
+      .getIsContribuyenteEspecial(this.supplier.PRO_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.supplier.PRO_CONTRIESPECIAL = res.especiales;
+      });
+
+    this.supplierService
+      .getIsEmpresaFantasma(this.supplier.PRO_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.supplier.PRO_EMPRESAFANTAS = res.fantasma;
+      });
+
+    this.supplierService
+      .getIsAgenteRentencion(this.supplier.PRO_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.supplier.PRO_AGENRETENCION = res.agentes;
+      });
   }
 
   formatData(data: any, type: string) {
