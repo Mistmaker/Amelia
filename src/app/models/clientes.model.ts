@@ -115,6 +115,13 @@ export class Cliente {
   CLI_CLAVESERCOP: string;
   CLI_CLAVEQUIPUX: string;
   CLI_CLAVEUAFE: string;
+  CLI_REGION: string;
+  CLI_CEDULA: string;
+  CLI_REPRESENTANTELEGAL: string;
+  CLI_CATEGORIARUC: number;
+  CLI_DIGITO: string;
+  CLI_VENCE: number;
+  GrupoCliente: string;
   datosAdicionales: ClienteDatosAdicionales[];
 
   constructor() {

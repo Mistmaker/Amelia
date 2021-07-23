@@ -55,5 +55,11 @@ export class ClientesService {
   getClientesPorNombre(nombre: string) {
     return this.http.post<Cliente[]>(`${this.ruta}/api/clientes/nombre`, {nombre});
   }
+  getClientesPorVence(vence: string) {
+    return this.http.post<Cliente[]>(`${this.ruta}/api/clientes/vence`, {vence});
+  }
+  getClientesPorGrupo(gruCodigo: string) {
+    return this.http.post<Cliente[]>(`${this.ruta}/api/clientes/grupo`, {gruCodigo});
+  }
 
 }

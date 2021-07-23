@@ -16,6 +16,10 @@ import { CuentaContable } from './../../../models/cuentasContables';
 import { CuentaContableService } from '../../services/cuentas-contables.service';
 import { ConfiguracionesService } from './../../../configuraciones/services/configuraciones.service';
 import { ClienteDatosAdicionales } from 'src/app/models/clientesDatosAdicionales.model';
+import { Usuario } from '../../../models/usuarios.model';
+import { UsuariosService } from '../../../usuarios/services/usuarios.service';
+import { GrupoClientesService } from '../../services/grupo-clientes.service';
+import { GrupoCliente } from '../../../models/grupoClientes';
 
 @Component({
   selector: 'app-cliente',
@@ -39,6 +43,8 @@ export class ClienteComponent implements OnInit {
   coordinateY: string = '0';
   showDeleteButton: boolean = false;
   tab = 'DP';
+  usuarios: Usuario[] = [];
+  grupos: GrupoCliente[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -48,7 +54,9 @@ export class ClienteComponent implements OnInit {
     private vendedoresService: VendedoresService,
     private cuentaContableService: CuentaContableService,
     private configService: ConfiguracionesService,
-    private router: Router
+    private router: Router,
+    private usuariosService: UsuariosService,
+    private grupoClientesService: GrupoClientesService
   ) { }
 
   ngOnInit(): void {
@@ -98,6 +106,16 @@ export class ClienteComponent implements OnInit {
     this.configService.getConfigClientes().subscribe((resp) => {
       console.log('config', resp);
       this.showMore = resp.codigo === 1 ? true : false;
+    });
+
+    this.usuariosService.getUsuarios().subscribe(resp => {
+      console.log(resp);
+      this.usuarios = resp;
+    });
+
+    this.grupoClientesService.getGrupos().subscribe(resp => {
+      console.log(resp);
+      this.grupos = resp;
     });
   }
 
