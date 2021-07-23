@@ -15,6 +15,7 @@ import { VendedoresService } from './../../../vendedores/services/vendedores.ser
 import { CuentaContable } from './../../../models/cuentasContables';
 import { CuentaContableService } from '../../services/cuentas-contables.service';
 import { ConfiguracionesService } from './../../../configuraciones/services/configuraciones.service';
+import { ClienteDatosAdicionales } from 'src/app/models/clientesDatosAdicionales.model';
 
 @Component({
   selector: 'app-cliente',
@@ -37,7 +38,7 @@ export class ClienteComponent implements OnInit {
   coordinateX: string = '0';
   coordinateY: string = '0';
   showDeleteButton: boolean = false;
-
+  tab = 'DP';
 
   constructor(
     private route: ActivatedRoute,
@@ -48,7 +49,7 @@ export class ClienteComponent implements OnInit {
     private cuentaContableService: CuentaContableService,
     private configService: ConfiguracionesService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.routeStr = this.route.snapshot.paramMap.get('id');
@@ -57,11 +58,21 @@ export class ClienteComponent implements OnInit {
       this.clientesService.getCliente(this.routeStr).subscribe((resp) => {
 
         this.cliente = resp;
+        if (!this.cliente.datosAdicionales) this.cliente.datosAdicionales = [];
         this.showDeleteButton = true;
         console.log(resp);
         this.cliente.CLI_ESTADO = resp.CLI_ESTADO || '1';
         this.getCoordinates();
         this.getCiudad();
+
+        const datosBusqueda = {
+          CLI_CODIGO: this.cliente.CLI_CODIGO,
+          COM_CODIGO: this.cliente.COM_CODIGO,
+        }
+        this.clientesService.getDatosAdicionales(datosBusqueda).subscribe((resp: any) => {
+          console.log(resp);
+          this.cliente.datosAdicionales = resp;
+        });
       });
     }
     // default values
@@ -337,6 +348,13 @@ export class ClienteComponent implements OnInit {
         }
       }
     });
+  }
+
+  agregarDatoAdicional() {
+    this.cliente.datosAdicionales.push(new ClienteDatosAdicionales());
+  }
+  quitarDatoAdicional(index: number) {
+    this.cliente.datosAdicionales.splice(index, 1);
   }
 
 }

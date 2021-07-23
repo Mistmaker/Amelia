@@ -36,6 +36,10 @@ export class ClientesService {
     return this.http.delete(`${this.ruta}/api/clientes/${id}`);
   }
 
+  getDatosAdicionales(datos: any){
+    return this.http.post(`${this.ruta}/api/cliDatAdi/ruc`, datos);
+  }
+
   getClienteSri(ruc: string) {
     return this.http.get(`${this.wsSri}${ruc}`);
   }
