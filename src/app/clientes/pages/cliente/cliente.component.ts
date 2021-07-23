@@ -1,10 +1,11 @@
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 // import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2';
 
-import { Cliente } from '../../../models/clientes.model';
+import { Cliente, CuentasContablesClientes } from '../../../models/clientes.model';
 import { ClientesService } from '../../services/clientes.service';
 import { TipoCliente } from '../../../models/tipoClientes';
 import { TipoClientesService } from '../../services/tipo-clientes.service';
@@ -15,6 +16,7 @@ import { VendedoresService } from './../../../vendedores/services/vendedores.ser
 import { CuentaContable } from './../../../models/cuentasContables';
 import { CuentaContableService } from '../../services/cuentas-contables.service';
 import { ConfiguracionesService } from './../../../configuraciones/services/configuraciones.service';
+import { CuentasContablesComponent } from './../../../shared/components/cuentas-contables/cuentas-contables.component';
 
 @Component({
   selector: 'app-cliente',
@@ -29,7 +31,6 @@ export class ClienteComponent implements OnInit {
   provincias: Ciudad[] = [];
   cantones: Ciudad[] = [];
   vendedores: Vendedores[] = [];
-  cuentasContables: CuentaContable[] = [];
   showMore: boolean;
   mostrarBtn: boolean = false;
 
@@ -37,7 +38,8 @@ export class ClienteComponent implements OnInit {
   coordinateX: string = '0';
   coordinateY: string = '0';
   showDeleteButton: boolean = false;
-
+  // cuentas contables clientes
+  cuentasCliente = new CuentasContablesClientes();
 
   constructor(
     private route: ActivatedRoute,
@@ -47,7 +49,8 @@ export class ClienteComponent implements OnInit {
     private vendedoresService: VendedoresService,
     private cuentaContableService: CuentaContableService,
     private configService: ConfiguracionesService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -55,7 +58,6 @@ export class ClienteComponent implements OnInit {
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       console.log(this.routeStr);
       this.clientesService.getCliente(this.routeStr).subscribe((resp) => {
-
         this.cliente = resp;
         this.showDeleteButton = true;
         console.log(resp);
@@ -66,6 +68,7 @@ export class ClienteComponent implements OnInit {
         this.cliente.CLI_AGENRETENCION = resp.CLI_AGENRETENCION || 'NO';
         this.getCoordinates();
         this.getCiudad();
+        this.getAllCuentasContables();
       });
     }
     // default values
@@ -87,15 +90,73 @@ export class ClienteComponent implements OnInit {
     this.vendedoresService.getAllVendedores().subscribe((resp) => {
       this.vendedores = resp;
     });
-    // get all cuentas contables
-    this.cuentaContableService.getAllCuentas().subscribe((resp) => {
-      this.cuentasContables = resp;
-    });
     // get config
     this.configService.getConfigClientes().subscribe((resp) => {
       console.log('config', resp);
       this.showMore = resp.codigo === 1 ? true : false;
     });
+  }
+
+  openDialog(attribute: string): void {
+    console.log('ATTRIBUTE', attribute);
+
+    const dialogRef = this.dialog.open(CuentasContablesComponent, {
+      panelClass: 'dialog-responsive',
+      data: {
+        name: this.cuentasCliente[attribute],
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: CuentaContable) => {
+      console.log('The dialog was closed', result);
+      if (result) {
+        this.cliente[attribute] = result.CON_CODIGO;
+        this.cuentasCliente[attribute] =
+          result.CON_CODIGO + ' || ' + result.CON_NOMBRE;
+      }
+    });
+  }
+
+  getAllCuentasContables(): void {
+    // CON_CODIGO1
+    this.cuentaContableService
+      .getCuenta(this.cliente.CON_CODIGO1)
+      .subscribe((res) => {
+        this.cuentasCliente.CON_CODIGO1 =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // CON_CODIGO2
+    this.cuentaContableService
+      .getCuenta(this.cliente.CON_CODIGO2)
+      .subscribe((res) => {
+        this.cuentasCliente.CON_CODIGO2 =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // CLI_BASEIVA
+    this.cuentaContableService
+      .getCuenta(this.cliente.CLI_BASEIVA)
+      .subscribe((res) => {
+        this.cuentasCliente.CLI_BASEIVA =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // CLI_BASECERO
+    this.cuentaContableService
+      .getCuenta(this.cliente.CLI_BASECERO)
+      .subscribe((res) => {
+        this.cuentasCliente.CLI_BASECERO =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // CLI_BASENOBJET
+    this.cuentaContableService
+      .getCuenta(this.cliente.CLI_BASENOBJET)
+      .subscribe((res) => {
+        this.cuentasCliente.CLI_BASENOBJET =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
   }
 
   getCiudad() {
@@ -173,7 +234,6 @@ export class ClienteComponent implements OnInit {
           (err) => {
             console.log('error post', err);
             Swal.fire('Error', err.error.msg, 'error');
-
           }
         );
     } else {
@@ -185,7 +245,6 @@ export class ClienteComponent implements OnInit {
         (err) => {
           console.log('error put', err);
           Swal.fire('Error', err.error.msg, 'error');
-
         }
       );
     }
@@ -241,33 +300,32 @@ export class ClienteComponent implements OnInit {
     }
 
     this.clientesService
-    .getIsMicro(this.cliente.CLI_CODIGO)
-    .subscribe((res: any) => {
-      console.log(res);
-      this.cliente.CLI_MICROEMPRESA = res.microempresa;
-    });
+      .getIsMicro(this.cliente.CLI_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.cliente.CLI_MICROEMPRESA = res.microempresa;
+      });
 
     this.clientesService
-    .getIsContribuyenteEspecial(this.cliente.CLI_CODIGO)
-    .subscribe((res: any) => {
-      console.log(res);
-      this.cliente.CLI_CONTRIESPECIAL = res.especiales;
-    });
+      .getIsContribuyenteEspecial(this.cliente.CLI_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.cliente.CLI_CONTRIESPECIAL = res.especiales;
+      });
 
     this.clientesService
-    .getIsEmpresaFantasma(this.cliente.CLI_CODIGO)
-    .subscribe((res: any) => {
-      console.log(res);
-      this.cliente.CLI_EMPRESAFANTAS = res.fantasma;
-    });
+      .getIsEmpresaFantasma(this.cliente.CLI_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.cliente.CLI_EMPRESAFANTAS = res.fantasma;
+      });
 
     this.clientesService
-    .getIsAgenteRentencion(this.cliente.CLI_CODIGO)
-    .subscribe((res: any) => {
-      console.log(res);
-      this.cliente.CLI_AGENRETENCION = res.agentes;
-    });
-
+      .getIsAgenteRentencion(this.cliente.CLI_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.cliente.CLI_AGENRETENCION = res.agentes;
+      });
   }
 
   procesarDatos(tipo: string, datos: any) {
@@ -355,25 +413,23 @@ export class ClienteComponent implements OnInit {
           });
           Swal.showLoading();
 
-          this.clientesService.deleteCliente(this.cliente.CLI_CODIGO).subscribe(resp => {
-            Swal.fire(
-              'Eliminado!',
-              'Se eliminó los datos del cliente',
-              'success'
-            ).then(r => {
-              this.router.navigateByUrl('clientes');
-            });
-          }, error => {
-            console.log(error);
-            Swal.fire(
-              'Error!',
-              'Ocurrió un error al eliminar',
-              'error'
-            );
-          })
+          this.clientesService.deleteCliente(this.cliente.CLI_CODIGO).subscribe(
+            (resp) => {
+              Swal.fire(
+                'Eliminado!',
+                'Se eliminó los datos del cliente',
+                'success'
+              ).then((r) => {
+                this.router.navigateByUrl('clientes');
+              });
+            },
+            (error) => {
+              console.log(error);
+              Swal.fire('Error!', 'Ocurrió un error al eliminar', 'error');
+            }
+          );
         }
       }
     });
   }
-
 }

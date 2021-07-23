@@ -190,23 +190,27 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cuenta Contable Clientes</label>
-                                        <select [(ngModel)]="cliente.CON_CODIGO1" name="cuentaContableCliente" #cuentaContableCliente class="form-control form-control-sm">
-                                            <option *ngFor="let cuentas of cuentasContables"
-                                                [value]="cuentas.CON_CODIGO">
-                                                {{ cuentas.CON_CODIGO }} || {{ cuentas.CON_NOMBRE }}
-                                            </option>
-                                        </select>
+                                        <input
+                                          [(ngModel)]="cuentasCliente.CON_CODIGO1"
+                                          (click)="openDialog('CON_CODIGO1')"
+                                          name="conCodigo1"
+                                          placeholder="...."
+                                          type="text"
+                                          class="form-control form-control-sm"
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cuenta Contable Anticipos</label>
-                                        <select [(ngModel)]="cliente.CON_CODIGO2" name="cuentaContableAnticipo" #cuentaContableAnticipo class="form-control form-control-sm">
-                                            <option *ngFor="let cuentas of cuentasContables"
-                                                [value]="cuentas.CON_CODIGO">
-                                                {{ cuentas.CON_CODIGO }} || {{ cuentas.CON_NOMBRE }}
-                                            </option>
-                                        </select>
+                                        <input
+                                          [(ngModel)]="cuentasCliente.CON_CODIGO2"
+                                          (click)="openDialog('CON_CODIGO2')"
+                                          name="conCodigo2"
+                                          placeholder="...."
+                                          type="text"
+                                          class="form-control form-control-sm"
+                                        />
                                     </div>
                                 </div>
 
@@ -240,35 +244,40 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cuenta Contable BaseIVA</label>
-                                        <select [(ngModel)]="cliente.CLI_BASEIVA" name="cuentaContableAnticipo" #cuentaContableAnticipo class="form-control form-control-sm">
-                                            <option *ngFor="let cuentas of cuentasContables"
-                                                [value]="cuentas.CON_CODIGO">
-                                                {{ cuentas.CON_CODIGO }} ||
-                                                {{ cuentas.CON_NOMBRE }}
-                                            </option>
-                                        </select>
+                                        <input
+                                          [(ngModel)]="cuentasCliente.CLI_BASEIVA"
+                                          (click)="openDialog('CLI_BASEIVA')"
+                                          name="cliBaseIva"
+                                          placeholder="...."
+                                          type="text"
+                                          class="form-control form-control-sm"
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cuenta Contable BaseCERO</label>
-                                        <select [(ngModel)]="cliente.CLI_BASECERO" name="cuentaContableBaseCero" #cuentaContableBaseCero class="form-control form-control-sm">
-                                            <option *ngFor="let cuentas of cuentasContables"
-                                                [value]="cuentas.CON_CODIGO">
-                                                {{ cuentas.CON_CODIGO }} || {{ cuentas.CON_NOMBRE }}
-                                            </option>
-                                        </select>
+                                        <input
+                                          [(ngModel)]="cuentasCliente.CLI_BASECERO"
+                                          (click)="openDialog('CLI_BASECERO')"
+                                          name="cliBaseCero"
+                                          placeholder="...."
+                                          type="text"
+                                          class="form-control form-control-sm"
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cuenta Contable BaseNOBJET</label>
-                                        <select [(ngModel)]="cliente.CLI_BASENOBJET" name="cuentaContableBaseNobjet" #cuentaContableBaseNobjet class="form-control form-control-sm">
-                                            <option *ngFor="let cuentas of cuentasContables"
-                                                [value]="cuentas.CON_CODIGO">
-                                                {{ cuentas.CON_CODIGO }} || {{ cuentas.CON_NOMBRE }}
-                                            </option>
-                                        </select>
+                                        <input
+                                          [(ngModel)]="cuentasCliente.CLI_BASENOBJET"
+                                          (click)="openDialog('CLI_BASENOBJET')"
+                                          name="cliBaseNobjet"
+                                          placeholder="...."
+                                          type="text"
+                                          class="form-control form-control-sm"
+                                        />
                                     </div>
                                 </div>
                             </div>

@@ -105,34 +105,40 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cuenta Contable Inventario</label>
-                                        <select [(ngModel)]="producto.ART_CUENTAINVENTARIO" name="cuentaContableInventario" #cuentaContableInventario class="form-control form-control-sm">
-                                          <option *ngFor="let cuentas of cuentasContables" [value]="cuentas.CON_CODIGO">
-                                            {{ cuentas.CON_CODIGO }} ||
-                                            {{ cuentas.CON_NOMBRE }}
-                                          </option>
-                                        </select>
+                                        <input
+                                          [(ngModel)]="cuentasProducto.ART_CUENTAINVENTARIO"
+                                          (click)="openDialog('ART_CUENTAINVENTARIO')"
+                                          name="artCuentaInventario"
+                                          placeholder="...."
+                                          type="text"
+                                          class="form-control form-control-sm"
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cuenta Contable Costos Ventas</label>
-                                        <select [(ngModel)]="producto.ART_CUENTACOSTOVENTAS" name="cuentaContableCostoVentas" #cuentaContableCostoVentas class="form-control form-control-sm">
-                                          <option *ngFor="let cuentas of cuentasContables" [value]="cuentas.CON_CODIGO">
-                                            {{ cuentas.CON_CODIGO }} ||
-                                            {{ cuentas.CON_NOMBRE }}
-                                          </option>
-                                        </select>
+                                        <input
+                                          [(ngModel)]="cuentasProducto.ART_CUENTACOSTOVENTAS"
+                                          (click)="openDialog('ART_CUENTACOSTOVENTAS')"
+                                          name="artCuentaCostoVentas"
+                                          placeholder="...."
+                                          type="text"
+                                          class="form-control form-control-sm"
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Cuenta Contable Ventas</label>
-                                        <select [(ngModel)]="producto.ART_CUENTAVENTAS" name="cuentaContableVentas" #cuentaContableVentas class="form-control form-control-sm">
-                                          <option *ngFor="let cuentas of cuentasContables" [value]="cuentas.CON_CODIGO">
-                                            {{ cuentas.CON_CODIGO }} ||
-                                            {{ cuentas.CON_NOMBRE }}
-                                          </option>
-                                        </select>
+                                        <input
+                                          [(ngModel)]="cuentasProducto.ART_CUENTAVENTAS"
+                                          (click)="openDialog('ART_CUENTAVENTAS')"
+                                          name="artCuentaVentas"
+                                          placeholder="...."
+                                          type="text"
+                                          class="form-control form-control-sm"
+                                        />
                                     </div>
                                 </div>
                             </div>

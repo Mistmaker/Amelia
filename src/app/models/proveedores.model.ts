@@ -1,3 +1,4 @@
+import { CuentaContable } from './cuentasContables';
 export class Proveedor {
   PRO_FECINIACTIVIDADES: string;
   PRO_FECCESACTIVIDADES: string;
@@ -83,6 +84,16 @@ export class Proveedor {
   PRO_CONVDOBLETRIB: string;
   PRO_PAGOEXTERIOR: string;
   PRO_PAGOREGFISCAL: string;
+
+  constructor() {}
+}
+
+export class CuentasContablesProveedor {
+  CON_CODIGO1: string;
+  CON_CODIGO2: string;
+  PRO_BASEIVA: string;
+  PRO_BASECERO: string;
+  PRO_BASENOBJET: string;
 
   constructor() {}
 }

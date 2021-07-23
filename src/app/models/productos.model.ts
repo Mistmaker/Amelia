@@ -90,3 +90,11 @@ export class Producto {
     this.precios = [];
   }
 }
+
+export class CuentasContablesProducto {
+  ART_CUENTAINVENTARIO: string;
+  ART_CUENTACOSTOVENTAS: string;
+  ART_CUENTAVENTAS: string;
+
+  constructor() {}
+}

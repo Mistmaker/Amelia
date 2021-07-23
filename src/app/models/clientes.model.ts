@@ -43,3 +43,13 @@ export class Cliente {
 
   constructor() {}
 }
+
+export class CuentasContablesClientes {
+  CON_CODIGO1: string;
+  CON_CODIGO2: string;
+  CLI_BASEIVA: string;
+  CLI_BASECERO: string;
+  CLI_BASENOBJET: string;
+
+  constructor() {}
+}

@@ -266,7 +266,15 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Cuenta Contable Proveedores</label>
-                    <select
+                    <input
+                      [(ngModel)]="cuentasProveedor.CON_CODIGO1"
+                      (click)="openDialog('CON_CODIGO1')"
+                      name="conCodigo1"
+                      placeholder="...."
+                      type="text"
+                      class="form-control form-control-sm"
+                    />
+                    <!-- <select
                       [(ngModel)]="supplier.CON_CODIGO1"
                       name="cuentaContableCliente"
                       #cuentaContableCliente
@@ -278,13 +286,21 @@
                       >
                         {{ cuentas.CON_CODIGO }} || {{ cuentas.CON_NOMBRE }}
                       </option>
-                    </select>
+                    </select> -->
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Cuenta Contable Anticipos</label>
-                    <select
+                    <input
+                      [(ngModel)]="cuentasProveedor.CON_CODIGO2"
+                      (click)="openDialog('CON_CODIGO2')"
+                      name="conCodigo2"
+                      placeholder="...."
+                      type="text"
+                      class="form-control form-control-sm"
+                    />
+                    <!-- <select
                       [(ngModel)]="supplier.CON_CODIGO2"
                       name="cuentaContableAnticipo"
                       #cuentaContableAnticipo
@@ -296,7 +312,7 @@
                       >
                         {{ cuentas.CON_CODIGO }} || {{ cuentas.CON_NOMBRE }}
                       </option>
-                    </select>
+                    </select> -->
                   </div>
                 </div>
 
@@ -407,7 +423,15 @@
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Cuenta Contable BaseIVA</label>
-                    <select
+                    <input
+                      [(ngModel)]="cuentasProveedor.PRO_BASEIVA"
+                      (click)="openDialog('PRO_BASEIVA')"
+                      name="proBaseIva"
+                      placeholder="...."
+                      type="text"
+                      class="form-control form-control-sm"
+                    />
+                    <!-- <select
                       [(ngModel)]="supplier.PRO_BASEIVA"
                       name="cuentaContableAnticipo"
                       #cuentaContableAnticipo
@@ -420,13 +444,21 @@
                         {{ cuentas.CON_CODIGO }} ||
                         {{ cuentas.CON_NOMBRE }}
                       </option>
-                    </select>
+                    </select> -->
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Cuenta Contable BaseCERO</label>
-                    <select
+                    <input
+                      [(ngModel)]="cuentasProveedor.PRO_BASECERO"
+                      (click)="openDialog('PRO_BASECERO')"
+                      name="proBaseCero"
+                      placeholder="...."
+                      type="text"
+                      class="form-control form-control-sm"
+                    />
+                    <!-- <select
                       [(ngModel)]="supplier.PRO_BASECERO"
                       name="cuentaContableBaseCero"
                       #cuentaContableBaseCero
@@ -439,13 +471,21 @@
                         {{ cuentas.CON_CODIGO }} ||
                         {{ cuentas.CON_NOMBRE }}
                       </option>
-                    </select>
+                    </select> -->
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
                     <label>Cuenta Contable BaseNOBJET</label>
-                    <select
+                    <input
+                      [(ngModel)]="cuentasProveedor.PRO_BASENOBJET"
+                      (click)="openDialog('PRO_BASENOBJET')"
+                      name="proBaseNobjet"
+                      placeholder="...."
+                      type="text"
+                      class="form-control form-control-sm"
+                    />
+                    <!-- <select
                       [(ngModel)]="supplier.PRO_BASENOBJET"
                       name="cuentaContableBaseNobjet"
                       #cuentaContableBaseNobjet
@@ -458,7 +498,7 @@
                         {{ cuentas.CON_CODIGO }} ||
                         {{ cuentas.CON_NOMBRE }}
                       </option>
-                    </select>
+                    </select> -->
                   </div>
                 </div>
               </div>
@@ -497,9 +537,11 @@
               <div class="row">
                 <div class="col-md-4">
                   <div class="card">
-                    <label class="card-header">Contribuyente Microempresa</label>
+                    <label class="card-header"
+                      >Contribuyente Microempresa</label
+                    >
                     <div class="card-body">
-                      <p class="card-text">{{supplier.PRO_MICROEMPRESA}}</p>
+                      <p class="card-text">{{ supplier.PRO_MICROEMPRESA }}</p>
                     </div>
                   </div>
                 </div>
@@ -507,7 +549,7 @@
                   <div class="card">
                     <label class="card-header">Contribuyente Especial</label>
                     <div class="card-body">
-                      <p class="card-text">{{supplier.PRO_CONTRIESPECIAL}}</p>
+                      <p class="card-text">{{ supplier.PRO_CONTRIESPECIAL }}</p>
                     </div>
                   </div>
                 </div>
@@ -515,7 +557,7 @@
                   <div class="card">
                     <label class="card-header">Empresa Fantasma</label>
                     <div class="card-body">
-                      <p class="card-text">{{supplier.PRO_EMPRESAFANTAS}}</p>
+                      <p class="card-text">{{ supplier.PRO_EMPRESAFANTAS }}</p>
                     </div>
                   </div>
                 </div>
@@ -523,7 +565,7 @@
                   <div class="card">
                     <label class="card-header">Agente de Retención</label>
                     <div class="card-body">
-                      <p class="card-text">{{supplier.PRO_AGENRETENCION}}</p>
+                      <p class="card-text">{{ supplier.PRO_AGENRETENCION }}</p>
                     </div>
                   </div>
                 </div>

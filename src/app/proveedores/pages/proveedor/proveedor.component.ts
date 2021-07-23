@@ -1,9 +1,13 @@
+import { MatDialog } from '@angular/material/dialog';
 import { NgForm } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
-import { Proveedor } from './../../../models/proveedores.model';
+import {
+  CuentasContablesProveedor,
+  Proveedor,
+} from './../../../models/proveedores.model';
 import { ProveedoresService } from './../../services/proveedores.service';
 import { TipoCliente } from './../../../models/tipoClientes';
 import { TipoClientesService } from './../../../clientes/services/tipo-clientes.service';
@@ -12,6 +16,7 @@ import { CuentaContable } from './../../../models/cuentasContables';
 import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
 import { Ciudad } from './../../../models/ciudades.models';
 import { CiudadesService } from './../../../configuraciones/services/ciudades.service';
+import { CuentasContablesComponent } from './../../../shared/components/cuentas-contables/cuentas-contables.component';
 
 @Component({
   selector: 'app-proveedor',
@@ -26,13 +31,14 @@ export class ProveedorComponent implements OnInit {
   showButton: boolean = false;
   showDeleteButton: boolean = false;
   routeStr: string;
-  //
+  // ciudad
   provinciaCodigo: string = '';
   cantonCodigo: string = '';
   provincias: Ciudad[] = [];
   cantones: Ciudad[] = [];
-  cuentasContables: CuentaContable[] = [];
   showMore: boolean;
+  // cuentas contables proveedor
+  cuentasProveedor = new CuentasContablesProveedor();
 
   constructor(
     private route: ActivatedRoute,
@@ -41,7 +47,8 @@ export class ProveedorComponent implements OnInit {
     private typeClientService: TipoClientesService,
     private citiesService: CiudadesService,
     private cuentaContableService: CuentaContableService,
-    private configService: ConfiguracionesService
+    private configService: ConfiguracionesService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +66,7 @@ export class ProveedorComponent implements OnInit {
         this.supplier.PRO_AGENRETENCION = response.PRO_AGENRETENCION || 'NO';
         this.getCoordinates();
         this.getCiudad();
+        this.getAllCuentasContables();
       });
     }
     // default values
@@ -69,22 +77,78 @@ export class ProveedorComponent implements OnInit {
     this.supplier.PRO_AGENRETENCION = this.supplier.PRO_AGENRETENCION || 'NO';
 
     this.typeClientService.getTipos().subscribe((resp) => {
-      console.log('type cliente', resp);
       this.typeClient = resp;
     });
     // get all provincias
     this.citiesService.getAllProvincias().subscribe((resp) => {
       this.provincias = resp;
     });
-    // get all cuentas contables
-    this.cuentaContableService.getAllCuentas().subscribe((resp) => {
-      this.cuentasContables = resp;
-    });
     // get config
     this.configService.getConfigProveedores().subscribe((resp) => {
-      console.log('config', resp);
       this.showMore = resp.codigo === 1 ? true : false;
     });
+  }
+
+  openDialog(attribute: string): void {
+    console.log('ATTRIBUTE', attribute);
+
+    const dialogRef = this.dialog.open(CuentasContablesComponent, {
+      panelClass: 'dialog-responsive',
+      data: {
+        name: this.cuentasProveedor[attribute],
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: CuentaContable) => {
+      console.log('The dialog was closed', result);
+      if (result) {
+        this.supplier[attribute] = result.CON_CODIGO;
+        this.cuentasProveedor[attribute] =
+          result.CON_CODIGO + ' || ' + result.CON_NOMBRE;
+      }
+    });
+  }
+
+  getAllCuentasContables(): void {
+    // CON_CODIGO1
+    this.cuentaContableService
+      .getCuenta(this.supplier.CON_CODIGO1)
+      .subscribe((res) => {
+        this.cuentasProveedor.CON_CODIGO1 =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // CON_CODIGO2
+    this.cuentaContableService
+      .getCuenta(this.supplier.CON_CODIGO2)
+      .subscribe((res) => {
+        this.cuentasProveedor.CON_CODIGO2 =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // PRO_BASEIVA
+    this.cuentaContableService
+      .getCuenta(this.supplier.PRO_BASEIVA)
+      .subscribe((res) => {
+        this.cuentasProveedor.PRO_BASEIVA =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // PRO_BASECERO
+    this.cuentaContableService
+      .getCuenta(this.supplier.PRO_BASECERO)
+      .subscribe((res) => {
+        this.cuentasProveedor.PRO_BASECERO =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // PRO_BASENOBJET
+    this.cuentaContableService
+      .getCuenta(this.supplier.PRO_BASENOBJET)
+      .subscribe((res) => {
+        this.cuentasProveedor.PRO_BASENOBJET =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
   }
 
   getCiudad() {
