@@ -1,11 +1,12 @@
-import { PreciosService } from './../../../productos/services/precios.service';
-import { Precio } from './../../../models/precios';
-import { DetalleFactura } from './../../../models/detalleFactura';
-import { ProductosService } from './../../../productos/services/productos.service';
+import { NgForm } from '@angular/forms';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+import { Precio } from './../../../models/precios';
+import { PreciosService } from './../../../productos/services/precios.service';
 import { Producto } from 'src/app/models/productos.model';
-import { NgForm } from '@angular/forms';
+import { ProductosService } from './../../../productos/services/productos.service';
+import { DetalleFactura } from './../../../models/detalleFactura';
 
 @Component({
   selector: 'app-crear-producto',

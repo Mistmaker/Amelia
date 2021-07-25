@@ -110,6 +110,12 @@ export class ClientesComponent implements OnInit {
     }
   }
 
+  enviarWhatsapp(telefono: string) {
+    const tel = telefono.startsWith('0') ? telefono.replace('0', '593') : telefono;
+    const url = `https://wa.me/${tel}`;
+    window.open(url, "_blank");
+  }
+
   onTableDataChange(event: any) {
     this.page = event;
     // this.fetchPosts();

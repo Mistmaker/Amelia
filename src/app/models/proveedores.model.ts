@@ -1,3 +1,4 @@
+import { CuentaContable } from './cuentasContables';
 export class Proveedor {
   PRO_FECINIACTIVIDADES: string;
   PRO_FECCESACTIVIDADES: string;
@@ -15,6 +16,11 @@ export class Proveedor {
   PRO_FECHACREADO: string;
   PRO_ESTADO: string = '1';
   PRO_GMAPS: string;
+
+  PRO_MICROEMPRESA: string;
+  PRO_CONTRIESPECIAL: string;
+  PRO_EMPRESAFANTAS: string;
+  PRO_AGENRETENCION: string;
 
   PRO_CODIGO: string;
   GRU_CODIGO: string;
@@ -78,6 +84,16 @@ export class Proveedor {
   PRO_CONVDOBLETRIB: string;
   PRO_PAGOEXTERIOR: string;
   PRO_PAGOREGFISCAL: string;
+
+  constructor() {}
+}
+
+export class CuentasContablesProveedor {
+  CON_CODIGO1: string;
+  CON_CODIGO2: string;
+  PRO_BASEIVA: string;
+  PRO_BASECERO: string;
+  PRO_BASENOBJET: string;
 
   constructor() {}
 }

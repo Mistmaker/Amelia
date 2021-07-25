@@ -13,4 +13,16 @@ export class GrupoClientesService {
   getGrupos(){
     return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
   }
+  getGrupo(id: string){
+    return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
+  }
+  postGrupo(grupo: GrupoCliente){
+    return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
+  }
+  putGrupo(grupo: GrupoCliente){
+    return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
+  }
+  deleteGrupos(){
+    return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
+  }
 }

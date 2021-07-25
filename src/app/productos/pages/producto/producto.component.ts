@@ -1,9 +1,13 @@
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 
-import { Producto } from '../../../models/productos.model';
+import {
+  Producto,
+  CuentasContablesProducto,
+} from '../../../models/productos.model';
 import { ProductosService } from '../../services/productos.service';
 import { GrupoProducto } from '../../../models/grupoProductos';
 import { GrupoProductosService } from '../../services/grupo-productos.service';
@@ -16,6 +20,7 @@ import { TipoUnidadesService } from '../../services/tipo-unidades.service';
 import { ConfiguracionesService } from './../../../configuraciones/services/configuraciones.service';
 import { CuentaContable } from './../../../models/cuentasContables';
 import { CuentaContableService } from './../../../clientes/services/cuentas-contables.service';
+import { CuentasContablesComponent } from './../../../shared/components/cuentas-contables/cuentas-contables.component';
 
 @Component({
   selector: 'app-producto',
@@ -32,6 +37,8 @@ export class ProductoComponent implements OnInit {
   includeIva: boolean;
 
   actualizar = false;
+  // cuentas contables productos
+  cuentasProducto = new CuentasContablesProducto();
 
   constructor(
     private route: ActivatedRoute,
@@ -41,7 +48,8 @@ export class ProductoComponent implements OnInit {
     private preciosService: PreciosService,
     private cuentaContableService: CuentaContableService,
     private tipoUnidadService: TipoUnidadesService,
-    private configService: ConfiguracionesService
+    private configService: ConfiguracionesService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +65,7 @@ export class ProductoComponent implements OnInit {
           console.log(result);
           this.producto.precios = result;
         });
+        this.getAllCuentasContables();
         this.actualizar = true;
       });
     }
@@ -70,10 +79,6 @@ export class ProductoComponent implements OnInit {
       console.log(resp);
       this.tipoPrecios = resp;
     });
-    // get cuentas contables
-    this.cuentaContableService.getAllCuentas().subscribe((resp) => {
-      this.cuentasContables = resp;
-    });
     // get tipo unidades
     this.tipoUnidadService.getAllUnidades().subscribe((resp) => {
       this.tipoUnidades = resp;
@@ -83,6 +88,52 @@ export class ProductoComponent implements OnInit {
       console.log('config', resp);
       this.includeIva = resp.codigo === 1 ? true : false;
     });
+  }
+
+  openDialog(attribute: string): void {
+    console.log('ATTRIBUTE', attribute);
+
+    const dialogRef = this.dialog.open(CuentasContablesComponent, {
+      panelClass: 'dialog-responsive',
+      data: {
+        name: this.cuentasProducto[attribute],
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: CuentaContable) => {
+      console.log('The dialog was closed', result);
+      if (result) {
+        this.producto[attribute] = result.CON_CODIGO;
+        this.cuentasProducto[attribute] =
+          result.CON_CODIGO + ' || ' + result.CON_NOMBRE;
+      }
+    });
+  }
+
+  getAllCuentasContables(): void {
+    // ART_CUENTAINVENTARIO
+    this.cuentaContableService
+      .getCuenta(this.producto.ART_CUENTAINVENTARIO)
+      .subscribe((res) => {
+        this.cuentasProducto.ART_CUENTAINVENTARIO =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // ART_CUENTACOSTOVENTAS
+    this.cuentaContableService
+      .getCuenta(this.producto.ART_CUENTACOSTOVENTAS)
+      .subscribe((res) => {
+        this.cuentasProducto.ART_CUENTACOSTOVENTAS =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // ART_CUENTAVENTAS
+    this.cuentaContableService
+      .getCuenta(this.producto.ART_CUENTAVENTAS)
+      .subscribe((res) => {
+        this.cuentasProducto.ART_CUENTAVENTAS =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
   }
 
   guardar(form: NgForm) {

@@ -122,10 +122,25 @@ export class Cliente {
   CLI_DIGITO: string;
   CLI_VENCE: number;
   GrupoCliente: string;
+  CLI_MICROEMPRESA: string;
+  CLI_CONTRIESPECIAL: string;
+  CLI_EMPRESAFANTAS: string;
+  CLI_AGENRETENCION: string;
+  CLI_TIPOCLIENTE: number;
   datosAdicionales: ClienteDatosAdicionales[];
 
   constructor() {
     this.CLI_ESTADO = '1';
     this.datosAdicionales = [];
   }
+}
+
+export class CuentasContablesClientes {
+  CON_CODIGO1: string;
+  CON_CODIGO2: string;
+  CLI_BASEIVA: string;
+  CLI_BASECERO: string;
+  CLI_BASENOBJET: string;
+
+  constructor() {}
 }

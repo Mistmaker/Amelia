@@ -13,4 +13,17 @@ export class CuentaContableService {
   getAllCuentas() {
     return this.http.get<CuentaContable[]>(`${this.ruta}/api/cuentas`);
   }
+
+  getCuenta(id: string) {
+    return this.http.get<CuentaContable>(`${this.ruta}/api/cuentas/${id}`);
+  }
+
+  getCuentasByNombreOrCodigo(nameOrCode: string) {
+    return this.http.post<CuentaContable[]>(
+      `${this.ruta}/api/cuentas/nombre-codigo`,
+      {
+        nameOrCode,
+      }
+    );
+  }
 }

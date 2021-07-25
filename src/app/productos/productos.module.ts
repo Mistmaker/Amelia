@@ -1,3 +1,4 @@
+import { MatDialogModule } from '@angular/material/dialog';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +13,7 @@ import { GrupoProductosComponent } from './pages/grupo-productos/grupo-productos
 import { CrearGrupoProductoComponent } from './pages/crear-grupo-producto/crear-grupo-producto.component';
 import { CrearTipoUnidadComponent } from './pages/crear-tipo-unidad/crear-tipo-unidad.component';
 import { TipoUnidadesComponent } from './pages/tipo-unidades/tipo-unidades.component';
+import { CuentasContablesComponent } from './../shared/components/cuentas-contables/cuentas-contables.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { TipoUnidadesComponent } from './pages/tipo-unidades/tipo-unidades.compo
     PipesModule,
     FormsModule,
     NgxPaginationModule,
+    MatDialogModule,
   ],
+  entryComponents: [CuentasContablesComponent],
 })
 export class ProductosModule {}

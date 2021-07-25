@@ -1,10 +1,11 @@
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 // import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2';
 
-import { Cliente } from '../../../models/clientes.model';
+import { Cliente, CuentasContablesClientes } from '../../../models/clientes.model';
 import { ClientesService } from '../../services/clientes.service';
 import { TipoCliente } from '../../../models/tipoClientes';
 import { TipoClientesService } from '../../services/tipo-clientes.service';
@@ -20,6 +21,9 @@ import { Usuario } from '../../../models/usuarios.model';
 import { UsuariosService } from '../../../usuarios/services/usuarios.service';
 import { GrupoClientesService } from '../../services/grupo-clientes.service';
 import { GrupoCliente } from '../../../models/grupoClientes';
+import { CuentasContablesComponent } from './../../../shared/components/cuentas-contables/cuentas-contables.component';
+import { TiposClientesService } from '../../services/tipos-clientes.service';
+import { TiposClientes } from '../../../models/tiposClientes';
 
 @Component({
   selector: 'app-cliente',
@@ -34,7 +38,6 @@ export class ClienteComponent implements OnInit {
   provincias: Ciudad[] = [];
   cantones: Ciudad[] = [];
   vendedores: Vendedores[] = [];
-  cuentasContables: CuentaContable[] = [];
   showMore: boolean;
   mostrarBtn: boolean = false;
 
@@ -45,6 +48,10 @@ export class ClienteComponent implements OnInit {
   tab = 'DP';
   usuarios: Usuario[] = [];
   grupos: GrupoCliente[] = [];
+  tiposClientes: TiposClientes[] = [];
+  mostrarInfoCompl = false;
+  // cuentas contables clientes
+  cuentasCliente = new CuentasContablesClientes();
 
   constructor(
     private route: ActivatedRoute,
@@ -56,7 +63,9 @@ export class ClienteComponent implements OnInit {
     private configService: ConfiguracionesService,
     private router: Router,
     private usuariosService: UsuariosService,
-    private grupoClientesService: GrupoClientesService
+    private grupoClientesService: GrupoClientesService,
+    private dialog: MatDialog,
+    private tiposClientesService: TiposClientesService
   ) { }
 
   ngOnInit(): void {
@@ -64,12 +73,17 @@ export class ClienteComponent implements OnInit {
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       console.log(this.routeStr);
       this.clientesService.getCliente(this.routeStr).subscribe((resp) => {
-
         this.cliente = resp;
+        this.cliente.CLI_FECHACONSULTA = this.cliente.CLI_FECHACONSULTA ? this.cliente.CLI_FECHACONSULTA.slice(0, 10) : null;
+        this.cliente.CLI_FECHACREADO = this.cliente.CLI_FECHACREADO ? this.cliente.CLI_FECHACREADO.slice(0, 10) : null;
         if (!this.cliente.datosAdicionales) this.cliente.datosAdicionales = [];
         this.showDeleteButton = true;
-        console.log(resp);
+        console.log(this.cliente);
         this.cliente.CLI_ESTADO = resp.CLI_ESTADO || '1';
+        this.cliente.CLI_MICROEMPRESA = resp.CLI_MICROEMPRESA || '';
+        this.cliente.CLI_CONTRIESPECIAL = resp.CLI_CONTRIESPECIAL || '';
+        this.cliente.CLI_EMPRESAFANTAS = resp.CLI_EMPRESAFANTAS || '';
+        this.cliente.CLI_AGENRETENCION = resp.CLI_AGENRETENCION || '';
         this.getCoordinates();
         this.getCiudad();
 
@@ -81,10 +95,15 @@ export class ClienteComponent implements OnInit {
           console.log(resp);
           this.cliente.datosAdicionales = resp;
         });
+        this.getAllCuentasContables();
       });
     }
     // default values
     this.cliente.CLI_PARTEREL = this.cliente.CLI_PARTEREL || 'n';
+    this.cliente.CLI_MICROEMPRESA = this.cliente.CLI_MICROEMPRESA || 'NO';
+    this.cliente.CLI_CONTRIESPECIAL = this.cliente.CLI_CONTRIESPECIAL || 'NO';
+    this.cliente.CLI_EMPRESAFANTAS = this.cliente.CLI_EMPRESAFANTAS || 'NO';
+    this.cliente.CLI_AGENRETENCION = this.cliente.CLI_AGENRETENCION || 'NO';
 
     this.tipoClientesService.getTipos().subscribe((resp) => {
       console.log(resp);
@@ -97,10 +116,6 @@ export class ClienteComponent implements OnInit {
     // get all vendedores
     this.vendedoresService.getAllVendedores().subscribe((resp) => {
       this.vendedores = resp;
-    });
-    // get all cuentas contables
-    this.cuentaContableService.getAllCuentas().subscribe((resp) => {
-      this.cuentasContables = resp;
     });
     // get config
     this.configService.getConfigClientes().subscribe((resp) => {
@@ -117,6 +132,77 @@ export class ClienteComponent implements OnInit {
       console.log(resp);
       this.grupos = resp;
     });
+
+    this.tiposClientesService.getTipos().subscribe(resp => {
+      console.log(resp);
+      this.tiposClientes = resp;
+    });
+
+    this.configService.getConfig('CLI_INFO_COMP').subscribe(resp => {
+      this.mostrarInfoCompl = resp.codigo === 1 ? true : false;
+    });
+  }
+
+  openDialog(attribute: string): void {
+    console.log('ATTRIBUTE', attribute);
+
+    const dialogRef = this.dialog.open(CuentasContablesComponent, {
+      panelClass: 'dialog-responsive',
+      data: {
+        name: this.cuentasCliente[attribute],
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: CuentaContable) => {
+      console.log('The dialog was closed', result);
+      if (result) {
+        this.cliente[attribute] = result.CON_CODIGO;
+        this.cuentasCliente[attribute] =
+          result.CON_CODIGO + ' || ' + result.CON_NOMBRE;
+      }
+    });
+  }
+
+  getAllCuentasContables(): void {
+    // CON_CODIGO1
+    this.cuentaContableService
+      .getCuenta(this.cliente.CON_CODIGO1)
+      .subscribe((res) => {
+        this.cuentasCliente.CON_CODIGO1 =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // CON_CODIGO2
+    this.cuentaContableService
+      .getCuenta(this.cliente.CON_CODIGO2)
+      .subscribe((res) => {
+        this.cuentasCliente.CON_CODIGO2 =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // CLI_BASEIVA
+    this.cuentaContableService
+      .getCuenta(this.cliente.CLI_BASEIVA)
+      .subscribe((res) => {
+        this.cuentasCliente.CLI_BASEIVA =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // CLI_BASECERO
+    this.cuentaContableService
+      .getCuenta(this.cliente.CLI_BASECERO)
+      .subscribe((res) => {
+        this.cuentasCliente.CLI_BASECERO =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
+
+    // CLI_BASENOBJET
+    this.cuentaContableService
+      .getCuenta(this.cliente.CLI_BASENOBJET)
+      .subscribe((res) => {
+        this.cuentasCliente.CLI_BASENOBJET =
+          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+      });
   }
 
   getCiudad() {
@@ -194,7 +280,6 @@ export class ClienteComponent implements OnInit {
           (err) => {
             console.log('error post', err);
             Swal.fire('Error', err.error.msg, 'error');
-
           }
         );
     } else {
@@ -206,7 +291,6 @@ export class ClienteComponent implements OnInit {
         (err) => {
           console.log('error put', err);
           Swal.fire('Error', err.error.msg, 'error');
-
         }
       );
     }
@@ -222,7 +306,7 @@ export class ClienteComponent implements OnInit {
 
   buscarDatosOnLine() {
     if (!this.cliente.CLI_CODIGO)
-      Swal.fire(
+      return Swal.fire(
         'Advertencia',
         'Ingrese un número de identificación',
         'warning'
@@ -232,7 +316,7 @@ export class ClienteComponent implements OnInit {
       this.cliente.CLI_CODIGO.length !== 10 &&
       this.cliente.CLI_CODIGO.length !== 13
     )
-      Swal.fire(
+      return Swal.fire(
         'Advertencia',
         'Cédula o RUC deben tener 10 o 13 dígitos',
         'warning'
@@ -260,6 +344,34 @@ export class ClienteComponent implements OnInit {
         }
       );
     }
+
+    this.clientesService
+      .getIsMicro(this.cliente.CLI_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.cliente.CLI_MICROEMPRESA = res.microempresa;
+      });
+
+    this.clientesService
+      .getIsContribuyenteEspecial(this.cliente.CLI_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.cliente.CLI_CONTRIESPECIAL = res.especiales;
+      });
+
+    this.clientesService
+      .getIsEmpresaFantasma(this.cliente.CLI_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.cliente.CLI_EMPRESAFANTAS = res.fantasma;
+      });
+
+    this.clientesService
+      .getIsAgenteRentencion(this.cliente.CLI_CODIGO)
+      .subscribe((res: any) => {
+        console.log(res);
+        this.cliente.CLI_AGENRETENCION = res.agentes;
+      });
   }
 
   procesarDatos(tipo: string, datos: any) {
@@ -310,7 +422,17 @@ export class ClienteComponent implements OnInit {
         this.cliente.CLI_ACTIVIDAD = datos['ACTIVIDAD_ECONOMICA'];
       }
 
-      this.cliente.CLI_FECHACONSULTA = new Date().toDateString();
+      // this.cliente.CLI_FECHACONSULTA = new Date().toDateString();
+
+      let date = new Date();
+      let dia: string, mes: string, anio: number;
+
+      dia = date.getDate().toString().length < 2 ? `0${date.getDate().toString()}` : date.getDate().toString();
+      mes = date.getMonth().toString().length < 2 ? `0${date.getMonth().toString()}` : date.getMonth().toString();
+      anio = date.getFullYear();
+
+      this.cliente.CLI_FECHACONSULTA = `${anio}-${mes}-${dia}`;
+      console.log(this.cliente.CLI_FECHACONSULTA);
     }
   }
 
@@ -347,22 +469,21 @@ export class ClienteComponent implements OnInit {
           });
           Swal.showLoading();
 
-          this.clientesService.deleteCliente(this.cliente.CLI_CODIGO).subscribe(resp => {
-            Swal.fire(
-              'Eliminado!',
-              'Se eliminó los datos del cliente',
-              'success'
-            ).then(r => {
-              this.router.navigateByUrl('clientes');
-            });
-          }, error => {
-            console.log(error);
-            Swal.fire(
-              'Error!',
-              'Ocurrió un error al eliminar',
-              'error'
-            );
-          })
+          this.clientesService.deleteCliente(this.cliente.CLI_CODIGO).subscribe(
+            (resp) => {
+              Swal.fire(
+                'Eliminado!',
+                'Se eliminó los datos del cliente',
+                'success'
+              ).then((r) => {
+                this.router.navigateByUrl('clientes');
+              });
+            },
+            (error) => {
+              console.log(error);
+              Swal.fire('Error!', 'Ocurrió un error al eliminar', 'error');
+            }
+          );
         }
       }
     });
@@ -373,6 +494,50 @@ export class ClienteComponent implements OnInit {
   }
   quitarDatoAdicional(index: number) {
     this.cliente.datosAdicionales.splice(index, 1);
+  }
+
+  calcularVence(event: any) {
+    // console.log(event.target.value);
+    // if (event.target.value.length !== 13) { this.cliente.CLI_DIGITO = null; this.cliente.CLI_VENCE = null; return; }
+    const numDoc: string = event.target.value;
+    this.cliente.CLI_DIGITO = numDoc.slice(8, 9);
+    let vence: string;
+    switch (this.cliente.CLI_DIGITO) {
+      case '1':
+        vence = '10';
+        break;
+      case '2':
+        vence = '12';
+        break;
+      case '3':
+        vence = '14';
+        break;
+      case '4':
+        vence = '16';
+        break;
+      case '5':
+        vence = '18';
+        break;
+      case '6':
+        vence = '20';
+        break;
+      case '7':
+        vence = '22';
+        break;
+      case '8':
+        vence = '24';
+        break;
+      case '9':
+        vence = '26';
+        break;
+      case '0':
+        vence = '28';
+        break;
+      default:
+        vence = '';
+        break;
+    }
+    this.cliente.CLI_VENCE = +vence;
   }
 
 }

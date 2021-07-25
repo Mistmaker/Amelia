@@ -14,6 +14,10 @@ export class ConfiguracionesService {
   getAllConfigs() {
     return this.http.get<Configuracion[]>(`${this.ruta}/api/configuracion`);
   }
+  
+  getConfig(config: string) {
+    return this.http.get<Configuracion>(`${this.ruta}/api/configuracion/${config}`);
+  }
 
   postAllConfigs(data: Configuracion[]) {
     return this.http.post(`${this.ruta}/api/configuracion`, {
