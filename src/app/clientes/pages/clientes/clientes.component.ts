@@ -3,6 +3,8 @@ import { ClientesService } from '../../services/clientes.service';
 import { Cliente } from '../../../models/clientes.model';
 import { GrupoClientesService } from '../../services/grupo-clientes.service';
 import { GrupoCliente } from '../../../models/grupoClientes';
+import { MatDialog } from '@angular/material/dialog';
+import { ClienteModalComponent } from '../cliente-modal/cliente-modal.component';
 
 @Component({
   selector: 'app-clientes',
@@ -24,7 +26,7 @@ export class ClientesComponent implements OnInit {
   grupoId = '';
   vence = '';
 
-  constructor(private clientesService: ClientesService, private grupoClientesService: GrupoClientesService) { }
+  constructor(private clientesService: ClientesService, private grupoClientesService: GrupoClientesService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.cargando = true;
@@ -114,6 +116,19 @@ export class ClientesComponent implements OnInit {
     const tel = telefono.startsWith('0') ? telefono.replace('0', '593') : telefono;
     const url = `https://wa.me/${tel}`;
     window.open(url, "_blank");
+  }
+
+  enviarEmail(email: string) {
+    const url = `mailto:${email}`;
+    window.open(url, '_blank');
+  }
+
+  verDatos(id: string) {
+    this.dialog.open(ClienteModalComponent, {
+      data: {
+        CLI_CODIGO: id
+      }, autoFocus: false
+    });
   }
 
   onTableDataChange(event: any) {

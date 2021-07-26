@@ -13,5 +13,11 @@ export class Usuario {
   BOD_CODIGO_DEV: string;
   PERFIL_CODIGO: string;
   VEN_CODIGO: string;
-  
+
+  constructor() {
+    this.COMCODIGO = '01';
+    this.USURUCI = '';
+    this.USUAPELLIDO = '';
+    this.USUNOMBRE = '';
+  }
 }

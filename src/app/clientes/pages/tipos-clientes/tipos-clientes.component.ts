@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { TiposClientesService } from '../../services/tipos-clientes.service';
+import { TiposClientes } from '../../../models/tiposClientes';
 
 import { TipoCliente } from './../../../models/tipoClientes';
 import { TipoClientesService } from './../../services/tipo-clientes.service';
@@ -10,7 +12,7 @@ import { TipoClientesService } from './../../services/tipo-clientes.service';
 })
 export class TiposClientesComponent implements OnInit {
   textoBusqueda = '';
-  tiposClientes: TipoCliente[] = [];
+  tiposClientes: TiposClientes[] = [];
   cargando = false;
 
   // Para paginación
@@ -19,14 +21,13 @@ export class TiposClientesComponent implements OnInit {
   tableSize = 7;
   tableSizes = [3, 6, 9, 12];
 
-  constructor(private tipoClientesService: TipoClientesService) {}
+  constructor(private tipoClientesService: TiposClientesService) { }
 
   ngOnInit(): void {
     this.cargando = true;
     this.tipoClientesService.getTipos().subscribe(
       (res) => {
         console.log(res);
-
         this.tiposClientes = res;
         this.cargando = false;
       },
@@ -34,26 +35,6 @@ export class TiposClientesComponent implements OnInit {
         console.log(err);
       }
     );
-  }
-
-  search(event: any) {
-    setTimeout(() => {
-      this.textoBusqueda = event.target.value;
-      if (this.textoBusqueda !== '') {
-        this.tipoClientesService
-          .getTiposClientesByNombre(this.textoBusqueda)
-          .subscribe((res) => {
-            this.tiposClientes = res;
-            this.page = 1;
-          });
-      } else {
-        this.tipoClientesService.getTipos().subscribe((res) => {
-          this.tiposClientes = res;
-          this.page = 1;
-          this.cargando = false;
-        });
-      }
-    }, 500);
   }
 
   onTableDataChange(event: any) {

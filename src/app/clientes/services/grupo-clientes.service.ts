@@ -10,19 +10,19 @@ export class GrupoClientesService {
 
   constructor(private http: HttpClient) { }
 
-  getGrupos(){
+  getGrupos() {
     return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
   }
-  getGrupo(id: string){
-    return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
+  getGrupo(id: string) {
+    return this.http.get<GrupoCliente>(`${urlWs}/api/grupoClientes/${id}`);
   }
-  postGrupo(grupo: GrupoCliente){
-    return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
+  postGrupo(grupo: GrupoCliente) {
+    return this.http.post<GrupoCliente[]>(`${urlWs}/api/grupoClientes`, grupo);
   }
-  putGrupo(grupo: GrupoCliente){
-    return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
+  putGrupo(grupo: GrupoCliente) {
+    return this.http.put<GrupoCliente[]>(`${urlWs}/api/grupoClientes/${grupo.GRU_CODIGO}`, grupo);
   }
-  deleteGrupos(){
-    return this.http.get<GrupoCliente[]>(`${urlWs}/api/grupoClientes`);
+  deleteGrupos(id: string) {
+    return this.http.delete<GrupoCliente[]>(`${urlWs}/api/grupoClientes/${id}`);
   }
 }

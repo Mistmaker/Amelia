@@ -13,6 +13,7 @@ import { TipoClienteComponent } from './pages/tipo-cliente/tipo-cliente.componen
 import { CuentasContablesComponent } from './../shared/components/cuentas-contables/cuentas-contables.component';
 import { GruposClientesComponent } from './pages/grupos-clientes/grupos-clientes.component';
 import { GrupoClienteComponent } from './pages/grupo-cliente/grupo-cliente.component';
+import { ClienteModalComponent } from './pages/cliente-modal/cliente-modal.component';
 
 
 
@@ -23,7 +24,8 @@ import { GrupoClienteComponent } from './pages/grupo-cliente/grupo-cliente.compo
     TiposClientesComponent,
     TipoClienteComponent,
     GruposClientesComponent,
-    GrupoClienteComponent
+    GrupoClienteComponent,
+    ClienteModalComponent
   ],
   imports: [
     CommonModule,

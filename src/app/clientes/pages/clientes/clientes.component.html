@@ -7,13 +7,11 @@
     <div class="card-body">
         <div class="row mb-3">
             <div class="col-md-3">
-                <input type="text" class="form-control form-control-sm" [(ngModel)]="textoBusqueda"
-                    (keyup)="busqueda($event)" placeholder="Buscar Ruc/Nombre...">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="textoBusqueda" (keyup)="busqueda($event)" placeholder="Buscar Ruc/Nombre...">
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <select [(ngModel)]="grupoId" name="grupo" class="form-control form-control-sm" #provincia
-                        (change)="onChangeProvincia(provincia.value)">
+                    <select [(ngModel)]="grupoId" name="grupo" class="form-control form-control-sm" #provincia (change)="onChangeProvincia(provincia.value)">
                         <option value="" selected>Seleccione un grupo</option>
                         <option *ngFor="let g of grupos" [value]="g.GRU_CODIGO">
                             {{ g.GRU_NOMBRE }}
@@ -22,8 +20,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <input type="text" class="form-control form-control-sm" [(ngModel)]="vence" maxlength="2"
-                    (keyup)="busquedaVence($event)" placeholder="Buscar por vence...">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="vence" maxlength="2" (keyup)="busquedaVence($event)" placeholder="Buscar por vence...">
             </div>
             <div class="col-md-3">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -34,8 +31,7 @@
         </div>
 
         <div class="table-responsive">
-            <table *ngIf="!cargando  && clientes.length > 0"
-                class="table table-striped table-hover animated fadein faster">
+            <table *ngIf="!cargando  && clientes.length > 0" class="table table-striped table-hover animated fadein faster">
                 <thead class=" text-primary">
                     <th>Nombre</th>
                     <th>CI./RUC</th>
@@ -44,19 +40,16 @@
                     <th>Accion</th>
                 </thead>
                 <tbody>
-                    <tr
-                        *ngFor="let cliente of clientes | filtroSimple: '' | paginate : {itemsPerPage: tableSize,currentPage: page,totalItems: count};">
+                    <tr *ngFor="let cliente of clientes | filtroSimple: '' | paginate : {itemsPerPage: tableSize,currentPage: page,totalItems: count};">
                         <td>{{ cliente.CLI_NOMBRE }} </td>
                         <td>{{ cliente.CLI_RUCIDE }}</td>
                         <td>{{ cliente.GrupoCliente }}</td>
                         <td>{{ cliente.CLI_VENCE }}</td>
                         <td>
-                            <button class="btn btn-sm btn-warning mr-1"
-                                [routerLink]="['/clientes', cliente.CLI_CODIGO]"><i class="fa fa-eye"></i></button>
-                            <button class="btn btn-sm btn-primary mr-1"
-                                [routerLink]="['/clientes', cliente.CLI_CODIGO]"><i class="fa fa-pen"></i></button>
-                            <button class="btn btn-sm btn-success mr-1" (click)="enviarWhatsapp(cliente.CLI_TELEFONO1)"
-                                [disabled]="cliente.CLI_TELEFONO1.length < 10"><i class="fa fa-whatsapp"></i></button>
+                            <button class="btn btn-sm btn-warning mr-1" (click)="verDatos(cliente.CLI_CODIGO)"><i class="fa fa-eye"></i></button>
+                            <button class="btn btn-sm btn-primary mr-1" [routerLink]="['/clientes', cliente.CLI_CODIGO]"><i class="fa fa-pen"></i></button>
+                            <button class="btn btn-sm btn-success mr-1" (click)="enviarWhatsapp(cliente.CLI_TELEFONO1)" [disabled]="!cliente.CLI_TELEFONO1 || cliente.CLI_TELEFONO1.length < 10"><i class="fa fa-whatsapp"></i></button>
+                            <button class="btn btn-sm btn-primary mr-1" (click)="enviarEmail(cliente.CLI_CORREO)" [disabled]="!cliente.CLI_TELEFONO1 || cliente.CLI_CORREO.length < 8"><i class="fa fa-envelope"></i></button>
                             <!-- <button class="btn btn-sm btn-danger mr-1"
                                 (click)="eliminarCliente(cliente.CLI_CODIGO)"><i class="fa fa-trash"></i></button> -->
                         </td>

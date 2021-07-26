@@ -13,4 +13,16 @@ export class TiposClientesService {
   getTipos() {
     return this.http.get<TiposClientes[]>(`${urlWs}/api/tipClientes`);
   }
+  getTipo(id: string) {
+    return this.http.get<TiposClientes>(`${urlWs}/api/tipClientes/${id}`);
+  }
+  postTipo(tipo: TiposClientes) {
+    return this.http.post<TiposClientes[]>(`${urlWs}/api/tipClientes`, tipo);
+  }
+  putTipo(tipo: TiposClientes) {
+    return this.http.put<TiposClientes[]>(`${urlWs}/api/tipClientes/${tipo.TIP_CODIGO}`, tipo);
+  }
+  deleteTipo(id: number) {
+    return this.http.delete<TiposClientes[]>(`${urlWs}/api/tipClientes/${id}`);
+  }
 }

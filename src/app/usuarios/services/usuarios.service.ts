@@ -13,4 +13,16 @@ export class UsuariosService {
   getUsuarios() {
     return this.http.get<Usuario[]>(`${urlWs}/api/usuarios`);
   }
+  getUsuario(id: string) {
+    return this.http.get<Usuario>(`${urlWs}/api/usuarios/${id}`);
+  }
+  postUsuario(grupo: Usuario) {
+    return this.http.post<Usuario[]>(`${urlWs}/api/usuarios`, grupo);
+  }
+  putUsuario(grupo: Usuario) {
+    return this.http.put<Usuario[]>(`${urlWs}/api/usuarios/${grupo.USUIDENTIFICACION}`, grupo);
+  }
+  deleteUsuario(id: string) {
+    return this.http.delete<Usuario[]>(`${urlWs}/api/usuarios/${id}`);
+  }
 }

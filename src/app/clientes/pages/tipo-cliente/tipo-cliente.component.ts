@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 
 import { TipoCliente } from './../../../models/tipoClientes';
 import { TipoClientesService } from './../../services/tipo-clientes.service';
+import { TiposClientesService } from '../../services/tipos-clientes.service';
+import { TiposClientes } from '../../../models/tiposClientes';
 
 @Component({
   selector: 'app-tipo-cliente',
@@ -12,19 +14,19 @@ import { TipoClientesService } from './../../services/tipo-clientes.service';
   styleUrls: ['./tipo-cliente.component.css'],
 })
 export class TipoClienteComponent implements OnInit {
-  tipoCliente = new TipoCliente();
+  tipoCliente = new TiposClientes();
   routeStr: string = '';
   showDeleteButton = false;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private tipoClientesService: TipoClientesService
+    private tipoClientesService: TiposClientesService
   ) {}
 
   ngOnInit(): void {
     this.routeStr = this.route.snapshot.paramMap.get('id');
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
-      this.tipoClientesService.getTipoCliente(this.routeStr).subscribe(
+      this.tipoClientesService.getTipo(this.routeStr).subscribe(
         (res) => {
           console.log(res);
           this.tipoCliente = res;
@@ -44,7 +46,7 @@ export class TipoClienteComponent implements OnInit {
     console.log('me guardo', this.tipoCliente);
     if (this.routeStr !== 'nuevo') {
       this.tipoClientesService
-        .putTipoCliente(this.tipoCliente.ticli_codigo, this.tipoCliente)
+        .putTipo(this.tipoCliente)
         .subscribe(
           (res) => {
             console.log(res);
@@ -60,7 +62,7 @@ export class TipoClienteComponent implements OnInit {
           }
         );
     } else {
-      this.tipoClientesService.postTipoCliente(this.tipoCliente).subscribe(
+      this.tipoClientesService.postTipo(this.tipoCliente).subscribe(
         (res) => {
           console.log(res);
           Swal.fire(
@@ -79,7 +81,7 @@ export class TipoClienteComponent implements OnInit {
 
   deleteGrupo() {
     Swal.fire({
-      title: `¿Estas seguro de borrar el tipo de cliente ${this.tipoCliente.ticli_nombre}?`,
+      title: `¿Estas seguro de borrar el tipo de cliente ${this.tipoCliente.TIP_NOMBRE}?`,
       showCancelButton: true,
       confirmButtonText: `Eliminar`,
       cancelButtonText: `Cancelar`,
@@ -87,7 +89,7 @@ export class TipoClienteComponent implements OnInit {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         this.tipoClientesService
-          .deleteTipoCliente(this.tipoCliente.ticli_codigo)
+          .deleteTipo(this.tipoCliente.TIP_CODIGO)
           .subscribe(
             (res) => {
               console.log('response delete', res);

@@ -8,4 +8,9 @@ export class GrupoCliente {
   GRU_PORDES: number;
   CEN_CODIGO: string;
 
+  constructor(){
+    this.GRU_TIPO = 'CLI';
+    this.GRU_PORDES = 0;
+  }
+
 }

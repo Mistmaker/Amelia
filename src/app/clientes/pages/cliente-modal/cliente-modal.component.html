@@ -1,0 +1,421 @@
+<mat-dialog-content class="mat-typography">
+    <div class="card">
+        <div class="card-header card-header-info">
+            <h4 class="card-title">Datos del cliente</h4>
+            <!-- <p class="card-category">Mantenimiento</p> -->
+        </div>
+        <div class="card-body">
+
+            <div class="row">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tab === 'DP'}" (click)="tab='DP'">Datos Personales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tab === 'IC'}" (click)="tab='IC'" *ngIf="mostrarInfoCompl">Informacion complementaria</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tab === 'CL'}" (click)="tab='CL'">Claves</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tab === 'DI'}" (click)="tab='DI'">Datos
+                            informativos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tab === 'DC'}" (click)="tab='DC'">Datos
+                            catastros</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" [ngClass]="{'active': tab === 'DO'}" (click)="tab='DO'">Documentos</a>
+                    </li> -->
+                </ul>
+            </div>
+
+            <br>
+
+            <div>
+                <div class="row" *ngIf="tab=='DP'">
+                    <div class="col-md-3">
+                        <label class="form-label">Tipo de documento:*</label>
+                        <select disabled [(ngModel)]="cliente.CLI_TIPOIDE" #tipoDocu (change)="controlBotones(tipoDocu.value)" name="tipoDocumento" class="form-control">
+                            <option *ngFor="let tipo of tipoClientes" [value]="tipo.ticli_codigo">
+                                {{ tipo.ticli_nombre }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">CED/RUC*</label>
+                        <div class="input-group">
+                            <input disabled type="tel" class="form-control" [(ngModel)]="cliente.CLI_CODIGO" (keyup)="calcularVence($event)" name="cedruc" placeholder="9999999999" minlength="10" maxlength="13" #ruc="ngModel" required>
+                            <button type="button" class="btn btn-primary" *ngIf="mostrarBtn" (click)="buscarDatosOnLine()"> <i class="fas fa-search"></i> </button>
+                            <div *ngIf="buscando" class="mt-1">
+                                <i class="fas fa-spinner fa-2x fa-spin"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6"></div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Razón social*</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_NOMBRE" name="nombre" placeholder="Nombres" minlength="4" #nombre="ngModel" required />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Nombre Comercial*</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_NOMBREC" name="nombrec" placeholder="Nombre Comercial" minlength="4" #nombrec="ngModel" required />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Cédula</label>
+                        <div class="input-group">
+                            <input disabled type="tel" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CEDULA" name="cedula" placeholder="Cedula" minlength="10" maxlength="13">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Representante legal</label>
+                            <input disabled type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_REPRESENTANTELEGAL" name="rl" placeholder="Nombre" minlength="4" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Actividad</label>
+                            <input disabled type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_ACTIVIDAD" name="actividad" placeholder="Actividad" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Dirección</label>
+                            <input disabled type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_DIRECCION1" name="direccion" placeholder="Dirección" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Teléfono</label>
+                            <input disabled type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_TELEFONO1" name="telefono" placeholder="Teléfono" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Teléfono 2</label>
+                            <input disabled [(ngModel)]="cliente.CLI_TELEFONO2" name="phone2" placeholder="Teléfono" type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input disabled type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CORREO" name="email" placeholder="Email" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Email Secundario</label>
+                            <input disabled type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CORREO2" name="email2" placeholder="Email" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Provincia</label>
+                            <select disabled [(ngModel)]="provinciaCodigo" name="provincia" #provincia (change)="onChangeProvincia(provincia.value)" class="form-control form-control-sm">
+                                <option *ngFor="let provincia of provincias" [value]="provincia.UBIGEO_CODIGO">
+                                    {{ provincia.UBIGEO_NOMBRE }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" *ngIf="provinciaCodigo !== ''">
+                        <div class="form-group">
+                            <label class="form-label">Cantón</label>
+                            <select disabled [(ngModel)]="cantonCodigo" name="canton" #canton class="form-control form-control-sm">
+                                <option *ngFor="let canton of cantones" [value]="canton.UBIGEO_CODIGO">
+                                    {{ canton.UBIGEO_NOMBRE }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Asesor</label>
+                            <select disabled [(ngModel)]="cliente.VEN_CODIGO" name="clientCity" #clientCity class="form-control form-control-sm">
+                                <option *ngFor="let vendedor of vendedores" [value]="vendedor.VEN_CODIGO">
+                                    {{ vendedor.VEN_NOMBRE }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Usuario</label>
+                            <select disabled [(ngModel)]="cliente.USUARIO" name="usuario" class="form-control form-control-sm">
+                                <option *ngFor="let u of usuarios" [value]="u.USUIDENTIFICACION">
+                                    {{ u.USUAPELLIDO }} {{ u.USUNOMBRE }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Grupo</label>
+                            <select disabled [(ngModel)]="cliente.GRU_CODIGO" name="grupo" class="form-control form-control-sm">
+                                <option *ngFor="let g of grupos" [value]="g.GRU_CODIGO">
+                                    {{ g.GRU_NOMBRE }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Tipo</label>
+                            <select disabled [(ngModel)]="cliente.CLI_TIPOCLIENTE" name="tipoCli" class="form-control form-control-sm">
+                                <option *ngFor="let t of tiposClientes" [value]="t.TIP_CODIGO">
+                                    {{ t.TIP_NOMBRE }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label">Dígito</label>
+                            <input type="tel" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_DIGITO"
+                                name="digito" disabled placeholder="">
+                        </div>
+                    </div> -->
+                    <!-- <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label">Vence</label>
+                            <input type="tel" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_VENCE"
+                                name="vence" disabled placeholder="">
+                        </div>
+                    </div> -->
+                    <div class="col-md-4">
+                        <label class="form-label">Región</label>
+                        <select disabled [(ngModel)]="cliente.CLI_REGION" name="region" class="form-control form-control-sm">
+                            <option value="S">Sierra</option>
+                            <option value="C">Costa</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group d-grid gap-2">
+                            <label class="form-label">Estado</label>
+                            <button disabled *ngIf="cliente.CLI_ESTADO === '1'" (click)="cliente.CLI_ESTADO = '0'" class="btn btn-sm btn-outline-success" type="button">
+                                Activo
+                            </button>
+                            <button disabled *ngIf="cliente.CLI_ESTADO === '0'" (click)="cliente.CLI_ESTADO = '1'" class="btn btn-sm btn-outline-danger" type="button">
+                                Pasivo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-label">Observación</label>
+                            <textarea readonly [(ngModel)]="cliente.CLI_OBSERVACION" name="comercialName" #comercialName="ngModel" placeholder="Observación del cliente" type="text" class="form-control" minlength="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="tab=='IC'">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label">Latitud</label>
+                            <input disabled [(ngModel)]="coordinateX" name="coordX" placeholder="0" type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="form-label">Longitud</label>
+                            <input disabled [(ngModel)]="coordinateY" name="coordY" placeholder="0" type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Cuenta Contable Clientes</label>
+                            <input disabled [(ngModel)]="cuentasCliente.CON_CODIGO1" (click)="openDialog('CON_CODIGO1')" name="conCodigo1" placeholder="...." type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-label">Cuenta Contable Anticipos</label>
+                            <input disabled [(ngModel)]="cuentasCliente.CON_CODIGO2" (click)="openDialog('CON_CODIGO2')" name="conCodigo2" placeholder="...." type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" *ngIf="showMore">
+                        <div class="form-group">
+                            <label class="form-label">Cuenta Contable BaseIVA</label>
+                            <input disabled [(ngModel)]="cuentasCliente.CLI_BASEIVA" (click)="openDialog('CLI_BASEIVA')" name="cliBaseIva" placeholder="...." type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-4" *ngIf="showMore">
+                        <div class="form-group">
+                            <label class="form-label">Cuenta Contable BaseCERO</label>
+                            <input disabled [(ngModel)]="cuentasCliente.CLI_BASECERO" (click)="openDialog('CLI_BASECERO')" name="cliBaseCero" placeholder="...." type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+                    <div class="col-md-4" *ngIf="showMore">
+                        <div class="form-group">
+                            <label class="form-label">Cuenta Contable BaseNOBJET</label>
+                            <input disabled [(ngModel)]="cuentasCliente.CLI_BASENOBJET" (click)="openDialog('CLI_BASENOBJET')" name="cliBaseNobjet" placeholder="...." type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+
+                </div>
+                <div *ngIf="tab == 'CL'">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/sri.png" style="width: 20px;" alt="">
+                                SRI</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVESRI" name="sri">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/iess.png" style="width: 20px;" alt=""> IESS
+                                Empleado</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVEIESSEMPLEADO" name="iess_afiliado">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/iess.png" style="width: 20px;" alt=""> IESS
+                                Empleador</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVEIESSEMPLEADOR" name="iess_empresa">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/iess.png" style="width: 20px;" alt=""> IESS
+                                Doméstica</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVEIESSDOMESTICA" name="iess_domestico">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/MRL.png" style="width: 20px;" alt=""> MRL
+                                Contratos</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVEMRLCONTRATOS" name="mrl1">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/MRL.png" style="width: 20px;" alt=""> MRL
+                                Formularios</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVEMRLFORMULARIOS" name="mrl2">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/super.png" style="width: 20px;" alt="">
+                                Usuario Super</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_USUARIOSUPER" name="supercias_usuario">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/super.png" style="width: 20px;" alt="">
+                                Clave Super</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVESUPER" name="supercias_clave">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/municipio.png" style="width: 20px;" alt="">
+                                Municipio</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVEMUNICIPIO" name="municipio_clave">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/sercop.png" style="width: 20px;" alt="">
+                                Usuario Sercop</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_USUARIOSERCOP" name="ussercop">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"> <img src="assets/img/sercop.png" style="width: 20px;" alt="">
+                                Clave Sercop</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVESERCOP" name="claversercop">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Quipux</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVEQUIPUX" name="quipux">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">UAFE</label>
+                            <input disabled type="text" class="form-control" [(ngModel)]="cliente.CLI_CLAVEUAFE" name="uafe">
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="tab=='DI'">
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Dato 1</th>
+                                    <th scope="col">Dato 2</th>
+                                    <th scope="col">Dato 3</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let dato of cliente.datosAdicionales;let i = index">
+                                    <td scope="row">
+                                        <div class="form-group">
+                                            <input disabled type="text" class="form-control form-control-sm" name="dato1{{i}}" [(ngModel)]="dato.DATO1" [value]="dato.dato1" required>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <input disabled type="text" class="form-control form-control-sm" name="dato2{{i}}" [(ngModel)]="dato.DATO2" [value]="dato.dato2" required>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <input disabled type="text" class="form-control form-control-sm" name="dato3{{i}}" [(ngModel)]="dato.DATO3" [value]="dato.dato3" required>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button disabled type="button" class="btn btn-danger btn-sm" (click)="quitarDatoAdicional(i)">
+                                            <i class="fas fa-minus-circle"></i> </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div *ngIf="tab == 'DC'">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Fecha de actualización</label>
+                                <input disabled type="date" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_FECHACONSULTA" disabled name="fecConsulta">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Contribuyente Microempresas</label>
+                                <input disabled [(ngModel)]="cliente.CLI_MICROEMPRESA" name="micro" type="text" disabled class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Contribuyente Especial</label>
+                                <input disabled [(ngModel)]="cliente.CLI_CONTRIESPECIAL" name="constEsp" type="text" disabled class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Empresa Fantasma</label>
+                                <input disabled [(ngModel)]="cliente.CLI_EMPRESAFANTAS" name="fantasma" type="text" disabled class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Agente de Retención</label>
+                                <input disabled [(ngModel)]="cliente.CLI_AGENRETENCION" name="agenteRetencion" type="text" disabled class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cerrar</button>
+    <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
+</mat-dialog-actions>

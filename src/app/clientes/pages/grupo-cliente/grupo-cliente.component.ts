@@ -19,11 +19,11 @@ export class GrupoClienteComponent implements OnInit {
   constructor(private grupoClientesService: GrupoClientesService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
+    this.routeStr = this.route.snapshot.paramMap.get('id');
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       this.grupoClientesService.getGrupo(this.routeStr).subscribe(
         (res) => {
-          console.log(res);
-          // this.grupo = res;
+          this.grupo = res;
         },
         (err) => {
           console.log(err);
@@ -62,6 +62,31 @@ export class GrupoClienteComponent implements OnInit {
         }
       );
     }
+  }
+
+  eliminarGrupo(): void {
+    let eliminar = false;
+    Swal.fire({ title: 'Confirmación', text: 'Desea eliminar este grupo?', icon: 'warning', showDenyButton: true, confirmButtonText: `Eliminar`, denyButtonText: `No eliminar`, denyButtonColor: '#3085d6', confirmButtonColor: '#d33', }).then((result) => {
+      if (result.isConfirmed) {
+        eliminar = true;
+        if (eliminar) {
+          Swal.fire({ title: 'Espere', text: 'Eliminando información', allowOutsideClick: false, icon: 'info', });
+          Swal.showLoading();
+
+          this.grupoClientesService.deleteGrupos(this.grupo.GRU_CODIGO).subscribe(
+            (resp) => {
+              Swal.fire('Eliminado!', 'Se eliminó los datos del grupo', 'success').then((r) => {
+                this.router.navigateByUrl('clientes/grupos');
+              });
+            },
+            (error) => {
+              console.log(error);
+              Swal.fire('Error!', 'Ocurrió un error al eliminar', 'error');
+            }
+          );
+        }
+      }
+    });
   }
 
 }
