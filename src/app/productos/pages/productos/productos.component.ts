@@ -30,7 +30,6 @@ export class ProductosComponent implements OnInit {
     this.cargando = true;
     this.productosService.getProductos().subscribe(resp => {
       this.productos = resp;
-      console.log(resp);
       this.cargando = false;
     });
   }

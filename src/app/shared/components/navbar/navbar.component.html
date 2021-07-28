@@ -61,7 +61,7 @@
             Configuraciones
           </a>
                     <ul class="dropdown-menu" aria-labelledby="productosDropdown">
-                      <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/empresa']">Datos de la Empresa</a></li>
+                        <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/empresa']">Datos de la Empresa</a></li>
                         <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/configuraciones']">Configuraciones del sistema</a></li>
                         <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/configuraciones/ciudades']">Ubicaciones</a></li>
                     </ul>
@@ -86,6 +86,12 @@
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form> -->
+            <div class="d-flex ml-auto" style="float: right;">
+                <li class="nav-item">
+                    <a class="nav-link" style="color: aliceblue;" aria-disabled="true"> {{ usr.USUAPELLIDO }} {{ usr.USUNOMBRE }}</a>
+                </li>
+                <button class="btn btn-outline-danger" type="button" (click)="cerrarSesion()">Salir</button>
+            </div>
         </div>
     </div>
 </nav>

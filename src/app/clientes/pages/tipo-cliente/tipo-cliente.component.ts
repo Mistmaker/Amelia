@@ -28,11 +28,9 @@ export class TipoClienteComponent implements OnInit {
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       this.tipoClientesService.getTipo(this.routeStr).subscribe(
         (res) => {
-          console.log(res);
           this.tipoCliente = res;
         },
         (err) => {
-          console.log(err);
         }
       );
       this.showDeleteButton = true;
@@ -43,13 +41,11 @@ export class TipoClienteComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    console.log('me guardo', this.tipoCliente);
     if (this.routeStr !== 'nuevo') {
       this.tipoClientesService
         .putTipo(this.tipoCliente)
         .subscribe(
           (res) => {
-            console.log(res);
             Swal.fire(
               'Éxito',
               'Se actualizo el tipo de cliente con éxito',
@@ -57,14 +53,12 @@ export class TipoClienteComponent implements OnInit {
             );
           },
           (err) => {
-            console.log(err);
             Swal.fire('Error', err.error.msg, 'error');
           }
         );
     } else {
       this.tipoClientesService.postTipo(this.tipoCliente).subscribe(
         (res) => {
-          console.log(res);
           Swal.fire(
             'Éxito',
             'Se creo el tipo de cliente con éxito',
@@ -72,7 +66,6 @@ export class TipoClienteComponent implements OnInit {
           );
         },
         (err) => {
-          console.log(err);
           Swal.fire('Error', err.error.msg, 'error');
         }
       );
@@ -92,7 +85,6 @@ export class TipoClienteComponent implements OnInit {
           .deleteTipo(this.tipoCliente.TIP_CODIGO)
           .subscribe(
             (res) => {
-              console.log('response delete', res);
               Swal.fire(
                 'Eliminado',
                 'Se elimino el tipo de cliente con éxito',
@@ -101,7 +93,6 @@ export class TipoClienteComponent implements OnInit {
               this.router.navigate(['/clientes/tipos-clientes']);
             },
             (err) => {
-              console.log('error delete', err);
               Swal.fire('Error', err.error.msg, 'error');
             }
           );

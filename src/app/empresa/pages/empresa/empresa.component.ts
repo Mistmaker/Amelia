@@ -19,7 +19,6 @@ export class EmpresaComponent implements OnInit {
   ngOnInit(): void {
     this.empresaService.getDatos().subscribe(resp => {
       this.empresa = resp;
-      console.log(this.empresa);
     });
   }
 
@@ -29,11 +28,9 @@ export class EmpresaComponent implements OnInit {
     }
     this.empresaService.setDatos(this.empresa).subscribe(
       (res) => {
-        console.log(res);
         Swal.fire('Éxito', 'Datos actualizados', 'success');
       },
       (err) => {
-        console.log(err);
         Swal.fire('Error', err.error.msg, 'error');
       }
     );

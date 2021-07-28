@@ -27,11 +27,9 @@ export class CrearGrupoProductoComponent implements OnInit {
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       this.grupoProductosService.getGrupo(this.routeStr).subscribe(
         (res) => {
-          console.log(res);
           this.grupoProducto = res;
         },
         (err) => {
-          console.log(err);
         }
       );
       this.showDeleteButton = true;
@@ -42,13 +40,11 @@ export class CrearGrupoProductoComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    console.log('me guardo', this.grupoProducto);
     if (this.routeStr !== 'nuevo') {
       this.grupoProductosService
         .putGrupo(this.grupoProducto.GRUP_CODIGO, this.grupoProducto)
         .subscribe(
           (res) => {
-            console.log(res);
             Swal.fire(
               'Éxito',
               'Se actualizo el grupo de productos con éxito',
@@ -56,14 +52,12 @@ export class CrearGrupoProductoComponent implements OnInit {
             );
           },
           (err) => {
-            console.log(err);
             Swal.fire('Error', err.error.msg, 'error');
           }
         );
     } else {
       this.grupoProductosService.postGrupo(this.grupoProducto).subscribe(
         (res) => {
-          console.log(res);
           Swal.fire(
             'Éxito',
             'Se creo el grupo de productos con éxito',
@@ -71,7 +65,6 @@ export class CrearGrupoProductoComponent implements OnInit {
           );
         },
         (err) => {
-          console.log(err);
           Swal.fire('Error', err.error.msg, 'error');
         }
       );
@@ -91,7 +84,6 @@ export class CrearGrupoProductoComponent implements OnInit {
           .deleteGrupo(this.grupoProducto.GRUP_CODIGO)
           .subscribe(
             (res) => {
-              console.log('response delete', res);
               Swal.fire(
                 'Eliminado',
                 'Se elimino el grupo con éxito',
@@ -100,7 +92,6 @@ export class CrearGrupoProductoComponent implements OnInit {
               this.router.navigate(['/productos/grupo-productos']);
             },
             (err) => {
-              console.log('error delete', err);
               Swal.fire('Error', err.error.msg, 'error');
             }
           );

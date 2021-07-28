@@ -30,7 +30,6 @@ export class UsuarioComponent implements OnInit {
           this.usuario = res;
         },
         (err) => {
-          console.log(err);
         }
       );
       this.showDeleteButton = true;
@@ -49,26 +48,22 @@ export class UsuarioComponent implements OnInit {
         .putUsuario(this.usuario)
         .subscribe(
           (res) => {
-            console.log(res);
             Swal.fire('Éxito', 'Se actualizo el usuario con éxito', 'success').then(() => {
               this.router.navigateByUrl('usuarios');
             });
           },
           (err) => {
-            console.log(err);
             Swal.fire('Error', err.error.msg, 'error');
           }
         );
     } else {
       this.usuariosService.postUsuario(this.usuario).subscribe(
         (res) => {
-          console.log(res);
           Swal.fire('Éxito', 'Se creo el usuario con éxito', 'success').then(() => {
             this.router.navigateByUrl('usuarios');
           });
         },
         (err) => {
-          console.log(err);
           Swal.fire('Error', err.error.msg, 'error');
         }
       );
@@ -91,7 +86,6 @@ export class UsuarioComponent implements OnInit {
               });
             },
             (error) => {
-              console.log(error);
               Swal.fire('Error!', 'Ocurrió un error al eliminar', 'error');
             }
           );

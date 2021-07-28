@@ -2,22 +2,28 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Usuario } from '../../models/usuarios.model';
 import { urlWs } from 'src/environments/environment.prod';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(usuario: Usuario) {
     return this.http.post(`${urlWs}/api/usuarios/auth`, usuario);
   }
 
   validarInicioSesion() {
-    if (localStorage.getItem("usuario")) {
+    if (localStorage.getItem('usuario')) {
       return true;
     }
     return false;
+  }
+
+  cerrarSesion(){
+    localStorage.removeItem('usuario');
+    this.router.navigateByUrl('auth');
   }
 }

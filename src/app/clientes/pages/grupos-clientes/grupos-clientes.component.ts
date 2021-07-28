@@ -24,7 +24,6 @@ export class GruposClientesComponent implements OnInit {
   ngOnInit(): void {
     this.grupoClientesService.getGrupos().subscribe(resp => {
       this.grupos = resp;
-      console.log(this.grupos);
     });
   }
 

@@ -36,12 +36,10 @@ export class VendedorComponent implements OnInit {
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       this.vendedorService.getVendedor(this.routeStr).subscribe(
         (res) => {
-          console.log(res);
           this.vendedor = res;
         this.getCiudad();
         },
         (err) => {
-          console.log(err);
         }
       );
       this.showDeleteButton = true;
@@ -56,7 +54,6 @@ export class VendedorComponent implements OnInit {
   getCiudad() {
     if (this.vendedor.VEN_ZONA) {
       const data = this.vendedor.VEN_ZONA.split('.');
-      console.log(data);
       this.provinciaCodigo = data[0];
       this.getAllCantones(this.provinciaCodigo);
       this.cantonCodigo = this.vendedor.VEN_ZONA;
@@ -78,7 +75,6 @@ export class VendedorComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    console.log('me guardo', this.vendedor);
 
     this.vendedor.VEN_PROVINCIA = this.provinciaCodigo;
     this.vendedor.VEN_ZONA = this.cantonCodigo;
@@ -88,7 +84,6 @@ export class VendedorComponent implements OnInit {
         .putVendedor(this.vendedor.VEN_CODIGO, this.vendedor)
         .subscribe(
           (res) => {
-            console.log(res);
             Swal.fire(
               'Éxito',
               'Se actualizo el vendedor con éxito',
@@ -96,14 +91,12 @@ export class VendedorComponent implements OnInit {
             );
           },
           (err) => {
-            console.log(err);
             Swal.fire('Error', err.error.msg, 'error');
           }
         );
     } else {
       this.vendedorService.postVendedor(this.vendedor).subscribe(
         (res) => {
-          console.log(res);
           Swal.fire(
             'Éxito',
             'Se creo el vendedor con éxito',
@@ -111,7 +104,6 @@ export class VendedorComponent implements OnInit {
           );
         },
         (err) => {
-          console.log(err);
           Swal.fire('Error', err.error.msg, 'error');
         }
       );
@@ -131,7 +123,6 @@ export class VendedorComponent implements OnInit {
           .deleteVendedor(this.vendedor.VEN_CODIGO)
           .subscribe(
             (res) => {
-              console.log('response delete', res);
               Swal.fire(
                 'Eliminado',
                 'Se elimino el vendedor con éxito',
@@ -140,7 +131,6 @@ export class VendedorComponent implements OnInit {
               this.router.navigate(['/vendedores']);
             },
             (err) => {
-              console.log('error delete', err);
               Swal.fire('Error', err.error.msg, 'error');
             }
           );

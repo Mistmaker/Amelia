@@ -23,7 +23,6 @@ export class CuentasContablesComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any | null,
     private cuentasService: CuentaContableService
   ) {
-    console.log('data on modal', data);
     if (data.name) {
       let name = data.name.split('|| ')
       this.query = name[1];
@@ -38,7 +37,6 @@ export class CuentasContablesComponent implements OnInit {
 
   selectCuenta(form: NgForm) {
     if (form.invalid) {
-      console.log('invalid');
       return;
     }
     this.dialogRef.close(this.cuentaContable);
@@ -64,7 +62,6 @@ export class CuentasContablesComponent implements OnInit {
       this.cuentasService
         .getCuentasByNombreOrCodigo(this.query)
         .subscribe((res) => {
-          console.log('cuentas', res);
           this.cuentasList = res;
         });
     }, 500);

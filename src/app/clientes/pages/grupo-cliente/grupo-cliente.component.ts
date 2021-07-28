@@ -26,7 +26,6 @@ export class GrupoClienteComponent implements OnInit {
           this.grupo = res;
         },
         (err) => {
-          console.log(err);
         }
       );
       this.showDeleteButton = true;
@@ -42,22 +41,18 @@ export class GrupoClienteComponent implements OnInit {
         .putGrupo(this.grupo)
         .subscribe(
           (res) => {
-            console.log(res);
             Swal.fire('Éxito', 'Se actualizo el tipo de cliente con éxito', 'success');
           },
           (err) => {
-            console.log(err);
             Swal.fire('Error', err.error.msg, 'error');
           }
         );
     } else {
       this.grupoClientesService.postGrupo(this.grupo).subscribe(
         (res) => {
-          console.log(res);
           Swal.fire('Éxito', 'Se creo el tipo de cliente con éxito', 'success');
         },
         (err) => {
-          console.log(err);
           Swal.fire('Error', err.error.msg, 'error');
         }
       );
@@ -80,7 +75,6 @@ export class GrupoClienteComponent implements OnInit {
               });
             },
             (error) => {
-              console.log(error);
               Swal.fire('Error!', 'Ocurrió un error al eliminar', 'error');
             }
           );

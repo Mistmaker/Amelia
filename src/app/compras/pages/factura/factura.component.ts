@@ -82,7 +82,6 @@ export class FacturaComponent implements OnInit {
           this.supplier = res;
         },
         (err) => {
-          console.log('get data from database', err);
         }
       );
     } else {
@@ -95,7 +94,6 @@ export class FacturaComponent implements OnInit {
       this.supplierService
         .getProveedorCedula(this.supplier.PRO_CODIGO)
         .subscribe((response) => {
-          console.log('cedula', response);
           this.formatData(response['result'][0], 'C');
         });
     }
@@ -103,14 +101,12 @@ export class FacturaComponent implements OnInit {
     if (this.supplier.PRO_CODIGO.length === 13) {
       this.supplierService.getProveedorSri(this.supplier.PRO_CODIGO).subscribe(
         (res) => {
-          console.log(res);
           this.formatData(res, 'R');
         },
         (err) => {
           this.supplierService
             .getProveedorSriAlt(this.supplier.PRO_CODIGO)
             .subscribe((res) => {
-              console.log(res);
               this.formatData(res, 'R');
             });
         }
@@ -175,7 +171,6 @@ export class FacturaComponent implements OnInit {
 
   saveInvoice(form: NgForm) {
     if (form.invalid) {
-      console.log('invalid form');
       return;
     }
 
@@ -210,15 +205,12 @@ export class FacturaComponent implements OnInit {
     this.invoice.PRO_CODIGO = this.supplier.PRO_CODIGO;
     this.invoice.ENCFACPRO_CORREO = this.supplier.PRO_CORREO;
 
-    console.log(this.invoice);
 
     this.facturasService.postFacturaProveedor(this.invoice).subscribe(
       (res) => {
-        console.log(res);
         Swal.fire('Éxito', 'Se creo la factura con éxito', 'success');
       },
       (err) => {
-        console.log(err);
         Swal.fire('Error', err.error.msg, 'error');
       }
     );
@@ -231,7 +223,6 @@ export class FacturaComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed', result);
       if (result) {
         this.invoice.itemsInvoice.push(result);
         this.calcularValoresTotales();
@@ -255,7 +246,6 @@ export class FacturaComponent implements OnInit {
   }
 
   calcularTotalPorFila(pos: number, typePercent: string) {
-    console.log(pos, typePercent);
     if (typePercent === 'value') {
       this.discountValueToPercent(pos);
     } else if (typePercent === 'percent') {
@@ -275,7 +265,6 @@ export class FacturaComponent implements OnInit {
 
     let discount =
       total * (parseFloat(invoiceDetail.DETFACPRO_PORDES.toString()) / 100);
-    console.log(discount);
 
     return total - discount;
   }

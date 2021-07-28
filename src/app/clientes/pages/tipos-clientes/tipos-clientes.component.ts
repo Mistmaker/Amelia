@@ -27,12 +27,10 @@ export class TiposClientesComponent implements OnInit {
     this.cargando = true;
     this.tipoClientesService.getTipos().subscribe(
       (res) => {
-        console.log(res);
         this.tiposClientes = res;
         this.cargando = false;
       },
       (err) => {
-        console.log(err);
       }
     );
   }

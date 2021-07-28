@@ -71,18 +71,15 @@ export class ClienteModalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.data);
 
     this.routeStr = this.data.CLI_CODIGO;
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
-      console.log(this.routeStr);
       this.clientesService.getCliente(this.routeStr).subscribe((resp) => {
         this.cliente = resp;
         this.cliente.CLI_FECHACONSULTA = this.cliente.CLI_FECHACONSULTA ? this.cliente.CLI_FECHACONSULTA.slice(0, 10) : null;
         this.cliente.CLI_FECHACREADO = this.cliente.CLI_FECHACREADO ? this.cliente.CLI_FECHACREADO.slice(0, 10) : null;
         if (!this.cliente.datosAdicionales) this.cliente.datosAdicionales = [];
         this.showDeleteButton = true;
-        console.log(this.cliente);
         this.cliente.CLI_ESTADO = resp.CLI_ESTADO || '1';
         this.cliente.CLI_MICROEMPRESA = resp.CLI_MICROEMPRESA || '';
         this.cliente.CLI_CONTRIESPECIAL = resp.CLI_CONTRIESPECIAL || '';
@@ -96,7 +93,6 @@ export class ClienteModalComponent implements OnInit {
           COM_CODIGO: this.cliente.COM_CODIGO,
         }
         this.clientesService.getDatosAdicionales(datosBusqueda).subscribe((resp: any) => {
-          console.log(resp);
           this.cliente.datosAdicionales = resp;
         });
         this.getAllCuentasContables();
@@ -110,7 +106,6 @@ export class ClienteModalComponent implements OnInit {
     this.cliente.CLI_AGENRETENCION = this.cliente.CLI_AGENRETENCION || 'NO';
 
     this.tipoClientesService.getTipos().subscribe((resp) => {
-      console.log(resp);
       this.tipoClientes = resp;
     });
     // get all provincias
@@ -123,22 +118,18 @@ export class ClienteModalComponent implements OnInit {
     });
     // get config
     this.configService.getConfigClientes().subscribe((resp) => {
-      console.log('config', resp);
       this.showMore = resp.codigo === 1 ? true : false;
     });
 
     this.usuariosService.getUsuarios().subscribe(resp => {
-      console.log(resp);
       this.usuarios = resp;
     });
 
     this.grupoClientesService.getGrupos().subscribe(resp => {
-      console.log(resp);
       this.grupos = resp;
     });
 
     this.tiposClientesService.getTipos().subscribe(resp => {
-      console.log(resp);
       this.tiposClientes = resp;
     });
 
@@ -193,7 +184,6 @@ export class ClienteModalComponent implements OnInit {
   getCiudad() {
     if (this.cliente.CLI_CIUDAD) {
       const data = this.cliente.CLI_CIUDAD.split('.');
-      console.log(data);
       this.provinciaCodigo = data[0];
       this.getAllCantones(this.provinciaCodigo);
       this.cantonCodigo = this.cliente.CLI_CIUDAD;

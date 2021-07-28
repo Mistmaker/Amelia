@@ -30,7 +30,6 @@ export class CiudadesComponent implements OnInit {
         this.cargando = false;
       },
       (err) => {
-        console.log(err);
       }
     );
   }

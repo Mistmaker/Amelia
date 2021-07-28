@@ -55,14 +55,11 @@ export class ProductoComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id !== 'nuevo' && id !== null) {
-      console.log(id);
       this.productosService.getProducto(id).subscribe((resp) => {
         this.producto = resp;
         this.producto.ART_ACTIVO = this.producto.ART_ACTIVO || '1';
-        console.log(resp);
         // Solo si encuentra un producto procede a sacar los precios de la base de datos
         this.preciosService.getPreciosPorProducto(id).subscribe((result) => {
-          console.log(result);
           this.producto.precios = result;
         });
         this.getAllCuentasContables();
@@ -71,12 +68,10 @@ export class ProductoComponent implements OnInit {
     }
 
     this.grupoProductosService.getGrupos().subscribe((resp) => {
-      console.log(resp);
       this.grupoProductos = resp;
     });
 
     this.tipoPrecioService.getTiposPrecios().subscribe((resp) => {
-      console.log(resp);
       this.tipoPrecios = resp;
     });
     // get tipo unidades
@@ -85,13 +80,11 @@ export class ProductoComponent implements OnInit {
     });
     // get config
     this.configService.getConfigPreciosIva().subscribe((resp) => {
-      console.log('config', resp);
       this.includeIva = resp.codigo === 1 ? true : false;
     });
   }
 
   openDialog(attribute: string): void {
-    console.log('ATTRIBUTE', attribute);
 
     const dialogRef = this.dialog.open(CuentasContablesComponent, {
       panelClass: 'dialog-responsive',
@@ -101,7 +94,6 @@ export class ProductoComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: CuentaContable) => {
-      console.log('The dialog was closed', result);
       if (result) {
         this.producto[attribute] = result.CON_CODIGO;
         this.cuentasProducto[attribute] =
@@ -137,14 +129,10 @@ export class ProductoComponent implements OnInit {
   }
 
   guardar(form: NgForm) {
-    // console.log(form);
     if (form.invalid) {
-      console.log('invalid');
-
       return;
     }
 
-    console.log('guardar products', this.producto);
     let { repeated, indexRepeated } = this.verifyPrices();
     if (!repeated) {
       Swal.fire({
@@ -160,7 +148,6 @@ export class ProductoComponent implements OnInit {
           .putProducto(this.producto.ART_CODIGO, this.producto)
           .subscribe(
             (resp) => {
-              console.log(resp);
               Swal.fire({
                 title: 'Éxito',
                 text: 'Se actualizo el producto con éxito',
@@ -169,13 +156,11 @@ export class ProductoComponent implements OnInit {
             },
             (err) => {
               Swal.fire('Error', err.error.msg, 'error');
-              console.error(err);
             }
           );
       } else {
         this.productosService.postProducto(this.producto).subscribe(
           (resp: any) => {
-            console.log(resp);
             this.producto.ART_CODIGO = resp.ART_CODIGO;
             Swal.fire({
               title: 'Éxito',

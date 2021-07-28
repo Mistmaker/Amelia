@@ -29,7 +29,6 @@ export class GrupoProductosComponent implements OnInit {
         this.cargando = false;
       },
       (err) => {
-        console.log(err);
       }
     );
   }

@@ -27,14 +27,12 @@ export class CiudadComponent implements OnInit {
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       this.ciudadesService.getCiudad(this.routeStr).subscribe(
         (res) => {
-          console.log(res);
           this.ciudad = res;
           // default values
           this.ciudad.CAPITAL = this.ciudad.CAPITAL || 'N';
           this.ciudad.UBIGEO_NIVEL = this.ciudad.UBIGEO_NIVEL || '1';
         },
         (err) => {
-          console.log(err);
         }
       );
       this.showDeleteButton = true;
@@ -48,31 +46,25 @@ export class CiudadComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    console.log('me guardo', this.ciudad);
 
     if (this.routeStr !== 'nuevo') {
       this.ciudadesService
         .putCiudad(this.ciudad.UBIGEO_CODIGO, this.ciudad)
         .subscribe(
           (res) => {
-            console.log(res);
             Swal.fire('Éxito', 'Se actualizo la ciudad con éxito', 'success');
           },
           (err) => {
-            console.log(err);
             Swal.fire('Error', err.error.msg, 'error');
           }
         );
     } else {
-      console.log("post");
 
       this.ciudadesService.postCiudad(this.ciudad).subscribe(
         (res) => {
-          console.log(res);
           Swal.fire('Éxito', 'Se creo la ciudad con éxito', 'success');
         },
         (err) => {
-          console.log(err);
           Swal.fire('Error', err.error.msg, 'error');
         }
       );
@@ -90,7 +82,6 @@ export class CiudadComponent implements OnInit {
       if (result.isConfirmed) {
         this.ciudadesService.deleteCiudad(this.ciudad.UBIGEO_CODIGO).subscribe(
           (res) => {
-            console.log('response delete', res);
             Swal.fire(
               'Eliminado',
               'Se elimino el vendedor con éxito',
@@ -99,7 +90,6 @@ export class CiudadComponent implements OnInit {
             this.router.navigate(['/configuraciones/ciudades']);
           },
           (err) => {
-            console.log('error delete', err);
             Swal.fire('Error', err.error.msg, 'error');
           }
         );

@@ -22,10 +22,8 @@ export class ProveedoresComponent implements OnInit {
 
   ngOnInit(): void {
     this.loading = true;
-    console.log('on init - proveedores');
     this.supplierService.getProveedores().subscribe((response) => {
       this.suppliers = response;
-      console.log('data', response);
       this.loading = false;
     });
   }

@@ -32,7 +32,6 @@ export class CrearProductoComponent implements OnInit {
     private productService: ProductosService,
     private pricesService: PreciosService
   ) {
-    console.log('data', data);
     this.showListPrice = data.showListPrice;
   }
 
@@ -68,7 +67,6 @@ export class CrearProductoComponent implements OnInit {
     this.positionOfProduct = -1;
     setTimeout(() => {
       this.productService.getProductoByName(this.query).subscribe((res) => {
-        console.log('productos', res);
         this.productsList = res;
       });
     }, 500);
@@ -76,7 +74,6 @@ export class CrearProductoComponent implements OnInit {
 
   addProduct(form: NgForm) {
     if (form.invalid) {
-      console.log('invalid');
       return;
     }
 
@@ -111,7 +108,6 @@ export class CrearProductoComponent implements OnInit {
     let discount =
       total *
       (parseFloat(this.invoiceDetail.DETFACPRO_PORDES.toString()) / 100);
-    console.log(discount);
 
     return total - discount;
   }

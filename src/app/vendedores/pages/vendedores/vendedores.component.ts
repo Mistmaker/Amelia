@@ -30,7 +30,6 @@ export class VendedoresComponent implements OnInit {
         this.cargando = false;
       },
       (err) => {
-        console.log(err);
       }
     );
   }

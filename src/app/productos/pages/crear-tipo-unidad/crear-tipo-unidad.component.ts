@@ -27,11 +27,9 @@ export class CrearTipoUnidadComponent implements OnInit {
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
       this.tipoUnidadesService.getUnidad(this.routeStr).subscribe(
         (res) => {
-          console.log(res);
           this.tipoUnidad = res;
         },
         (err) => {
-          console.log(err);
         }
       );
       this.showDeleteButton = true;
@@ -43,13 +41,11 @@ export class CrearTipoUnidadComponent implements OnInit {
       return;
     }
 
-    console.log('me guardo', this.tipoUnidad);
     if (this.routeStr !== 'nuevo') {
       this.tipoUnidadesService
         .putUnidad(this.tipoUnidad.UNI_CODIGO, this.tipoUnidad)
         .subscribe(
           (res) => {
-            console.log(res);
             Swal.fire(
               'Éxito',
               'Se actualizo la unidad de productos con éxito',
@@ -57,14 +53,12 @@ export class CrearTipoUnidadComponent implements OnInit {
             );
           },
           (err) => {
-            console.log(err);
             Swal.fire('Error', err.error.msg, 'error');
           }
         );
     } else {
       this.tipoUnidadesService.postUnidad(this.tipoUnidad).subscribe(
         (res) => {
-          console.log(res);
           Swal.fire(
             'Éxito',
             'Se creo unidad de productos con éxito',
@@ -72,7 +66,6 @@ export class CrearTipoUnidadComponent implements OnInit {
           );
         },
         (err) => {
-          console.log(err);
           Swal.fire('Error', err.error.msg, 'error');
         }
       );
@@ -92,7 +85,6 @@ export class CrearTipoUnidadComponent implements OnInit {
           .deleteUnidad(this.tipoUnidad.UNI_CODIGO)
           .subscribe(
             (res) => {
-              console.log('response delete', res);
               Swal.fire(
                 'Eliminado',
                 'Se elimino el la unidad con éxito',
@@ -101,7 +93,6 @@ export class CrearTipoUnidadComponent implements OnInit {
               this.router.navigate(['/productos/unidad-productos']);
             },
             (err) => {
-              console.log('error delete', err);
               Swal.fire('Error', err.error.msg, 'error');
             }
           );

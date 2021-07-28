@@ -17,7 +17,6 @@ export class ConfiguracionesComponent implements OnInit {
 
   ngOnInit(): void {
     this.configService.getAllConfigs().subscribe((resp) => {
-      console.log(resp);
       this.configList = resp;
     });
   }
@@ -28,11 +27,9 @@ export class ConfiguracionesComponent implements OnInit {
   }
 
   save(form: NgForm) {
-    console.log('lista de configuraciones', this.configList);
 
     this.configService.postAllConfigs(this.configList).subscribe(
       (resp) => {
-        console.log(resp);
         Swal.fire(
           'Éxito',
           'Se actualizaron las configuraciones del sistema',
@@ -40,7 +37,6 @@ export class ConfiguracionesComponent implements OnInit {
         );
       },
       (err) => {
-        console.log(err);
         Swal.fire('Error', err.error.msg, 'error');
       }
     );

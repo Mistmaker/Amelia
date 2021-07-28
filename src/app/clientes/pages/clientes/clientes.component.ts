@@ -30,15 +30,12 @@ export class ClientesComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargando = true;
-    console.log('on init - clientes')
     this.clientesService.getClientes().subscribe(resp => {
       this.clientes = resp;
-      console.log(resp);
       this.cargando = false;
     });
 
     this.grupoClientesService.getGrupos().subscribe(resp => {
-      console.log(resp);
       this.grupos = resp;
     });
   }
@@ -49,7 +46,6 @@ export class ClientesComponent implements OnInit {
       this.vence = '';
       this.grupoId = '';
       this.textoBusqueda = event.target.value;
-      console.log(this.textoBusqueda);
       if (this.textoBusqueda !== '') {
         this.clientesService.getClientesPorNombre(this.textoBusqueda).subscribe(resp => {
           this.clientes = resp;
@@ -74,7 +70,6 @@ export class ClientesComponent implements OnInit {
       this.textoBusqueda = '';
       this.grupoId = '';
       this.vence = event.target.value;
-      console.log(this.vence);
       if (this.vence !== '') {
         this.clientesService.getClientesPorVence(this.vence).subscribe(resp => {
           this.clientes = resp;
@@ -96,7 +91,6 @@ export class ClientesComponent implements OnInit {
   onChangeProvincia(id: string) {
     this.textoBusqueda = '';
     this.vence = '';
-    console.log(id);
     this.grupoId = id;
     if (this.grupoId !== '') {
       this.clientesService.getClientesPorGrupo(this.grupoId).subscribe(resp => {

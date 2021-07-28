@@ -54,10 +54,8 @@ export class ProveedorComponent implements OnInit {
   ngOnInit(): void {
     this.routeStr = this.route.snapshot.paramMap.get('id');
     if (this.routeStr !== 'nuevo' && this.routeStr !== null) {
-      console.log(this.routeStr);
       this.showDeleteButton = true;
       this.supplierService.getProveedor(this.routeStr).subscribe((response) => {
-        console.log(response);
         this.supplier = response;
         this.supplier.PRO_ESTADO = response.PRO_ESTADO || '1';
         this.supplier.PRO_MICROEMPRESA = response.PRO_MICROEMPRESA || 'NO';
@@ -90,8 +88,6 @@ export class ProveedorComponent implements OnInit {
   }
 
   openDialog(attribute: string): void {
-    console.log('ATTRIBUTE', attribute);
-
     const dialogRef = this.dialog.open(CuentasContablesComponent, {
       panelClass: 'dialog-responsive',
       data: {
@@ -100,7 +96,6 @@ export class ProveedorComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: CuentaContable) => {
-      console.log('The dialog was closed', result);
       if (result) {
         this.supplier[attribute] = result.CON_CODIGO;
         this.cuentasProveedor[attribute] =
@@ -154,7 +149,6 @@ export class ProveedorComponent implements OnInit {
   getCiudad() {
     if (this.supplier.PRO_CIUDAD) {
       const data = this.supplier.PRO_CIUDAD.split('.');
-      console.log(data);
       this.provinciaCodigo = data[0];
       this.getAllCantones(this.provinciaCodigo);
       this.cantonCodigo = this.supplier.PRO_CIUDAD;
@@ -190,7 +184,6 @@ export class ProveedorComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-    console.log('me guardo', this.supplier);
     // put null on dates containing undefined string
     if (
       this.supplier.PRO_FECINIACTIVIDADES &&
@@ -220,11 +213,9 @@ export class ProveedorComponent implements OnInit {
     if (this.routeStr == 'nuevo') {
       this.supplierService.postProveedores(this.supplier).subscribe(
         (res: any) => {
-          console.log('response post', res);
           Swal.fire('Éxito', 'Se creo el proveedor con éxito', 'success');
         },
         (err) => {
-          console.log('error post', err);
           Swal.fire('Error', err.error.msg, 'error');
         }
       );
@@ -233,7 +224,6 @@ export class ProveedorComponent implements OnInit {
         .putProveedores(this.supplier.PRO_CODIGO, this.supplier)
         .subscribe(
           (res: any) => {
-            console.log('response put', res);
             Swal.fire(
               'Éxito',
               'Se actualizo el proveedor con éxito',
@@ -241,7 +231,6 @@ export class ProveedorComponent implements OnInit {
             );
           },
           (err) => {
-            console.log('error put', err);
             Swal.fire('Error', err.error.msg, 'error');
           }
         );
@@ -261,7 +250,6 @@ export class ProveedorComponent implements OnInit {
           .deleteProveedor(this.supplier.PRO_CODIGO)
           .subscribe(
             (res) => {
-              console.log('response delete', res);
               Swal.fire(
                 'Eliminado',
                 'Se elimino el proveedor con éxito',
@@ -270,7 +258,6 @@ export class ProveedorComponent implements OnInit {
               this.router.navigate(['/proveedores']);
             },
             (err) => {
-              console.log('error delete', err);
               Swal.fire('Error', err.error.msg, 'error');
             }
           );
@@ -300,7 +287,6 @@ export class ProveedorComponent implements OnInit {
       this.supplierService
         .getProveedorCedula(this.supplier.PRO_CODIGO)
         .subscribe((response) => {
-          console.log('cedula', response);
           this.formatData(response['result'][0], 'C');
         });
     }
@@ -308,14 +294,12 @@ export class ProveedorComponent implements OnInit {
     if (this.supplier.PRO_CODIGO.length === 13) {
       this.supplierService.getProveedorSri(this.supplier.PRO_CODIGO).subscribe(
         (res) => {
-          console.log(res);
           this.formatData(res, 'R');
         },
         (err) => {
           this.supplierService
             .getProveedorSriAlt(this.supplier.PRO_CODIGO)
             .subscribe((res) => {
-              console.log(res);
               this.formatData(res, 'R');
             });
         }
@@ -325,28 +309,24 @@ export class ProveedorComponent implements OnInit {
     this.supplierService
       .getIsMicro(this.supplier.PRO_CODIGO)
       .subscribe((res: any) => {
-        console.log(res);
         this.supplier.PRO_MICROEMPRESA = res.microempresa;
       });
 
     this.supplierService
       .getIsContribuyenteEspecial(this.supplier.PRO_CODIGO)
       .subscribe((res: any) => {
-        console.log(res);
         this.supplier.PRO_CONTRIESPECIAL = res.especiales;
       });
 
     this.supplierService
       .getIsEmpresaFantasma(this.supplier.PRO_CODIGO)
       .subscribe((res: any) => {
-        console.log(res);
         this.supplier.PRO_EMPRESAFANTAS = res.fantasma;
       });
 
     this.supplierService
       .getIsAgenteRentencion(this.supplier.PRO_CODIGO)
       .subscribe((res: any) => {
-        console.log(res);
         this.supplier.PRO_AGENRETENCION = res.agentes;
       });
   }
