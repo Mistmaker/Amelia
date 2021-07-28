@@ -13,7 +13,7 @@
         <form (ngSubmit)="f.form.valid && guardarTipo(f)" #f="ngForm">
             <div class="form-group">
                 <label>Código *</label>
-                <input [(ngModel)]="tipoCliente.TIP_CODIGO" name="codigo" #codigo="ngModel" placeholder="Código del grupo" type="hidden" class="form-control" minlength="1" />
+                <input [(ngModel)]="tipoCliente.TIP_CODIGO" name="codigo" #codigo="ngModel" placeholder="Código del grupo" type="text" readonly class="form-control" minlength="1" />
                 <div *ngIf="f.submitted && codigo.invalid" class="alert bg-warning">
                     <div *ngIf="codigo.errors.required">Código requerido</div>
                     <div *ngIf="codigo.errors.minlength">Debe tener mínimo 1 letras</div>

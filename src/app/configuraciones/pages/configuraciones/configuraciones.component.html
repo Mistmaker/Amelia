@@ -29,5 +29,20 @@
       </div>
 
     </form>
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <label class="form-label" for=""> Cargar clientes desde archivo excel </label>
+        <input type="file" class="form-control" (change)="cargaArchivo($event)" name="excel" id="excel">
+      </div>
+      <div class="col-md-3 d-grid gap-2">
+        <label class="form-label" for=""> &nbsp; </label>
+        <button type="button" class="btn btn-sm btn-success" (click)="cargarExcel()" >Cargar excel</button>
+      </div>
+      <div class="col-md-3 d-grid gap-2">
+        <label class="form-label" for=""> &nbsp; </label>
+        <button type="button" class="btn btn-sm btn-warning" (click)="exportarExcel()" >Obtener Formato</button>
+      </div>
+    </div>
   </div>
 </div>

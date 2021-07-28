@@ -21,11 +21,13 @@
         <div class="table-responsive">
             <table class="table table-sm table-hover animated fadein faster">
                 <thead class="text-primary">
+                    <th>Código</th>
                     <th>Nombre</th>
                     <th>Acción</th>
                 </thead>
                 <tbody>
                     <tr *ngFor="let tipo of tiposClientes | filtroSimple: textoBusqueda | paginate: {itemsPerPage: tableSize,currentPage: page,totalItems: count}">
+                        <td>{{ tipo.TIP_CODIGO }}</td>
                         <td>{{ tipo.TIP_NOMBRE }}</td>
                         <td>
                             <button class="btn btn-primary mr-1" [routerLink]="['/clientes/tipos-clientes', tipo.TIP_CODIGO]">

@@ -26,4 +26,11 @@ export class AuthService {
     localStorage.removeItem('usuario');
     this.router.navigateByUrl('auth');
   }
+
+  getUsrFromLocalStorage(){
+    if (localStorage.getItem('usuario')) {
+      return localStorage.getItem('usuario');
+    }
+    return null;
+  }
 }

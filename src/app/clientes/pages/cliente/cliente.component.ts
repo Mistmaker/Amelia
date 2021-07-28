@@ -235,6 +235,7 @@ export class ClienteComponent implements OnInit {
   }
 
   getCoordinates() {
+    if (!this.cliente.CLI_GMAPS) { return; }
     let coordinates = this.cliente.CLI_GMAPS.split(',');
     this.coordinateX = coordinates[0].replace(',', '').replace(' ', '');
     this.coordinateY = coordinates[1].replace(',', '').replace(' ', '');
