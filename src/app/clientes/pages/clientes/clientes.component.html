@@ -11,7 +11,7 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <select [(ngModel)]="grupoId" name="grupo" class="form-control form-control-sm" #provincia (change)="onChangeProvincia(provincia.value)">
+                    <select [(ngModel)]="grupoId" name="grupo" class="form-select form-select-sm" #provincia (change)="onChangeProvincia(provincia.value)">
                         <option value="" selected>Seleccione un grupo</option>
                         <option *ngFor="let g of grupos" [value]="g.GRU_CODIGO">
                             {{ g.GRU_NOMBRE }}

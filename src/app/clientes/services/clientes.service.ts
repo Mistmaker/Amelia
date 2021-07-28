@@ -11,6 +11,7 @@ import {
   urlWsRucAR,
 } from '../../../environments/environment.prod';
 import { Cliente } from '../../models/clientes.model';
+import { ClienteDocumentos } from '../../models/clientesDocumentos';
 
 @Injectable({
   providedIn: 'root',
@@ -85,5 +86,9 @@ export class ClientesService {
 
   getIsAgenteRentencion(id: string) {
     return this.http.get(`${urlWsRucAR}${id}`);
+  }
+
+  getDocumentos(id: string){
+    return this.http.get<ClienteDocumentos[]>(`${this.ruta}/api/cliDocs/cliente/${id}`);
   }
 }

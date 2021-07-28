@@ -24,6 +24,7 @@ import { GrupoCliente } from '../../../models/grupoClientes';
 import { CuentasContablesComponent } from './../../../shared/components/cuentas-contables/cuentas-contables.component';
 import { TiposClientesService } from '../../services/tipos-clientes.service';
 import { TiposClientes } from '../../../models/tiposClientes';
+import { ClienteDocumentos } from '../../../models/clientesDocumentos';
 
 @Component({
   selector: 'app-cliente',
@@ -50,6 +51,13 @@ export class ClienteComponent implements OnInit {
   grupos: GrupoCliente[] = [];
   tiposClientes: TiposClientes[] = [];
   mostrarInfoCompl = false;
+  cargarDocumento = false;
+  documentoCliente = new ClienteDocumentos();
+  files: FileList | undefined;
+
+  cargando = false;
+  cargado = false;
+  nombreArchivo: string | undefined;
   // cuentas contables clientes
   cuentasCliente = new CuentasContablesClientes();
 
@@ -97,6 +105,13 @@ export class ClienteComponent implements OnInit {
         });
         this.getAllCuentasContables();
       });
+
+      this.clientesService.getDocumentos(this.routeStr).subscribe(resp => {
+        console.log(resp);
+        this.cliente.documentos = resp;
+      });
+    } else {
+      this.mostrarBtn = true;
     }
     // default values
     this.cliente.CLI_PARTEREL = this.cliente.CLI_PARTEREL || 'n';
@@ -168,40 +183,45 @@ export class ClienteComponent implements OnInit {
     this.cuentaContableService
       .getCuenta(this.cliente.CON_CODIGO1)
       .subscribe((res) => {
-        this.cuentasCliente.CON_CODIGO1 =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CON_CODIGO1 = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
 
     // CON_CODIGO2
     this.cuentaContableService
       .getCuenta(this.cliente.CON_CODIGO2)
       .subscribe((res) => {
-        this.cuentasCliente.CON_CODIGO2 =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CON_CODIGO2 = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
 
     // CLI_BASEIVA
     this.cuentaContableService
       .getCuenta(this.cliente.CLI_BASEIVA)
       .subscribe((res) => {
-        this.cuentasCliente.CLI_BASEIVA =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CLI_BASEIVA = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
 
     // CLI_BASECERO
     this.cuentaContableService
       .getCuenta(this.cliente.CLI_BASECERO)
       .subscribe((res) => {
-        this.cuentasCliente.CLI_BASECERO =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CLI_BASECERO = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
 
     // CLI_BASENOBJET
     this.cuentaContableService
       .getCuenta(this.cliente.CLI_BASENOBJET)
       .subscribe((res) => {
-        this.cuentasCliente.CLI_BASENOBJET =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CLI_BASENOBJET = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
   }
 
@@ -540,4 +560,44 @@ export class ClienteComponent implements OnInit {
     this.cliente.CLI_VENCE = +vence;
   }
 
+  agregarDocumento() {
+    this.cargarDocumento = true;
+    this.documentoCliente = new ClienteDocumentos();
+  }
+
+  cargaArchivo(event: any) {
+    this.files = event.target.files;
+    this.cargando = true;
+    const currentFile = this.files!.item(0);
+    console.log(currentFile);
+    // this.repositorioService.uploadFile2(currentFile!).subscribe((response: any) => {
+    //   // this.files!.value = '';
+    //   if (response instanceof HttpResponse) {
+    //     // this.msg = response.body;
+    //     // console.log(response.body);
+    //     if (response.body.resultado === true) {
+    //       // console.log('cargado con exito')
+    //       this.cargando = false;
+    //       this.cargado = true;
+    //       this.nombreArchivo =currentFile?.name;
+    //       this.archivo.LINK_ARCHIVO = `${urlWs}/documentos/${currentFile?.name}`;
+    //       // console.log(this.archivo.LINK_ARCHIVO);
+    //       // setTimeout(() => {
+    //       //   this.cargado = false;
+    //       // }, 4000);
+    //     } else {
+    //       Swal.fire({ title: 'Error', text: 'No se puede cargar el archivo, intente nuevamente', icon: 'error', });
+    //     }
+    //   }
+    // });
+
+  }
+
+  descargarArchivo(documento: ClienteDocumentos) {
+    // const ab = new ArrayBuffer(documento.DOC_DATOS.arrayBuffer.length);
+    // const view = new Uint8Array(ab);
+    // const file = new Blob([ab], { type: 'application/pdf' });
+    // FileSaver.saveAs(file, documento.DOC_DATOS);
+    console.log(documento.DOC_DATOS);
+  }
 }

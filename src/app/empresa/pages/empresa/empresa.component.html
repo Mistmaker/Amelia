@@ -1,0 +1,130 @@
+<div class="card">
+    <div class="card-header card-header-info">
+        <h4 class="card-title">Datos de {{ empresa.COMNOMBRE }} </h4>
+        <p class="card-category">Datos de la empresa</p>
+    </div>
+
+    <div class="card-body">
+        <div class="text-right mr-3">
+            <button routerLink="" class="btn btn-primary mt-1">
+                <i class="fas fa-long-arrow-alt-left"></i> Regresar
+            </button>
+        </div>
+        <form (ngSubmit)="f.form.valid && guardar(f)" #f="ngForm">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Ruc *</label>
+                        <input [(ngModel)]="empresa.COMRUCI" name="ruc" #ruc="ngModel" placeholder="1700000000001"
+                            type="tel" class="form-control" minlength="10" required />
+                        <div *ngIf="f.submitted && ruc.invalid">
+                            <span *ngIf="ruc.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el RUC</span>
+                            <span *ngIf="ruc.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> RUC debe tener 13 dígitos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Razón social *</label>
+                        <input [(ngModel)]="empresa.COMNOMBREP" name="rs" #rs="ngModel" placeholder="" type="text"
+                            class="form-control" minlength="5" maxlength="150" required />
+                        <div *ngIf="f.submitted && rs.invalid">
+                            <span *ngIf="rs.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese la razón social</span>
+                            <span *ngIf="rs.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Debe tener almenos 5 digitos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Nombre Comercial *</label>
+                        <input [(ngModel)]="empresa.COMNOMBRE" name="nc" #nc="ngModel" placeholder="" type="text"
+                            class="form-control" minlength="5" maxlength="150" required />
+                        <div *ngIf="f.submitted && nc.invalid">
+                            <span *ngIf="nc.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el nombre comercial</span>
+                            <span *ngIf="nc.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Debe tener almenos 5 digitos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Nombre Corto *</label>
+                        <input [(ngModel)]="empresa.COMNOMBRECORTO" name="nco" #nco="ngModel" placeholder="" type="text"
+                            class="form-control" minlength="5" maxlength="15" required />
+                        <div *ngIf="f.submitted && nco.invalid">
+                            <span *ngIf="nco.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el nombre corto</span>
+                            <span *ngIf="nco.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Debe tener almenos 5 digitos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Teléfono 1 *</label>
+                        <input [(ngModel)]="empresa.COMTELEFONO1" name="tel1" #tel1="ngModel" placeholder="" type="tel"
+                            class="form-control" minlength="9" maxlength="12" required />
+                        <div *ngIf="f.submitted && tel1.invalid">
+                            <span *ngIf="tel1.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el telefono</span>
+                            <span *ngIf="tel1.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Debe tener almenos 9 digitos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Teléfono 2 *</label>
+                        <input [(ngModel)]="empresa.COMTELEFONO2" name="tel2" #tel2="ngModel" placeholder="" type="tel"
+                            class="form-control" minlength="9" maxlength="12" required />
+                        <div *ngIf="f.submitted && tel2.invalid">
+                            <span *ngIf="tel2.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el telefono</span>
+                            <span *ngIf="tel2.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Debe tener almenos 9 digitos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Correo *</label>
+                        <input [(ngModel)]="empresa.COMCORREO" name="mail" #mail="ngModel" placeholder="" type="text"
+                            class="form-control" minlength="10" maxlength="50" required />
+                        <div *ngIf="f.submitted && mail.invalid">
+                            <span *ngIf="mail.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el telefono</span>
+                            <span *ngIf="mail.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Debe tener almenos 10 caracteres</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Direccion *</label>
+                        <input [(ngModel)]="empresa.COMDIRECCION" name="dir" #dir="ngModel" placeholder="" type="text"
+                            class="form-control" minlength="10" maxlength="150" required />
+                        <div *ngIf="f.submitted && dir.invalid">
+                            <span *ngIf="dir.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el telefono</span>
+                            <span *ngIf="dir.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Debe tener almenos 10 caracteres</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="form-group text-center">
+                <button class="btn btn-primary w-50" type="submit">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

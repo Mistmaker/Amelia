@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav *ngIf="hasRoute('auth')" class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" [routerLink]="['/']">Amelia</a>
+        <a class="navbar-brand" [routerLink]="['/']">{{ empresa.COMNOMBRECORTO }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -61,6 +61,7 @@
             Configuraciones
           </a>
                     <ul class="dropdown-menu" aria-labelledby="productosDropdown">
+                      <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/empresa']">Datos de la Empresa</a></li>
                         <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/configuraciones']">Configuraciones del sistema</a></li>
                         <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/configuraciones/ciudades']">Ubicaciones</a></li>
                     </ul>

@@ -32,9 +32,9 @@
                         <a class="nav-link" [ngClass]="{'active': tab === 'DC'}" (click)="tab='DC'">Datos
                             catastros</a>
                     </li>
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" [ngClass]="{'active': tab === 'DO'}" (click)="tab='DO'">Documentos</a>
-                    </li> -->
+                    </li>
                 </ul>
             </div>
 
@@ -45,11 +45,15 @@
                     <div class="col-md-3">
                         <label class="form-label">Tipo de documento:*</label>
                         <select [(ngModel)]="cliente.CLI_TIPOIDE" #tipoDocu (change)="controlBotones(tipoDocu.value)"
-                            name="tipoDocumento" class="form-control">
+                            name="tipoDocumento" class="form-select" required #tipDoc="ngModel">
                             <option *ngFor="let tipo of tipoClientes" [value]="tipo.ticli_codigo">
                                 {{ tipo.ticli_nombre }}
                             </option>
                         </select>
+                        <div *ngIf="f.submitted && tipDoc.invalid">
+                            <span *ngIf="tipDoc.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                        </div>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">CED/RUC*</label>
@@ -79,16 +83,11 @@
                             <label class="form-label">Razón social*</label>
                             <input type="text" class="form-control" [(ngModel)]="cliente.CLI_NOMBRE" name="nombre"
                                 placeholder="Nombres" minlength="4" #nombre="ngModel" required />
-                            <div *ngIf="f.submitted && nombre.invalid" class="alert bg-warning">
-                                <div *ngIf="nombre.errors.required">
-                                    Nombre requeridos
-                                </div>
-                                <div *ngIf="nombre.errors.minlength">
-                                    Debe tener mínimo 4 letras
-                                </div>
-                                <div *ngIf="nombre.errors.forbiddenName">
-                                    No puede colocar ese nombre
-                                </div>
+                            <div *ngIf="f.submitted && nombre.invalid">
+                                <span *ngIf="nombre.errors?.required" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Ingrese la razón social</span>
+                                <span *ngIf="nombre.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Mínimo 4 caracteres</span>
                             </div>
                         </div>
                     </div>
@@ -96,17 +95,10 @@
                         <div class="form-group">
                             <label class="form-label">Nombre Comercial*</label>
                             <input type="text" class="form-control" [(ngModel)]="cliente.CLI_NOMBREC" name="nombrec"
-                                placeholder="Nombre Comercial" minlength="4" #nombrec="ngModel" required />
-                            <div *ngIf="f.submitted && nombrec.invalid" class="alert bg-warning">
-                                <div *ngIf="nombrec.errors.required">
-                                    Nombre requeridos
-                                </div>
-                                <div *ngIf="nombrec.errors.minlength">
-                                    Debe tener mínimo 4 letras
-                                </div>
-                                <div *ngIf="nombrec.errors.forbiddenName">
-                                    No puede colocar ese nombre
-                                </div>
+                                placeholder="Nombre Comercial" minlength="4" #nc="ngModel" required />
+                            <div *ngIf="f.submitted && nc.invalid">
+                                <span *ngIf="nc.errors?.required" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Ingrese el nombre comercial</span>
                             </div>
                         </div>
                     </div>
@@ -115,22 +107,38 @@
                         <label class="form-label">Cédula</label>
                         <div class="input-group">
                             <input type="tel" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CEDULA"
-                                name="cedula" placeholder="Cedula" minlength="10" maxlength="13">
+                                name="cedula" placeholder="Cedula" minlength="10" maxlength="10" #cedula="ngModel">
+                        </div>
+                        <div *ngIf="f.submitted && cedula.invalid">
+                            <span *ngIf="cedula.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese la cedula</span>
+                            <span *ngIf="cedula.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Cédula debe tener 10 dígitos</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Representante legal</label>
                             <input type="text" class="form-control form-control-sm"
-                                [(ngModel)]="cliente.CLI_REPRESENTANTELEGAL" name="rl" placeholder="Nombre"
-                                minlength="4" />
+                                [(ngModel)]="cliente.CLI_REPRESENTANTELEGAL" name="repL" #rl="ngModel"
+                                placeholder="Nombre" minlength="4">
+                        </div>
+                        <div *ngIf="f.submitted && rl.invalid">
+                            <span *ngIf="rl.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el representante legal</span>
+                            <span *ngIf="rl.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Debe tener al menos 4 caracteres</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Actividad</label>
                             <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_ACTIVIDAD"
-                                name="actividad" placeholder="Actividad" />
+                                #ac='ngModel' name="actividad" placeholder="Actividad" />
+                        </div>
+                        <div *ngIf="f.submitted && ac.invalid">
+                            <span *ngIf="ac.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese la actividad comercial</span>
                         </div>
                     </div>
 
@@ -143,9 +151,13 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-label">Teléfono</label>
+                            <label class="form-label">Teléfono*</label>
                             <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_TELEFONO1"
-                                name="telefono" placeholder="Teléfono" />
+                                #t1='ngModel' name="telefono" placeholder="Teléfono" required />
+                        </div>
+                        <div *ngIf="f.submitted && t1.invalid">
+                            <span *ngIf="t1.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el teléfono</span>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -157,9 +169,13 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">Email*</label>
                             <input type="text" class="form-control form-control-sm" [(ngModel)]="cliente.CLI_CORREO"
-                                name="email" placeholder="Email" />
+                                #co='ngModel' name="email" placeholder="Email" required />
+                        </div>
+                        <div *ngIf="f.submitted && co.invalid">
+                            <span *ngIf="co.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Ingrese el correo</span>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -173,7 +189,7 @@
                         <div class="form-group">
                             <label class="form-label">Provincia</label>
                             <select [(ngModel)]="provinciaCodigo" name="provincia" #provincia
-                                (change)="onChangeProvincia(provincia.value)" class="form-control form-control-sm">
+                                (change)="onChangeProvincia(provincia.value)" class="form-select form-select-sm">
                                 <option *ngFor="let provincia of provincias" [value]="provincia.UBIGEO_CODIGO">
                                     {{ provincia.UBIGEO_NOMBRE }}
                                 </option>
@@ -184,8 +200,7 @@
                     <div class="col-md-4" *ngIf="provinciaCodigo !== ''">
                         <div class="form-group">
                             <label class="form-label">Cantón</label>
-                            <select [(ngModel)]="cantonCodigo" name="canton" #canton
-                                class="form-control form-control-sm">
+                            <select [(ngModel)]="cantonCodigo" name="canton" #canton class="form-select form-select-sm">
                                 <option *ngFor="let canton of cantones" [value]="canton.UBIGEO_CODIGO">
                                     {{ canton.UBIGEO_NOMBRE }}
                                 </option>
@@ -195,43 +210,61 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Asesor</label>
-                            <select [(ngModel)]="cliente.VEN_CODIGO" name="clientCity" #clientCity
-                                class="form-control form-control-sm">
+                            <select [(ngModel)]="cliente.VEN_CODIGO" name="clientCity" #ase='ngModel'
+                                class="form-select form-select-sm" required>
                                 <option *ngFor="let vendedor of vendedores" [value]="vendedor.VEN_CODIGO">
                                     {{ vendedor.VEN_NOMBRE }}
                                 </option>
                             </select>
                         </div>
+                        <div *ngIf="f.submitted && ase.invalid">
+                            <span *ngIf="ase.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Usuario</label>
-                            <select [(ngModel)]="cliente.USUARIO" name="usuario" class="form-control form-control-sm">
+                            <select [(ngModel)]="cliente.USUARIO" #us='ngModel' name="usuario"
+                                class="form-select form-select-sm" required>
                                 <option *ngFor="let u of usuarios" [value]="u.USUIDENTIFICACION">
                                     {{ u.USUAPELLIDO }} {{ u.USUNOMBRE }}
                                 </option>
                             </select>
                         </div>
+                        <div *ngIf="f.submitted && us.invalid">
+                            <span *ngIf="us.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Grupo</label>
-                            <select [(ngModel)]="cliente.GRU_CODIGO" name="grupo" class="form-control form-control-sm">
+                            <select [(ngModel)]="cliente.GRU_CODIGO" #gr='ngModel' name="grupo"
+                                class="form-select form-select-sm" required>
                                 <option *ngFor="let g of grupos" [value]="g.GRU_CODIGO">
                                     {{ g.GRU_NOMBRE }}
                                 </option>
                             </select>
                         </div>
+                        <div *ngIf="f.submitted && gr.invalid">
+                            <span *ngIf="gr.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="form-label">Tipo</label>
-                            <select [(ngModel)]="cliente.CLI_TIPOCLIENTE" name="tipoCli"
-                                class="form-control form-control-sm">
+                            <label class="form-label">Tipo*</label>
+                            <select [(ngModel)]="cliente.CLI_TIPOCLIENTE" name="tipoCli" #tc='ngModel'
+                                class="form-select form-select-sm" required>
                                 <option *ngFor="let t of tiposClientes" [value]="t.TIP_CODIGO">
                                     {{ t.TIP_NOMBRE }}
                                 </option>
                             </select>
+                        </div>
+                        <div *ngIf="f.submitted && tc.invalid">
+                            <span *ngIf="tc.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
                         </div>
                     </div>
                     <!-- <div class="col-md-2">
@@ -250,10 +283,15 @@
                     </div> -->
                     <div class="col-md-4">
                         <label class="form-label">Región</label>
-                        <select [(ngModel)]="cliente.CLI_REGION" name="region" class="form-control form-control-sm">
+                        <select [(ngModel)]="cliente.CLI_REGION" name="region" class="form-select form-select-sm"
+                            #re='ngModel' required>
                             <option value="S">Sierra</option>
                             <option value="C">Costa</option>
                         </select>
+                        <div *ngIf="f.submitted && re.invalid">
+                            <span *ngIf="re.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group d-grid gap-2">
@@ -264,7 +302,7 @@
                             </button>
                             <button *ngIf="cliente.CLI_ESTADO === '0'" (click)="cliente.CLI_ESTADO = '1'"
                                 class="btn btn-sm btn-outline-danger" type="button">
-                                Pasivo
+                                Inactivo
                             </button>
                         </div>
                     </div>
@@ -281,7 +319,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="form-label">Latitud</label>
-                            <input [(ngModel)]="coordinateX" name="coordX" placeholder="0" type="text"
+                            <input [(ngModel)]="coordinateX" name="coordX" placeholder="0" type="number"
                                 class="form-control form-control-sm" />
                         </div>
                     </div>
@@ -289,53 +327,100 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="form-label">Longitud</label>
-                            <input [(ngModel)]="coordinateY" name="coordY" placeholder="0" type="text"
+                            <input [(ngModel)]="coordinateY" name="coordY" placeholder="0" type="number"
                                 class="form-control form-control-sm" />
                         </div>
                     </div>
 
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label class="form-label">Cuenta Contable Clientes</label>
                             <input [(ngModel)]="cuentasCliente.CON_CODIGO1" (click)="openDialog('CON_CODIGO1')"
-                                name="conCodigo1" placeholder="...." type="text" class="form-control form-control-sm" />
+                                name="conCodigo1" placeholder="...." type="text" class="form-control form-control-sm">
+                        </div> -->
+                        <label class="form-label">Cuenta Contable Clientes</label>
+                        <div class="input-group">
+                            <input [(ngModel)]="cuentasCliente.CON_CODIGO1" name="conCodigo1" placeholder="...."
+                                type="text" class="form-control form-control-sm" disabled>
+                            <button type="button" class="btn btn-sm btn-primary" (click)="openDialog('CON_CODIGO1')"> <i
+                                    class="fas fa-search"></i> </button>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label class="form-label">Cuenta Contable Anticipos</label>
                             <input [(ngModel)]="cuentasCliente.CON_CODIGO2" (click)="openDialog('CON_CODIGO2')"
                                 name="conCodigo2" placeholder="...." type="text" class="form-control form-control-sm" />
+                        </div> -->
+                        <label class="form-label">Cuenta Contable Anticipos</label>
+                        <div class="input-group">
+                            <input [(ngModel)]="cuentasCliente.CON_CODIGO2" name="conCodigo2" placeholder="...."
+                                type="text" class="form-control form-control-sm" disabled>
+                            <button type="button" class="btn btn-sm btn-primary" (click)="openDialog('CON_CODIGO2')"> <i
+                                    class="fas fa-search"></i> </button>
                         </div>
                     </div>
 
                     <div class="col-md-4" *ngIf="showMore">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label class="form-label">Cuenta Contable BaseIVA</label>
                             <input [(ngModel)]="cuentasCliente.CLI_BASEIVA" (click)="openDialog('CLI_BASEIVA')"
                                 name="cliBaseIva" placeholder="...." type="text" class="form-control form-control-sm" />
+                        </div> -->
+                        <label class="form-label">Cuenta Contable Base IVA</label>
+                        <div class="input-group">
+                            <input [(ngModel)]="cuentasCliente.CLI_BASEIVA" name="cliBaseIva" placeholder="...."
+                                type="text" class="form-control form-control-sm" disabled>
+                            <button type="button" class="btn btn-sm btn-primary" (click)="openDialog('CLI_BASEIVA')"> <i
+                                    class="fas fa-search"></i> </button>
                         </div>
                     </div>
                     <div class="col-md-4" *ngIf="showMore">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label class="form-label">Cuenta Contable BaseCERO</label>
                             <input [(ngModel)]="cuentasCliente.CLI_BASECERO" (click)="openDialog('CLI_BASECERO')"
                                 name="cliBaseCero" placeholder="...." type="text"
                                 class="form-control form-control-sm" />
+                        </div> -->
+                        <label class="form-label">Cuenta Contable Base Cero</label>
+                        <div class="input-group">
+                            <input [(ngModel)]="cuentasCliente.CLI_BASECERO" name="cliBaseCero" placeholder="...."
+                                type="text" class="form-control form-control-sm" disabled>
+                            <button type="button" class="btn btn-sm btn-primary" (click)="openDialog('CLI_BASECERO')">
+                                <i class="fas fa-search"></i> </button>
                         </div>
                     </div>
                     <div class="col-md-4" *ngIf="showMore">
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label class="form-label">Cuenta Contable BaseNOBJET</label>
                             <input [(ngModel)]="cuentasCliente.CLI_BASENOBJET" (click)="openDialog('CLI_BASENOBJET')"
                                 name="cliBaseNobjet" placeholder="...." type="text"
                                 class="form-control form-control-sm" />
+                        </div> -->
+                        <label class="form-label">Cuenta Contable BaseNOBJET</label>
+                        <div class="input-group">
+                            <input [(ngModel)]="cuentasCliente.CLI_BASENOBJET" name="cliBaseNobjet" placeholder="...."
+                                type="text" class="form-control form-control-sm" disabled>
+                            <button type="button" class="btn btn-sm btn-primary" (click)="openDialog('CLI_BASENOBJET')">
+                                <i class="fas fa-search"></i> </button>
                         </div>
                     </div>
 
 
                 </div>
                 <div *ngIf="tab == 'CL'">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label"> Ruc:</label>
+                            <input type="text" class="form-control" [(ngModel)]="cliente.CLI_CODIGO" readonly
+                                name="rucCli">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"> Cedula: </label>
+                            <input type="text" class="form-control" [(ngModel)]="cliente.CLI_CEDULA" readonly
+                                name="cedCli">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-3">
                             <label class="form-label"> <img src="assets/img/sri.png" style="width: 20px;" alt="">
@@ -501,6 +586,64 @@
                                     disabled class="form-control form-control-sm" />
                             </div>
                         </div>
+                    </div>
+                </div>
+                <!-- Documentos -->
+                <div *ngIf="tab == 'DO'">
+                    <div class="row">
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button class="btn btn-primary mt-1" type="button" (click)="agregarDocumento()">
+                                <i class="fas fa-plus"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="cargarDocumento">
+                        <div class="col-md-4">
+                            <label class="form-label">Nombre*</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" [(ngModel)]="documentoCliente.DOC_NOMBRE"
+                                    name="docNombre" #docNombre="ngModel" required>
+                            </div>
+                            <div *ngIf="f.submitted && docNombre.invalid">
+                                <span *ngIf="docNombre.errors?.required" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Ingrese el nombre</span>
+                                <span *ngIf="docNombre.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> RUC debe tener 13 dígitos</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="formFile" class="form-label">Archivo:</label>
+                            <input class="form-control" (change)="cargaArchivo($event)" type="file" name="file1"
+                                id="formFile">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let documento of cliente.documentos;let i = index">
+                                    <td scope="row">
+                                        {{ documento.DOC_NOMBRE }}
+                                    </td>
+                                    <td>
+                                        {{ documento.DOC_FECHA }}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            (click)="quitarDocumento(i)"> <i class="fas fa-minus-circle"></i> </button>
+                                        <button type="button" class="btn btn-success btn-sm"
+                                            (click)="descargarArchivo(documento)"> <i class="fas fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

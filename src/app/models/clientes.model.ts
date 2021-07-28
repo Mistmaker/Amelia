@@ -1,4 +1,5 @@
 import { ClienteDatosAdicionales } from './clientesDatosAdicionales.model';
+import { ClienteDocumentos } from './clientesDocumentos';
 export class Cliente {
 
   CLI_CODIGO: string;
@@ -128,10 +129,12 @@ export class Cliente {
   CLI_AGENRETENCION: string;
   CLI_TIPOCLIENTE: number;
   datosAdicionales: ClienteDatosAdicionales[];
+  documentos: ClienteDocumentos[];
 
   constructor() {
     this.CLI_ESTADO = '1';
     this.datosAdicionales = [];
+    this.documentos = [];
   }
 }
 

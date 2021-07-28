@@ -8,13 +8,17 @@ import { PipesModule } from '../shared/pipes/pipes.module';
 import { UsuariosComponent } from './pages/usuarios/usuarios.component';
 import { UsuariosRoutingModule } from './usuarios.routes';
 import { UsuarioComponent } from './pages/usuario/usuario.component';
+import { PerfilesComponent } from './pages/perfiles/perfiles.component';
+import { PerfilComponent } from './pages/perfil/perfil.component';
 
 
 
 @NgModule({
   declarations: [
     UsuariosComponent,
-    UsuarioComponent
+    UsuarioComponent,
+    PerfilesComponent,
+    PerfilComponent
   ],
   imports: [
     CommonModule,
