@@ -22,7 +22,7 @@ export class ClientesService {
   wsSriAlt = urlWsRucAlterno;
   wsCedula = urlWsCedula;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getClientes() {
     return this.http.get<Cliente[]>(`${this.ruta}/api/clientes`);
@@ -44,7 +44,7 @@ export class ClientesService {
     return this.http.delete(`${this.ruta}/api/clientes/${id}`);
   }
 
-  getDatosAdicionales(datos: any){
+  getDatosAdicionales(datos: any) {
     return this.http.post(`${this.ruta}/api/cliDatAdi/ruc`, datos);
   }
 
@@ -66,10 +66,10 @@ export class ClientesService {
     });
   }
   getClientesPorVence(vence: string) {
-    return this.http.post<Cliente[]>(`${this.ruta}/api/clientes/vence`, {vence});
+    return this.http.post<Cliente[]>(`${this.ruta}/api/clientes/vence`, { vence });
   }
   getClientesPorGrupo(gruCodigo: string) {
-    return this.http.post<Cliente[]>(`${this.ruta}/api/clientes/grupo`, {gruCodigo});
+    return this.http.post<Cliente[]>(`${this.ruta}/api/clientes/grupo`, { gruCodigo });
   }
 
   getIsMicro(id: string) {
@@ -88,7 +88,30 @@ export class ClientesService {
     return this.http.get(`${urlWsRucAR}${id}`);
   }
 
-  getDocumentos(id: string){
+  public upload(file: any, cli: Cliente) {
+    const formData = new FormData();
+    formData.append("current", file);
+    formData.append("idCli", cli.CLI_CODIGO);
+    return this.http.post(`${this.ruta}/api/cliDocs/`, formData);
+  }
+  public upload2(file: any[], cli: Cliente) {
+    const formData = new FormData();
+    for (const f of file) {
+      formData.append("current", f);
+    }
+    formData.append("idCli", cli.CLI_CODIGO);
+    return this.http.post(`${this.ruta}/api/cliDocs/`, formData);
+  }
+
+  public downloadUrl(file: any) {
+    return `${this.ruta}/api/cliDocs/${file.DOC_CODIGO}/download`;
+  }
+
+  getDocumentos(id: string) {
     return this.http.get<ClienteDocumentos[]>(`${this.ruta}/api/cliDocs/cliente/${id}`);
+  }
+
+  deleteDocumento(id: string) {
+    return this.http.delete(`${this.ruta}/api/cliDocs/${id}`);
   }
 }

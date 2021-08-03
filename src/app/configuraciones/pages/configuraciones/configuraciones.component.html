@@ -4,18 +4,23 @@
     <p class="card-category">Listado de configuraciones del sistema</p>
   </div>
   <div class="card-body">
-    <form (ngSubmit)="f.form.valid && save(f)" #f="ngForm">
+
+    <div class="row">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': tab === 'GE'}" (click)="tab='GE'">General</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [ngClass]="{'active': tab === 'FI'}" (click)="tab='FI'">Funciones Adicionales</a>
+        </li>
+      </ul>
+    </div>
+
+    <form (ngSubmit)="f.form.valid && save(f)" #f="ngForm" *ngIf="tab === 'GE'" class="mt-2">
       <div *ngFor="let config of configList; let i = index">
         <div class="d-flex form-group form-check">
-          <input
-            name="{{ config.codigo_config }}{{ i }}"
-            [checked]="config.codigo == 1"
-            (change)="toggleStatus(i)"
-            type="checkbox"
-            class="form-check-input"
-            id="{{ i }}"
-            style="cursor: pointer;"
-          />
+          <input name="{{ config.codigo_config }}{{ i }}" [checked]="config.codigo == 1" (change)="toggleStatus(i)"
+            type="checkbox" class="form-check-input" id="{{ i }}" style="cursor: pointer;" />
           <label class="form-check-label" for="{{ i }}" style="cursor: pointer;">
             {{ config.descripcion }}
           </label>
@@ -29,20 +34,32 @@
       </div>
 
     </form>
-    <hr>
-    <div class="row">
-      <div class="col-md-6">
-        <label class="form-label" for=""> Cargar clientes desde archivo excel </label>
-        <input type="file" class="form-control" (change)="cargaArchivo($event)" name="excel" id="excel">
+    <div *ngIf="tab === 'FI'">
+      <div class="row mt-2">
+        <div class="col-md-6">
+          <label class="form-label" for=""> Cargar clientes desde archivo excel </label>
+          <input type="file" class="form-control" (change)="cargaArchivo($event)" name="excel" id="excel"
+            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+        </div>
+        <div class="col-md-3 d-grid gap-2">
+          <label class="form-label" for=""> &nbsp; </label>
+          <button type="button" class="btn btn-sm btn-success" (click)="cargarExcel()">Cargar excel</button>
+        </div>
+        <div class="col-md-3 d-grid gap-2">
+          <label class="form-label" for=""> &nbsp; </label>
+          <button type="button" class="btn btn-sm btn-warning" (click)="exportarExcel()">Obtener Formato</button>
+        </div>
       </div>
-      <div class="col-md-3 d-grid gap-2">
-        <label class="form-label" for=""> &nbsp; </label>
-        <button type="button" class="btn btn-sm btn-success" (click)="cargarExcel()" >Cargar excel</button>
-      </div>
-      <div class="col-md-3 d-grid gap-2">
-        <label class="form-label" for=""> &nbsp; </label>
-        <button type="button" class="btn btn-sm btn-warning" (click)="exportarExcel()" >Obtener Formato</button>
+      <hr>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-grid gap-2">
+            <button type="button" class="btn btn-sm btn-primary" (click)="actualizarDatosCatastrosClientes()">Actualizar
+              datos de catastros de clientes</button>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
 </div>

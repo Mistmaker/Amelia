@@ -25,6 +25,7 @@ import { CuentasContablesComponent } from './../../../shared/components/cuentas-
 import { TiposClientesService } from '../../services/tipos-clientes.service';
 import { TiposClientes } from '../../../models/tiposClientes';
 import { ClienteDocumentos } from '../../../models/clientesDocumentos';
+import { maxFileSize } from '../../../../environments/environment.prod';
 
 @Component({
   selector: 'app-cliente',
@@ -61,6 +62,9 @@ export class ClienteComponent implements OnInit {
   // cuentas contables clientes
   cuentasCliente = new CuentasContablesClientes();
 
+  current: any = null;
+  archivos: any[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private clientesService: ClientesService,
@@ -84,6 +88,7 @@ export class ClienteComponent implements OnInit {
         this.cliente.CLI_FECHACONSULTA = this.cliente.CLI_FECHACONSULTA ? this.cliente.CLI_FECHACONSULTA.slice(0, 10) : null;
         this.cliente.CLI_FECHACREADO = this.cliente.CLI_FECHACREADO ? this.cliente.CLI_FECHACREADO.slice(0, 10) : null;
         if (!this.cliente.datosAdicionales) this.cliente.datosAdicionales = [];
+        if (!this.cliente.documentos) this.cliente.documentos = [];
         this.showDeleteButton = true;
         this.cliente.CLI_ESTADO = resp.CLI_ESTADO || '1';
         this.cliente.CLI_MICROEMPRESA = resp.CLI_MICROEMPRESA || '';
@@ -101,11 +106,13 @@ export class ClienteComponent implements OnInit {
           this.cliente.datosAdicionales = resp;
         });
         this.getAllCuentasContables();
+        // this.clientesService.getDocumentos(this.routeStr).subscribe(resp => {
+        //   this.cliente.documentos = resp;
+        // });
+        this.getDocumentos();
       });
 
-      this.clientesService.getDocumentos(this.routeStr).subscribe(resp => {
-        this.cliente.documentos = resp;
-      });
+
     } else {
       this.mostrarBtn = true;
     }
@@ -146,6 +153,12 @@ export class ClienteComponent implements OnInit {
 
     this.configService.getConfig('CLI_INFO_COMP').subscribe(resp => {
       this.mostrarInfoCompl = resp.codigo === 1 ? true : false;
+    });
+  }
+
+  getDocumentos() {
+    this.clientesService.getDocumentos(this.cliente.CLI_CODIGO).subscribe(resp => {
+      this.cliente.documentos = resp;
     });
   }
 
@@ -246,6 +259,8 @@ export class ClienteComponent implements OnInit {
       return;
     }
 
+    Swal.fire({ title: 'Espere', text: 'Guardando información', allowOutsideClick: false, icon: 'info', });
+    Swal.showLoading();
 
     // put null on dates containing undefined string
     if (
@@ -278,8 +293,20 @@ export class ClienteComponent implements OnInit {
       this.clientesService
         .putCliente(this.cliente.CLI_CODIGO, this.cliente)
         .subscribe(
-          (res: any) => {
+          async (res: any) => {
+            // for (const archivo of this.archivos) {
+            //   // this.subirArchivo(archivo);
+            //   Swal.update({ title: 'Espere', html: `Subiendo archivo: <br> ${archivo.name}`, allowOutsideClick: false, icon: 'info', });
+            //   Swal.showLoading();
+            //   const r = await this.clientesService.upload(archivo, this.cliente).toPromise();
+            //   console.log(r);
+            // }
+            if (this.archivos.length > 0) {
+              const r = await this.clientesService.upload2(this.archivos, this.cliente).toPromise();
+            }
             Swal.fire('Éxito', 'Se actualizo el cliente con éxito', 'success');
+            this.archivos = [];
+            this.getDocumentos();
           },
           (err) => {
             Swal.fire('Error', err.error.msg, 'error');
@@ -287,8 +314,16 @@ export class ClienteComponent implements OnInit {
         );
     } else {
       this.clientesService.postCliente(this.cliente).subscribe(
-        (res: any) => {
+        async (res: any) => {
+          // for (const archivo of this.archivos) {
+          //   this.subirArchivo(archivo);
+          // }
+          if (this.archivos.length > 0) {
+            const r = await this.clientesService.upload2(this.archivos, this.cliente).toPromise();
+          }
           Swal.fire('Éxito', 'Se creo el cliente con éxito', 'success');
+          this.archivos = [];
+          this.getDocumentos();
         },
         (err) => {
           Swal.fire('Error', err.error.msg, 'error');
@@ -490,6 +525,9 @@ export class ClienteComponent implements OnInit {
   quitarDatoAdicional(index: number) {
     this.cliente.datosAdicionales.splice(index, 1);
   }
+  quitarArchivo(index: number) {
+    this.archivos.splice(index, 1);
+  }
 
   calcularVence(event: any) {
     // if (event.target.value.length !== 13) { this.cliente.CLI_DIGITO = null; this.cliente.CLI_VENCE = null; return; }
@@ -540,33 +578,61 @@ export class ClienteComponent implements OnInit {
   }
 
   cargaArchivo(event: any) {
-    this.files = event.target.files;
-    this.cargando = true;
-    const currentFile = this.files!.item(0);
-    // this.repositorioService.uploadFile2(currentFile!).subscribe((response: any) => {
-    //   // this.files!.value = '';
-    //   if (response instanceof HttpResponse) {
-    //     // this.msg = response.body;
-    //     if (response.body.resultado === true) {
-    //       this.cargando = false;
-    //       this.cargado = true;
-    //       this.nombreArchivo =currentFile?.name;
-    //       this.archivo.LINK_ARCHIVO = `${urlWs}/documentos/${currentFile?.name}`;
-    //       // setTimeout(() => {
-    //       //   this.cargado = false;
-    //       // }, 4000);
-    //     } else {
-    //       Swal.fire({ title: 'Error', text: 'No se puede cargar el archivo, intente nuevamente', icon: 'error', });
-    //     }
-    //   }
-    // });
+    const file: File = event.target.files[0];
+    console.log(file);
+    console.log(this.archivos.length , this.cliente.documentos.length);
+    if ((this.archivos.length + this.cliente.documentos.length )> 9) { Swal.fire('Excedido límite máximo de archivos', 'Solo se permiten 10 archivos', 'warning'); event.target.value = null; return; }
+    if (file.size > maxFileSize) { Swal.fire('No se puede cargar el archivo', 'El archivo no debe pesar mas de 15Mb', 'warning'); return; }
+    this.current = file;
+    this.archivos.push(this.current);
+    event.target.value = null;
+    this.cargarDocumento = false;
+  }
 
+  subirDocumento() {
+    this.clientesService.upload(this.current, this.cliente).subscribe(
+      (resp: any) => {
+        console.log(resp);
+      },
+      (err) => console.log(err)
+    );
+  }
+
+  subirArchivo(arch: any) {
+    this.clientesService.upload(arch, this.cliente).subscribe(
+      (resp: any) => {
+        console.log(resp);
+      },
+      (err) => console.log(err)
+    );
+  }
+
+  eliminarDocumento(index: number, idDocumento: string) {
+    let eliminar = false;
+    Swal.fire({ title: 'Confirmación', text: 'Desea eliminar este archivo?', icon: 'warning', showDenyButton: true, confirmButtonText: `Eliminar`, denyButtonText: `No eliminar`, denyButtonColor: '#3085d6', confirmButtonColor: '#d33', }).then((result) => {
+      if (result.isConfirmed) {
+        eliminar = true;
+        if (eliminar) {
+          Swal.fire({ title: 'Espere', text: 'Eliminando información', allowOutsideClick: false, icon: 'info', });
+          Swal.showLoading();
+
+          this.clientesService.deleteDocumento(idDocumento).subscribe(
+            (resp) => {
+              Swal.fire('Eliminado!', 'Se eliminó el archivo de los registros', 'success').then((r) => {
+                // this.router.navigateByUrl('clientes');
+                this.cliente.documentos.splice(index, 1);
+              });
+            },
+            (error) => {
+              Swal.fire('Error!', 'Ocurrió un error al eliminar', 'error');
+            }
+          );
+        }
+      }
+    });
   }
 
   descargarArchivo(documento: ClienteDocumentos) {
-    // const ab = new ArrayBuffer(documento.DOC_DATOS.arrayBuffer.length);
-    // const view = new Uint8Array(ab);
-    // const file = new Blob([ab], { type: 'application/pdf' });
-    // FileSaver.saveAs(file, documento.DOC_DATOS);
+    return this.clientesService.downloadUrl(documento);
   }
 }

@@ -31,9 +31,9 @@
                         <a class="nav-link" [ngClass]="{'active': tab === 'DC'}" (click)="tab='DC'">Datos
                             catastros</a>
                     </li>
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" [ngClass]="{'active': tab === 'DO'}" (click)="tab='DO'">Documentos</a>
-                    </li> -->
+                    </li>
                 </ul>
             </div>
 
@@ -44,6 +44,7 @@
                     <div class="col-md-3">
                         <label class="form-label">Tipo de documento:*</label>
                         <select [(ngModel)]="cliente.CLI_TIPOIDE" #tipoDocu (change)="controlBotones(tipoDocu.value)" name="tipoDocumento" class="form-select" required #tipDoc="ngModel">
+                            <option style="display:none"></option>
                             <option *ngFor="let tipo of tipoClientes" [value]="tipo.ticli_codigo">
                                 {{ tipo.ticli_nombre }}
                             </option>
@@ -92,6 +93,8 @@
                             <div *ngIf="f.submitted && nc.invalid">
                                 <span *ngIf="nc.errors?.required" class="badge bg-warning text-dark"> <i
                                         class="fas fa-exclamation-triangle"></i> Ingrese el nombre comercial</span>
+                                <span *ngIf="nc.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Mínimo 4 caracteres</span>
                             </div>
                         </div>
                     </div>
@@ -173,6 +176,7 @@
                         <div class="form-group">
                             <label class="form-label">Provincia</label>
                             <select [(ngModel)]="provinciaCodigo" name="provincia" #provincia (change)="onChangeProvincia(provincia.value)" class="form-select form-select-sm">
+                                <option style="display:none"></option>
                                 <option *ngFor="let provincia of provincias" [value]="provincia.UBIGEO_CODIGO">
                                     {{ provincia.UBIGEO_NOMBRE }}
                                 </option>
@@ -184,6 +188,7 @@
                         <div class="form-group">
                             <label class="form-label">Cantón</label>
                             <select [(ngModel)]="cantonCodigo" name="canton" #canton class="form-select form-select-sm">
+                                <option style="display:none"></option>
                                 <option *ngFor="let canton of cantones" [value]="canton.UBIGEO_CODIGO">
                                     {{ canton.UBIGEO_NOMBRE }}
                                 </option>
@@ -194,6 +199,7 @@
                         <div class="form-group">
                             <label class="form-label">Asesor *</label>
                             <select [(ngModel)]="cliente.VEN_CODIGO" name="clientCity" #ase='ngModel' class="form-select form-select-sm" required>
+                                <option style="display:none"></option>
                                 <option *ngFor="let vendedor of vendedores" [value]="vendedor.VEN_CODIGO">
                                     {{ vendedor.VEN_NOMBRE }}
                                 </option>
@@ -208,6 +214,7 @@
                         <div class="form-group">
                             <label class="form-label">Usuario *</label>
                             <select [(ngModel)]="cliente.USUARIO" #us='ngModel' name="usuario" class="form-select form-select-sm" required>
+                                <option style="display:none"></option>
                                 <option *ngFor="let u of usuarios" [value]="u.USUIDENTIFICACION">
                                     {{ u.USUAPELLIDO }} {{ u.USUNOMBRE }}
                                 </option>
@@ -222,6 +229,7 @@
                         <div class="form-group">
                             <label class="form-label">Grupo *</label>
                             <select [(ngModel)]="cliente.GRU_CODIGO" #gr='ngModel' name="grupo" class="form-select form-select-sm" required>
+                                <option style="display:none"></option>
                                 <option *ngFor="let g of grupos" [value]="g.GRU_CODIGO">
                                     {{ g.GRU_NOMBRE }}
                                 </option>
@@ -236,6 +244,7 @@
                         <div class="form-group">
                             <label class="form-label">Tipo *</label>
                             <select [(ngModel)]="cliente.CLI_TIPOCLIENTE" name="tipoCli" #tc='ngModel' class="form-select form-select-sm" required>
+                                <option style="display:none"></option>
                                 <option *ngFor="let t of tiposClientes" [value]="t.TIP_CODIGO">
                                     {{ t.TIP_NOMBRE }}
                                 </option>
@@ -263,6 +272,7 @@
                     <div class="col-md-4">
                         <label class="form-label">Región *</label>
                         <select [(ngModel)]="cliente.CLI_REGION" name="region" class="form-select form-select-sm" #re='ngModel' required>
+                            <option style="display:none"></option>
                             <option value="S">Sierra</option>
                             <option value="C">Costa</option>
                         </select>
@@ -464,7 +474,7 @@
                         </button>
                     </div>
 
-                    <div class="table-responsive">
+                    <div class="table-responsive" *ngIf="cliente.datosAdicionales || cliente.datosAdicionales.length>0">
                         <table class="table table-sm table-striped table-hover">
                             <thead>
                                 <tr>
@@ -498,6 +508,10 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div *ngIf="cliente.datosAdicionales.length === 0" class="alert alert-warning text-center mt-3 animated fadein faster">
+                        <h4 class="alert-heading">No hay registros</h4>
+                        <p><i class="fa fa-exclamation fa-3x"></i></p>
                     </div>
                 </div>
                 <div *ngIf="tab == 'DC'">
@@ -544,48 +558,66 @@
                         </div>
                     </div>
                     <div class="row" *ngIf="cargarDocumento">
-                        <div class="col-md-4">
-                            <label class="form-label">Nombre*</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" [(ngModel)]="documentoCliente.DOC_NOMBRE" name="docNombre" #docNombre="ngModel" required>
-                            </div>
-                            <div *ngIf="f.submitted && docNombre.invalid">
-                                <span *ngIf="docNombre.errors?.required" class="badge bg-warning text-dark"> <i
-                                        class="fas fa-exclamation-triangle"></i> Ingrese el nombre</span>
-                                <span *ngIf="docNombre.errors?.minlength" class="badge bg-warning text-dark"> <i
-                                        class="fas fa-exclamation-triangle"></i> RUC debe tener 13 dígitos</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-8">
                             <label for="formFile" class="form-label">Archivo:</label>
                             <input class="form-control" (change)="cargaArchivo($event)" type="file" name="file1" id="formFile">
                         </div>
                     </div>
-                    <div class="table-responsive">
+                    <div class="table-responsive" *ngIf="archivos.length > 0">
+                        <h4>Archivos por subir:</h4>
                         <table class="table table-sm table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th scope="col">Nombre</th>
-                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Tamaño</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let arch of archivos;let i = index">
+                                    <td scope="row">
+                                        {{ arch.name }}
+                                    </td>
+                                    <td>
+                                        {{ arch.size }} KB
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" (click)="quitarArchivo(i)"> <i class="fas fa-minus-circle"></i> </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <span class="badge bg-primary text-light"> <i class="fas fa-exclamation-triangle"></i> Presione "Guardar" para que se carguen los archivos.</span>
+                        <hr>
+                    </div>
+                    <div class="table-responsive" *ngIf="cliente.documentos || cliente.documentos.length>0">
+                        <table class="table table-sm table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Fecha Subida</th>
                                     <th scope="col">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let documento of cliente.documentos;let i = index">
                                     <td scope="row">
-                                        {{ documento.DOC_NOMBRE }}
+                                        {{ documento.DOC_NOMBRE }}.{{ documento.DOC_TIPO }}
                                     </td>
                                     <td>
                                         {{ documento.DOC_FECHA }}
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-danger btn-sm" (click)="quitarDocumento(i)"> <i class="fas fa-minus-circle"></i> </button>
-                                        <button type="button" class="btn btn-success btn-sm" (click)="descargarArchivo(documento)"> <i class="fas fa-download"></i>
-                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" (click)="eliminarDocumento(i,documento.DOC_CODIGO)"> <i class="fas fa-minus-circle"></i> </button>
+                                        <a class="btn btn-success btn-sm" [href]="descargarArchivo(documento)"> <i class="fas fa-download"></i> </a>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div *ngIf="cliente.documentos.length === 0" class="alert alert-warning text-center mt-3 animated fadein faster">
+                        <h4 class="alert-heading">No hay registros</h4>
+                        <p><i class="fa fa-exclamation fa-3x"></i></p>
                     </div>
                 </div>
             </div>

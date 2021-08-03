@@ -21,12 +21,12 @@ type AOA = any[][];
 export class ConfiguracionesComponent implements OnInit {
   configList: Configuracion[] = [];
   files: FileList | undefined;
-
+  tab = 'GE';
   cargando = false;
   cargado = false;
   nombreArchivo: string | undefined;
   data: AOA = [];
-  modelo: AOA = [["Nº","RUC","RAZON SOCIAL","TELEFONO","CORREO","GRUPO","TIPO","REGION","CLAVE SRI","CLAVE IESS","CLAVE MRL CONTRATOS","CLAVE MRL FORMULARIOS","CLAVE SUPERCIAS"],[]];
+  modelo: AOA = [["Nº", "RUC", "RAZON SOCIAL", "TELEFONO", "CORREO", "GRUPO", "TIPO", "REGION", "CLAVE SRI", "CLAVE IESS", "CLAVE MRL CONTRATOS", "CLAVE MRL FORMULARIOS", "CLAVE SUPERCIAS"], []];
   usr = new Usuario();
   constructor(private configService: ConfiguracionesService, private auth: AuthService, private clientesService: ClientesService) { }
 
@@ -123,7 +123,55 @@ export class ConfiguracionesComponent implements OnInit {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
     /* save to file */
-    XLSX.writeFile(wb, 'NombreArchivo.xlsx');
+    XLSX.writeFile(wb, 'DatosClientes.xlsx');
+  }
+
+  actualizarDatosCatastrosClientes() {
+    let nombreCliente = '';
+    let clientes: Cliente[] = [];
+    Swal.fire({ title: 'Espere', text: 'Actualizando información' + nombreCliente, allowOutsideClick: false, icon: 'info', });
+    Swal.showLoading();
+    this.clientesService.getClientes().subscribe(async resp => {
+      clientes = resp;
+      if (clientes.length === 0) { Swal.fire('No se encontraron clientes', 'Registre clientes antes de utilizar esta opción', 'warning'); return; }
+      for (const cliente of clientes) {
+        nombreCliente = cliente.CLI_NOMBRE;
+
+        Swal.update({ title: 'Espere', html: `Actualizando información <br> ${nombreCliente}`, allowOutsideClick: false, icon: 'info', });
+        Swal.showLoading();
+
+        try {
+          const isAr = await this.clientesService.getIsAgenteRentencion(cliente.CLI_CODIGO).toPromise();
+          const isCe = await this.clientesService.getIsContribuyenteEspecial(cliente.CLI_CODIGO).toPromise();
+          const isEf = await this.clientesService.getIsEmpresaFantasma(cliente.CLI_CODIGO).toPromise();
+          const isMi = await this.clientesService.getIsMicro(cliente.CLI_CODIGO).toPromise();
+          const sriData = await this.clientesService.getClienteSri(cliente.CLI_CODIGO).toPromise();
+          // console.log(sriData);
+          if (isAr["agentes"]) { cliente.CLI_AGENRETENCION = isAr["agentes"]; }
+          if (isCe["especiales"]) { cliente.CLI_CONTRIESPECIAL = isCe["especiales"]; }
+          if (isEf["fantasma"]) { cliente.CLI_EMPRESAFANTAS = isEf["fantasma"]; }
+          if (isMi["microempresa"]) { cliente.CLI_MICROEMPRESA = isMi["microempresa"]; }
+          if (sriData["Actividad Económica Principal"]) { cliente.CLI_ACTIVIDAD = sriData["Actividad Económica Principal"]; cliente.CLI_NOMBREC = sriData["Nombre Comercial"]; }
+          if (sriData["Nombre Comercial:"]) { cliente.CLI_NOMBREC = sriData["Nombre Comercial:"]; }
+          if (isAr["agentes"] || isCe["especiales"] || isEf["fantasma"] || isMi["microempresa"]) { cliente.CLI_FECHACONSULTA = this.fechaActual(); }
+          if (!cliente.datosAdicionales) {
+            const datosBusqueda = {
+              CLI_CODIGO: cliente.CLI_CODIGO,
+              COM_CODIGO: cliente.COM_CODIGO,
+            }
+            const datosAdi: any = await this.clientesService.getDatosAdicionales(datosBusqueda).toPromise();
+            cliente.datosAdicionales = datosAdi;
+          }
+          // console.log(cliente);
+          const resp = await this.clientesService.putCliente(cliente.CLI_CODIGO, cliente).toPromise();
+          // console.log(resp);
+        } catch (error) {
+          console.log(error);
+        }
+
+      }
+      Swal.fire({ title: 'Listo', text: 'Realizado exitozamente', icon: 'success', });
+    });
   }
 
   calcularVence(digito: string) {
@@ -164,6 +212,15 @@ export class ConfiguracionesComponent implements OnInit {
         break;
     }
     return vence;
+  }
+
+  fechaActual() {
+    let date = new Date();
+    let dia: string, mes: string, anio: number;
+    dia = date.getDate().toString().length < 2 ? `0${date.getDate().toString()}` : date.getDate().toString();
+    mes = date.getMonth().toString().length < 2 ? `0${date.getMonth().toString()}` : date.getMonth().toString();
+    anio = date.getFullYear();
+    return `${anio}-${mes}-${dia}`;
   }
 
 }
