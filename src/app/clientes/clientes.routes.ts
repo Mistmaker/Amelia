@@ -8,12 +8,14 @@ import { TiposClientesComponent } from './pages/tipos-clientes/tipos-clientes.co
 import { GruposClientesComponent } from './pages/grupos-clientes/grupos-clientes.component';
 import { GrupoClienteComponent } from './pages/grupo-cliente/grupo-cliente.component';
 import { AuthGuard } from '../auth/guards/auth-guard.guard';
+import { DocumentosClienteComponent } from './pages/documentos-cliente/documentos-cliente.component';
 
 const routes: Routes = [
     { path: 'tipos-clientes', component: TiposClientesComponent, canActivate: [AuthGuard]},
     { path: 'tipos-clientes/:id', component: TipoClienteComponent, canActivate: [AuthGuard]},
     { path: 'grupos', component: GruposClientesComponent, canActivate: [AuthGuard]},
     { path: 'grupos/:id', component: GrupoClienteComponent, canActivate: [AuthGuard]},
+    { path: 'documentos', component: DocumentosClienteComponent, canActivate: [AuthGuard]},
     { path: '', component: ClientesComponent, canActivate: [AuthGuard]},
     { path: ':id', component: ClienteComponent, canActivate: [AuthGuard]},
     { path: '**', redirectTo: '', pathMatch: 'full'},

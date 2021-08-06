@@ -1,0 +1,104 @@
+<div class="card">
+    <div class="card-header card-header-info">
+        <h4 class="card-title">Documentos de Clientes</h4>
+        <p class="card-category"></p>
+    </div>
+
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" [(ngModel)]="nombreCliente"
+                        placeholder="Seleccione un cliente" disabled>
+                    <button type="button" class="btn btn-primary" (click)="abrirModal()"> <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button class="btn btn-primary mt-1" type="button" *ngIf="clienteSeleccionado.CLI_CODIGO" (click)="agregarDocumento()">
+                        <i class="fas fa-plus"></i> Agregar documento
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" *ngIf="cargarDocumento">
+            <div class="col-md-4">
+                <label for="formFile" class="form-label">Nombre Archivo:</label>
+                <input class="form-control" type="text" [(ngModel)]="nombreArchivo" name="nomArchivo">
+            </div>
+            <div class="col-md-2">
+                <label for="formFile" class="form-label">Total:</label>
+                <input class="form-control" type="number" [(ngModel)]="valorTotal" name="valorTotal">
+            </div>
+            <div class="col-md-4">
+                <label for="formFile" class="form-label">Archivo:</label>
+                <input class="form-control" (change)="cargaArchivo($event)" type="file" name="file1" id="formFile">
+            </div>
+            <div class="col-md-2 ">
+                <label for="formFile" class="form-label">&nbsp;</label>
+                <button class="btn btn-primary" type="button" (click)="agregarDocLista()">
+                    <i class="fas fa-plus"></i> Cargar
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive" *ngIf="documentos.length > 0">
+            <table class="table table-sm table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Fecha Subida</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Peso</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let documento of documentos | paginate : {itemsPerPage: tableSize,currentPage: page,totalItems: count} ;let i = index ">
+                        <td scope="row">
+                            {{ documento.DOC_FECHA }}
+                        </td>
+                        <td>
+                            {{ documento.DOC_NOMBRE }}.{{ documento.DOC_TIPO }}
+                        </td>
+                        <td>
+                            {{ documento.DOC_SIZE }}
+                        </td>
+                        <td>
+                            {{ documento.DOC_TOTAL | number: '1.2-2' }}
+                        </td>
+                        <td>
+                            <span *ngIf="documento.DOC_ESTADO == 'P'" class="badge bg-warning text-dark">Pendiente</span>
+                            <span *ngIf="documento.DOC_ESTADO == 'R'" class="badge bg-success">Registrado</span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm"
+                                (click)="verDocumento(documento)"> <i class="fas fa-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" [disabled]="documento.DOC_ESTADO == 'R'"
+                                (click)="eliminarDocumento(i,documento.DOC_CODIGO)"> <i class="fas fa-minus-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!cargando" class="d-flex justify-content-center">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+            </div>
+        </div>
+        <div *ngIf="cargando" class="alert alert-info text-center mt-3 animated fadein faster">
+            <h4 class="alert-heading">Cargando</h4>
+            <p><i class="fa fa-sync-alt fa-spin fa-3x"></i></p>
+            <p class="mb-0">Espere por favor</p>
+        </div>
+        <div *ngIf="!cargando && documentos.length === 0"
+            class="alert alert-warning text-center mt-3 animated fadein faster">
+            <h4 class="alert-heading">No hay registros</h4>
+            <p><i class="fa fa-exclamation fa-3x"></i></p>
+        </div>
+    </div>
+</div>

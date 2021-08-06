@@ -6,12 +6,14 @@ import { FormsModule } from '@angular/forms';
 
 import { CrearProductoComponent } from './crear-producto/crear-producto.component';
 import { CuentasContablesComponent } from './cuentas-contables/cuentas-contables.component';
+import { BuscarClientesComponent } from './buscar-clientes/buscar-clientes.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
     CrearProductoComponent,
-    CuentasContablesComponent
+    CuentasContablesComponent,
+    BuscarClientesComponent
   ],
   imports: [
     CommonModule,

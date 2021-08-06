@@ -94,13 +94,21 @@ export class ClientesService {
     formData.append("idCli", cli.CLI_CODIGO);
     return this.http.post(`${this.ruta}/api/cliDocs/`, formData);
   }
-  public upload2(file: any[], cli: Cliente) {
+  public upload2(file: any[], cli: Cliente, total: any = null, estado: any = null, acc = 'd') {
     const formData = new FormData();
     for (const f of file) {
-      formData.append("current", f);
+      console.log(f);
+      formData.append("current", f, f.newName);
     }
     formData.append("idCli", cli.CLI_CODIGO);
-    return this.http.post(`${this.ruta}/api/cliDocs/`, formData);
+    formData.append("fecha", this.getFechaActual());
+    formData.append("total", total);
+    formData.append("estado", estado);
+    if (acc === 'd'){
+      return this.http.post(`${this.ruta}/api/cliDocs/`, formData);
+    } else if (acc === 'i'){
+      return this.http.post(`${this.ruta}/api/cliDocs/img/`, formData);
+    }
   }
 
   public downloadUrl(file: any) {
@@ -110,8 +118,22 @@ export class ClientesService {
   getDocumentos(id: string) {
     return this.http.get<ClienteDocumentos[]>(`${this.ruta}/api/cliDocs/cliente/${id}`);
   }
+  getImagenes(id: string) {
+    return this.http.get<ClienteDocumentos[]>(`${this.ruta}/api/cliDocs/cliente/img/${id}`);
+  }
 
   deleteDocumento(id: string) {
     return this.http.delete(`${this.ruta}/api/cliDocs/${id}`);
+  }
+
+  getFechaActual() {
+    let date = new Date();
+    let dia: string, mes: string, anio: number;
+
+    dia = date.getDate().toString().length < 2 ? `0${date.getDate().toString()}` : date.getDate().toString();
+    mes = date.getMonth().toString().length < 2 ? `0${date.getMonth().toString()}` : date.getMonth().toString();
+    anio = date.getFullYear();
+
+    return `${anio}-${mes}-${dia}`;
   }
 }

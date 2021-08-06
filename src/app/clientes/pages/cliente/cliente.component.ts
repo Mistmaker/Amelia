@@ -58,7 +58,7 @@ export class ClienteComponent implements OnInit {
 
   cargando = false;
   cargado = false;
-  nombreArchivo: string | undefined;
+  nombreArchivo: string;
   // cuentas contables clientes
   cuentasCliente = new CuentasContablesClientes();
 
@@ -574,19 +574,41 @@ export class ClienteComponent implements OnInit {
 
   agregarDocumento() {
     this.cargarDocumento = true;
-    this.documentoCliente = new ClienteDocumentos();
+    // this.documentoCliente = new ClienteDocumentos();
   }
+
+  agregarDocLista() {
+    console.log(this.nombreArchivo);
+    if (!this.nombreArchivo || this.nombreArchivo === '') { Swal.fire('No se puede cargar', 'Por favor agrege un nombre al archivo', 'warning'); return; }
+    // this.current = file;
+    // this.createFile(null,null);
+    this.current.newName = this.nombreArchivo + '.' + this.current.name.split('.').pop();
+    this.archivos.push(this.current);
+    // event.target.value = null;
+    console.log(this.current);
+    this.cargarDocumento = false;
+  }
+
+  // createFile(bits, name) {
+  //   try {
+  //     // const myRenamedFile = new File([this.current.data], "my-file-final-1-really.txt");
+  //     this.current = new File([this.current], "my-file-final-1-really.txt");
+  //     console.log(this.current);
+  //   } catch (e) {
+
+  //   }
+  // }
 
   cargaArchivo(event: any) {
     const file: File = event.target.files[0];
     console.log(file);
-    console.log(this.archivos.length , this.cliente.documentos.length);
-    if ((this.archivos.length + this.cliente.documentos.length )> 9) { Swal.fire('Excedido límite máximo de archivos', 'Solo se permiten 10 archivos', 'warning'); event.target.value = null; return; }
+    console.log(this.archivos.length, this.cliente.documentos.length);
+    if ((this.archivos.length + this.cliente.documentos.length) > 9) { Swal.fire('Excedido límite máximo de archivos', 'Solo se permiten 10 archivos', 'warning'); event.target.value = null; return; }
     if (file.size > maxFileSize) { Swal.fire('No se puede cargar el archivo', 'El archivo no debe pesar mas de 15Mb', 'warning'); return; }
     this.current = file;
-    this.archivos.push(this.current);
-    event.target.value = null;
-    this.cargarDocumento = false;
+    // this.archivos.push(this.current);
+    // event.target.value = null;
+    // this.cargarDocumento = false;
   }
 
   subirDocumento() {

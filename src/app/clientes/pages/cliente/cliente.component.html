@@ -552,15 +552,25 @@
                 <div *ngIf="tab == 'DO'">
                     <div class="row">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button class="btn btn-primary mt-1" type="button" (click)="agregarDocumento()">
+                            <button class="btn btn-primary mt-1" type="button" *ngIf="!cargarDocumento" (click)="agregarDocumento()">
                                 <i class="fas fa-plus"></i> Agregar
                             </button>
                         </div>
                     </div>
                     <div class="row" *ngIf="cargarDocumento">
-                        <div class="col-md-8">
+                        <div class="col-md-6">
+                            <label for="formFile" class="form-label">Nombre Archivo:</label>
+                            <input class="form-control" type="text" [(ngModel)]="nombreArchivo" name="nomArchivo">
+                        </div>
+                        <div class="col-md-4">
                             <label for="formFile" class="form-label">Archivo:</label>
                             <input class="form-control" (change)="cargaArchivo($event)" type="file" name="file1" id="formFile">
+                        </div>
+                        <div class="col-md-2 ">
+                            <label for="formFile" class="form-label">&nbsp;</label>
+                            <button class="btn btn-primary" type="button" (click)="agregarDocLista()">
+                                <i class="fas fa-plus"></i> Cargar
+                            </button>
                         </div>
                     </div>
                     <div class="table-responsive" *ngIf="archivos.length > 0">
@@ -576,7 +586,7 @@
                             <tbody>
                                 <tr *ngFor="let arch of archivos;let i = index">
                                     <td scope="row">
-                                        {{ arch.name }}
+                                        {{ arch.newName }}
                                     </td>
                                     <td>
                                         {{ arch.size }} KB

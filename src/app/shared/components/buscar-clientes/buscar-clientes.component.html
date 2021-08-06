@@ -1,0 +1,22 @@
+<div class="d-flex justify-content-between">
+    <h5 mat-dialog-title class="" id="exampleModalLabel">Clientes</h5>
+    <button type="button" class="close" (click)="onNoClick()">
+        <span aria-hidden="true" class="text-danger"> <i class="fas fa-2x fa-window-close"></i> </span>
+    </button>
+</div>
+
+<div>
+    <label>Nombre o Ruc del cliente *</label>
+    <input [(ngModel)]="textoBusqueda" (keyup)="busqueda($event)" #cuenta="ngModel" type="text" class="form-control"
+        name="searchProduct" placeholder="Nombre del producto" required autocomplete="off" />
+    <hr>
+    <!-- <div class="">
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let cliente of clientes"> {{ cliente.CLI_NOMBRE }} </li>
+        </ul>
+    </div> -->
+    <div class="list-group">
+        <button type="button" class="list-group-item btn-sm list-group-item-action" *ngFor="let cliente of clientes" (click)="seleccionarCliente(cliente)" >{{ cliente.CLI_NOMBRE }}</button>
+    </div>
+
+</div>
