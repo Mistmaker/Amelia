@@ -4,7 +4,7 @@ import { ClienteDocumentos } from '../../../models/clientesDocumentos';
 import { MatDialog } from '@angular/material/dialog';
 import { BuscarClientesComponent } from '../../../shared/components/buscar-clientes/buscar-clientes.component';
 import { Cliente } from '../../../models/clientes.model';
-import { maxFileSize } from 'src/environments/environment.prod';
+import { maxFileSize } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -72,10 +72,13 @@ export class DocumentosClienteComponent implements OnInit {
     console.log(this.nombreArchivo);
     if (!this.nombreArchivo || this.nombreArchivo === '') { Swal.fire('No se puede cargar', 'Por favor agrege un nombre al archivo', 'warning'); return; }
     if (!this.valorTotal || this.valorTotal <= 0) { Swal.fire('No se puede cargar', 'Por favor ingrese un valor total correcto', 'warning'); return; }
-    if (!this.current ) { Swal.fire('No se puede cargar', 'Por favor agrege seleccione una imagen', 'warning'); return; }
+    if (!this.current) { Swal.fire('No se puede cargar', 'Por favor agrege seleccione una imagen', 'warning'); return; }
+    Swal.fire('Espere', 'Subiendo imagen...', 'info');
+    Swal.showLoading();
     this.current.newName = this.nombreArchivo + '.' + this.current.name.split('.').pop();
     this.archivos.push(this.current);
     this.clientesService.upload2(this.archivos, this.clienteSeleccionado, this.valorTotal, 'P', 'i').subscribe(resp => {
+      Swal.fire('Listo', 'Imagen cargada con éxito', 'success');
       console.log(resp);
       this.obtenerImagenes();
       this.archivos = [];
@@ -83,6 +86,8 @@ export class DocumentosClienteComponent implements OnInit {
       this.valorTotal = null;
       this.current = null;
       this.cargarDocumento = false;
+    }, err => {
+      Swal.fire('Error', 'Ocurrió un inconveniente', 'error');
     });
     // console.log(this.current);
     // this.cargarDocumento = false;
@@ -126,13 +131,21 @@ export class DocumentosClienteComponent implements OnInit {
 
   verDocumento(doc: ClienteDocumentos) {
     // console.log(doc.DOC_DATOS);
-    this.dialog.open(ImgModaldialog, {
-      width: '100%',
-      height: '100%',
-      data: {
-        img: doc.DOC_DATOS
-      }
+    Swal.fire({ title: 'Espere', text: 'Obteniendo imagen...', icon: 'info', allowOutsideClick: false});
+    Swal.showLoading();
+    this.clientesService.getImagen(doc.DOC_CODIGO).subscribe(resp => {
+      console.log('img from server', resp.DOC_DATOS);
+      this.dialog.open(ImgModaldialog, {
+        width: '100%',
+        height: '100%',
+        data: {
+          img: resp.DOC_DATOS
+        }
+      }).afterOpened().subscribe(r => {
+        Swal.close();
+      });
     });
+    
   }
 
   onTableDataChange(event: any) {
@@ -154,5 +167,5 @@ export class DocumentosClienteComponent implements OnInit {
   templateUrl: 'img-modal.html',
 })
 export class ImgModaldialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
 }

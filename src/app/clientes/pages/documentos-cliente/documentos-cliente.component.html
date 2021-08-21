@@ -75,9 +75,10 @@
                             <span *ngIf="documento.DOC_ESTADO == 'R'" class="badge bg-success">Registrado</span>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary btn-sm"
+                            <button type="button" class="btn btn-warning btn-sm"
                                 (click)="verDocumento(documento)"> <i class="fas fa-eye"></i>
                             </button>
+                            <!-- <button class="btn btn-sm btn-primary" [routerLink]="['/clientes/documentos/registro', documento.DOC_CODIGO]" [disabled]="documento.DOC_ESTADO == 'R'"><i class="fa fa-edit"></i></button> -->
                             <button type="button" class="btn btn-danger btn-sm" [disabled]="documento.DOC_ESTADO == 'R'"
                                 (click)="eliminarDocumento(i,documento.DOC_CODIGO)"> <i class="fas fa-minus-circle"></i>
                             </button>

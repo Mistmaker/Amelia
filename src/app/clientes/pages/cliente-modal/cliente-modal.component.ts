@@ -24,6 +24,7 @@ import { GrupoCliente } from '../../../models/grupoClientes';
 import { CuentasContablesComponent } from './../../../shared/components/cuentas-contables/cuentas-contables.component';
 import { TiposClientesService } from '../../services/tipos-clientes.service';
 import { TiposClientes } from '../../../models/tiposClientes';
+import { ClienteDocumentos } from '../../../models/clientesDocumentos';
 
 @Component({
   selector: 'app-cliente-modal',
@@ -79,6 +80,7 @@ export class ClienteModalComponent implements OnInit {
         this.cliente.CLI_FECHACONSULTA = this.cliente.CLI_FECHACONSULTA ? this.cliente.CLI_FECHACONSULTA.slice(0, 10) : null;
         this.cliente.CLI_FECHACREADO = this.cliente.CLI_FECHACREADO ? this.cliente.CLI_FECHACREADO.slice(0, 10) : null;
         if (!this.cliente.datosAdicionales) this.cliente.datosAdicionales = [];
+        if (!this.cliente.documentos) this.cliente.documentos = [];
         this.showDeleteButton = true;
         this.cliente.CLI_ESTADO = resp.CLI_ESTADO || '1';
         this.cliente.CLI_MICROEMPRESA = resp.CLI_MICROEMPRESA || '';
@@ -96,6 +98,7 @@ export class ClienteModalComponent implements OnInit {
           this.cliente.datosAdicionales = resp;
         });
         this.getAllCuentasContables();
+        this.getDocumentos();
       });
     }
     // default values
@@ -144,40 +147,45 @@ export class ClienteModalComponent implements OnInit {
     this.cuentaContableService
       .getCuenta(this.cliente.CON_CODIGO1)
       .subscribe((res) => {
-        this.cuentasCliente.CON_CODIGO1 =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CON_CODIGO1 = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
 
     // CON_CODIGO2
     this.cuentaContableService
       .getCuenta(this.cliente.CON_CODIGO2)
       .subscribe((res) => {
-        this.cuentasCliente.CON_CODIGO2 =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CON_CODIGO2 = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
 
     // CLI_BASEIVA
     this.cuentaContableService
       .getCuenta(this.cliente.CLI_BASEIVA)
       .subscribe((res) => {
-        this.cuentasCliente.CLI_BASEIVA =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CLI_BASEIVA = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
 
     // CLI_BASECERO
     this.cuentaContableService
       .getCuenta(this.cliente.CLI_BASECERO)
       .subscribe((res) => {
-        this.cuentasCliente.CLI_BASECERO =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CLI_BASECERO = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
 
     // CLI_BASENOBJET
     this.cuentaContableService
       .getCuenta(this.cliente.CLI_BASENOBJET)
       .subscribe((res) => {
-        this.cuentasCliente.CLI_BASENOBJET =
-          res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        if (res) {
+          this.cuentasCliente.CLI_BASENOBJET = res.CON_CODIGO + ' || ' + res.CON_NOMBRE;
+        }
       });
   }
 
@@ -203,4 +211,13 @@ export class ClienteModalComponent implements OnInit {
     this.coordinateY = coordinates[1].replace(',', '').replace(' ', '');
   }
 
+  getDocumentos() {
+    this.clientesService.getDocumentos(this.cliente.CLI_CODIGO).subscribe(resp => {
+      this.cliente.documentos = resp;
+    });
+  }
+
+  descargarArchivo(documento: ClienteDocumentos) {
+    return this.clientesService.downloadUrl(documento);
+  }
 }

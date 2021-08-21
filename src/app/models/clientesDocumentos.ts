@@ -7,5 +7,8 @@ export class ClienteDocumentos {
     DOC_TIPO: string;
     DOC_MIMETYPE: string;
     DOC_FECHA: Date;
-
+    DOC_TOTAL: number;
+    DOC_ESTADO: string;
+    DOC_ORIGEN: string;
+    DOC_IDORIGEN: number;
 }

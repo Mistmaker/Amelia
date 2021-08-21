@@ -1,0 +1,121 @@
+<div class="card">
+    <div class="card-header card-header-info">
+        <h4 class="card-title ">Agenda</h4>
+        <p class="card-category"></p>
+    </div>
+
+    <div class="card-body" *ngIf="mostrarEstado">
+        <div class="d-grid gap-2 mb-1 d-md-flex justify-content-md-end">
+            <button type="button" (click)="mostrarEstado=false" class="btn btn-sm btn-secondary mt-1">
+                Ocultar
+            </button>
+        </div>
+        <div class="input-group bg-danger bg-gradient mb-1">
+            <span class="form-control bg-danger bg-gradient text-light" style="border: 0;" id="basic-addon1">Vencidos</span>
+            <span class="input-group-text bg-danger bg-gradient text-light" style="border: 0;" id="basic-addon1">{{estadoActividades.vencidos}}</span>
+        </div>
+        <div class="input-group bg-primary bg-warning mb-1">
+            <span class="form-control bg-primary bg-warning text-light" style="border: 0;" id="basic-addon1">Pendientes</span>
+            <span class="input-group-text bg-primary bg-warning text-light" style="border: 0;" id="basic-addon1">{{estadoActividades.pendientes}}</span>
+        </div>
+        <div class="input-group bg-primary bg-success mb-1">
+            <span class="form-control bg-primary bg-success text-light" style="border: 0;" id="basic-addon1">Hoy</span>
+            <span class="input-group-text bg-primary bg-success text-light" style="border: 0;" id="basic-addon1">{{estadoActividades.hoy}}</span>
+        </div>
+        <div class="input-group bg-primary bg-gradient mb-1">
+            <span class="form-control bg-primary bg-gradient text-light" style="border: 0;" id="basic-addon1">Próximos</span>
+            <span class="input-group-text bg-primary bg-gradient text-light" style="border: 0;" id="basic-addon1">{{estadoActividades.proximos}}</span>
+        </div>
+    </div>
+
+    <div class="card-body">
+
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-sm" readonly [(ngModel)]="nombreCliente" placeholder="Buscar cliente...">
+                    <button (click)="abrirModal()" class="btn btn-sm btn-primary"><i
+                        class="fas fa-search"></i></button>
+                </div>
+                <p style="font-size: 0.7rem;"> &nbsp; {{ tipoCliente }} </p>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-sm" #busqueda [(ngModel)]="textoBusqueda" placeholder="Buscar...">
+                    <button (click)="limpiarBusqueda()" [disabled]="textoBusqueda.length==0" class="btn btn-sm btn-primary"><i
+                        class="fas fa-backspace"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- <div class="row mb-3">
+            <div class="col-md-9">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="textoBusqueda" (keyup)="page=1"
+                    placeholder="Buscar ...">
+            </div>
+            <div class="col-md-3">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button routerLink="/agenda/actividades/nuevo" class="btn btn-sm btn-primary"><i
+                            class="fas fa-plus"></i>Agregar</button>
+                </div>
+            </div>
+        </div> -->
+
+        <div class="table-responsive">
+            <table *ngIf="!cargando  && agendaActividades.length > 0"
+                class="table table-striped table-hover table-sm animated fadein faster">
+                <thead class="text-primary">
+                    <th> <a (click)="ordenar('id')" style="cursor: pointer;">Id</a></th>
+                    <th> <a (click)="ordenar('ruc')" style="cursor: pointer;">Ruc</a> </th>
+                    <th> <a (click)="ordenar('cliente')" style="cursor: pointer;"> Razon Social </a></th>
+                    <th> <a (click)="ordenar('actividad')" style="cursor: pointer;"> Actividad </a></th>
+                    <th> <a (click)="ordenar('vence')" style="cursor: pointer;"> Vence </a></th>
+                    <th> <a (click)="ordenar('mesVence')" style="cursor: pointer;"> Mes </a></th>
+                    <th> <a (click)="ordenar('fecha_finalizacion')" style="cursor: pointer;"> Finalizacion </a></th>
+                    <th> <a (click)="ordenar('ESCAT')" style="cursor: pointer;"> Estado </a></th>
+                    <th class="col-botones">Acciones</th>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let a of agendaActividades | filtroSimple: textoBusqueda | paginate : {itemsPerPage: tableSize,currentPage: page,totalItems: count}; let i = index;">
+                        <td>{{ a.id }} </td>
+                        <td>{{ a.ruc }} </td>
+                        <td>{{ a.cliente }} </td>
+                        <td>{{ a.actividad }} </td>
+                        <td>{{ a.vence }} </td>
+                        <td>{{ a.mes }} </td>
+                        <td>{{ a.fecha_finalizacion?.replace('T',' ').replace('.000Z','') }} </td>
+                        <td>{{ a.ESCAT }} </td>
+                        <td class="col-botones">
+                            <button class="btn btn-sm btn-danger mr-1" (click)="eliminar(a.id,i)"
+                                [disabled]="a.estado!=='PENDIENTE'"><i class="fa fa-trash"></i></button>
+                            <button class="btn btn-sm btn-warning text-light mr-1" (click)="reversar(a)"
+                                [disabled]="a.estado=='PENDIENTE'"><i class="fa fa-exchange-alt"></i></button>
+                            <button class="btn btn-sm btn-success mr-1" (click)="finalizar(a)"
+                                [disabled]="a.estado!=='PENDIENTE'"><i class="fa fa-check"></i></button>
+                            <button class="btn btn-sm btn-primary mr-1" (click)="comentar(a)"><i
+                                    class="fa fa-comment"></i> {{ a.comentarios }}</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!cargando && agendaActividades.length !== 0" class="d-flex justify-content-center">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+            </div>
+        </div>
+
+        <div *ngIf="cargando" class="alert alert-info text-center mt-3 animated fadein faster">
+            <h4 class="alert-heading">Cargando</h4>
+            <p><i class="fa fa-sync-alt fa-spin fa-3x"></i></p>
+            <p class="mb-0"> Espere por favor</p>
+        </div>
+        <div *ngIf="!cargando && agendaActividades.length === 0"
+            class="alert alert-warning text-center mt-3 animated fadein faster">
+            <h4 class="alert-heading">No hay registros</h4>
+            <p><i class="fa fa-exclamation fa-3x"></i></p>
+        </div>
+
+    </div>
+</div>

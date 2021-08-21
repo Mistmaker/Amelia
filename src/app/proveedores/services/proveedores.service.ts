@@ -9,7 +9,7 @@ import {
   urlWsRucCE,
   urlWsRucEF,
   urlWsRucAR,
-} from '../../../environments/environment.prod';
+} from '../../../environments/environment';
 import { Proveedor } from './../../models/proveedores.model';
 
 @Injectable({

@@ -1,6 +1,6 @@
 import { EncabezadoFactura } from './../../models/encabezadoFactura';
 import { HttpClient } from '@angular/common/http';
-import { urlWs } from './../../../environments/environment.prod';
+import { urlWs } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 
 @Injectable({

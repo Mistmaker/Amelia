@@ -25,7 +25,7 @@ import { CuentasContablesComponent } from './../../../shared/components/cuentas-
 import { TiposClientesService } from '../../services/tipos-clientes.service';
 import { TiposClientes } from '../../../models/tiposClientes';
 import { ClienteDocumentos } from '../../../models/clientesDocumentos';
-import { maxFileSize } from '../../../../environments/environment.prod';
+import { maxFileSize } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-cliente',
@@ -587,6 +587,7 @@ export class ClienteComponent implements OnInit {
     // event.target.value = null;
     console.log(this.current);
     this.cargarDocumento = false;
+    console.log(this.clientesService.getFechaActual());
   }
 
   // createFile(bits, name) {
@@ -603,7 +604,9 @@ export class ClienteComponent implements OnInit {
     const file: File = event.target.files[0];
     console.log(file);
     console.log(this.archivos.length, this.cliente.documentos.length);
-    if ((this.archivos.length + this.cliente.documentos.length) > 9) { Swal.fire('Excedido límite máximo de archivos', 'Solo se permiten 10 archivos', 'warning'); event.target.value = null; return; }
+    // TODO: CAMBIAR POR PARAMETRO EN BASE DE DATOS [CONFIGURACION GLOBAL]
+    // if ((this.archivos.length + this.cliente.documentos.length) > 9) { Swal.fire('Excedido límite máximo de archivos', 'Solo se permiten 10 archivos', 'warning'); event.target.value = null; return; }
+
     if (file.size > maxFileSize) { Swal.fire('No se puede cargar el archivo', 'El archivo no debe pesar mas de 15Mb', 'warning'); return; }
     this.current = file;
     // this.archivos.push(this.current);

@@ -93,5 +93,7 @@ export class EncabezadoFactura {
   isNewSupplier: boolean = false;
   supplier: Proveedor;
 
-  constructor() {}
+  constructor() {
+    this.ENCFACPRO_ESTADO = 'P';
+  }
 }

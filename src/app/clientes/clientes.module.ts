@@ -14,7 +14,9 @@ import { CuentasContablesComponent } from './../shared/components/cuentas-contab
 import { GruposClientesComponent } from './pages/grupos-clientes/grupos-clientes.component';
 import { GrupoClienteComponent } from './pages/grupo-cliente/grupo-cliente.component';
 import { ClienteModalComponent } from './pages/cliente-modal/cliente-modal.component';
-import { DocumentosClienteComponent } from './pages/documentos-cliente/documentos-cliente.component';
+import { DocumentosClienteComponent, ImgModaldialog } from './pages/documentos-cliente/documentos-cliente.component';
+import { ComprasModule } from '../compras/compras.module';
+import { CargaCompraClienteComponent } from './pages/carga-compra-cliente/carga-compra-cliente.component';
 
 
 
@@ -27,7 +29,8 @@ import { DocumentosClienteComponent } from './pages/documentos-cliente/documento
     GruposClientesComponent,
     GrupoClienteComponent,
     ClienteModalComponent,
-    DocumentosClienteComponent
+    DocumentosClienteComponent,
+    CargaCompraClienteComponent
   ],
   imports: [
     CommonModule,
@@ -36,6 +39,7 @@ import { DocumentosClienteComponent } from './pages/documentos-cliente/documento
     FormsModule,
     PipesModule,
     MatDialogModule,
+    ComprasModule
   ],
   entryComponents: [CuentasContablesComponent],
 })

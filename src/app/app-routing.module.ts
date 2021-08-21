@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'usuarios', loadChildren: () => import('./usuarios/usuarios.module').then( m => m.UsuariosModule), canActivate: [AuthGuard] },
   { path: 'empresa', loadChildren: () => import('./empresa/empresa.module').then( m => m.EmpresaModule), canActivate: [AuthGuard] },
   { path: 'auth', loadChildren: () => import('./auth/auth.module').then( m => m.AuthModule) },
+  { path: 'agenda', loadChildren: () => import('./agenda/agenda.module').then( m => m.AgendaModule) },
   { path: '**', redirectTo: 'clientes', pathMatch: 'full' },
 ];
 

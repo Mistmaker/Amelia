@@ -1,0 +1,53 @@
+<div class="d-flex justify-content-between">
+    <h5 mat-dialog-title class="" id="exampleModalLabel">Comentarios</h5>
+    <button type="button" class="close" (click)="onNoClick()">
+        <span aria-hidden="true" class="text-danger"> <i class="fas fa-2x fa-window-close"></i> </span>
+    </button>
+</div>
+
+<div>
+
+    <form (ngSubmit)="f.form.valid && guardarComentario(f)" #f="ngForm">
+        <div class="form-group">
+            <div class="input-group ">
+                <input [(ngModel)]="comentario.comentario" name="com" #com="ngModel"
+                    placeholder="Ingresa un nuevo comentario" type="text" class="form-control" minlength="1" required>
+                <button class="btn btn-primary " type="submit">
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
+            <div *ngIf="f.submitted && com.invalid">
+                <span *ngIf="com.errors?.required" class="badge bg-warning text-dark"> <i
+                        class="fas fa-exclamation-triangle"></i> Ingrese un comentario</span>
+            </div>
+        </div>
+    </form>
+
+    <br>
+
+    <div class="card" *ngFor="let c of comentarios; let i = index">
+        <div class="card-body">
+            <p class="card-text"> {{ c.comentario }} </p>
+            <div class="row">
+                <div class="col-xs-6 col-md-6">
+                    <p class="card-text"> <i class="fas fa-clock"></i> {{ c.fecha.replace('T',' ').replace('.000Z','') }} - {{ c.usuario }} </p>
+                </div>
+                <div class="col-xs-6 col-md-6">
+                    <div class="input-group d-flex justify-content-end">
+                        <button class="btn btn-sm btn-warning" *ngIf="c.estado == 'PENDIENTE'" type="button" (click)="cambiarEstado(c)">
+                            <i class="fas fa-sync-alt"></i> {{ c.estado }}
+                        </button>
+                        <button class="btn btn-sm btn-success" *ngIf="c.estado == 'REVISADO'" type="button" (click)="cambiarEstado(c)">
+                            <i class="fas fa-sync-alt"></i> {{ c.estado }}
+                        </button>
+                        <button class="btn btn-sm btn-danger" type="button" (click)="eliminar(c.id,i)" [disabled]="c.estado == 'REVISADO'">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

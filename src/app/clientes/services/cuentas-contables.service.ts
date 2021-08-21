@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { urlWs } from 'src/environments/environment.prod';
+import { urlWs } from 'src/environments/environment';
 import { CuentaContable } from './../../models/cuentasContables';
 
 @Injectable({

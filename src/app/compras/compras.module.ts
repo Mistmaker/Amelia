@@ -10,6 +10,7 @@ import { CrearProductoComponent } from '../shared/components/crear-producto/crea
 @NgModule({
   declarations: [FacturaComponent],
   imports: [CommonModule, ComprasRoutingModule, FormsModule, MatDialogModule],
+  exports: [FacturaComponent],
   entryComponents: [CrearProductoComponent],
 })
 export class ComprasModule {}

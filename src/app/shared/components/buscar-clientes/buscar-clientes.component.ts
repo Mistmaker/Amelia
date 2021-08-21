@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { Cliente } from '../../../models/clientes.model';
 import { ClientesService } from '../../../clientes/services/clientes.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -9,11 +9,18 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./buscar-clientes.component.css']
 })
 export class BuscarClientesComponent implements OnInit {
+
+  @ViewChild("inputBusqueda") inputBusqueda: ElementRef;
+  
   clientes: Cliente[] = [];
   textoBusqueda = '';
-  constructor(private clientesService: ClientesService,public dialogRef: MatDialogRef<BuscarClientesComponent>,@Inject(MAT_DIALOG_DATA) public data: any | null) { }
+  constructor(private clientesService: ClientesService, public dialogRef: MatDialogRef<BuscarClientesComponent>, @Inject(MAT_DIALOG_DATA) public data: any | null) { }
 
   ngOnInit(): void {
+    this.clientesService.getClientes().subscribe(resp => {
+      this.clientes = resp;
+    });
+    setTimeout(() => { this.inputBusqueda.nativeElement.focus(); }, 200);
   }
 
   busqueda(event: any) {
@@ -22,22 +29,20 @@ export class BuscarClientesComponent implements OnInit {
       if (this.textoBusqueda !== '') {
         this.clientesService.getClientesPorNombre(this.textoBusqueda).subscribe(resp => {
           this.clientes = resp;
-          // console.log(this.clientes);
         });
       } else {
         this.clientesService.getClientes().subscribe(resp => {
           this.clientes = resp;
         });
       }
-    }, 500);
+    }, 200);
   }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  seleccionarCliente(c: Cliente){
-    // console.log(c);
+  seleccionarCliente(c: Cliente) {
     this.dialogRef.close(c);
   }
 

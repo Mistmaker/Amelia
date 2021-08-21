@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { urlWs } from '../../../environments/environment.prod';
+import { urlWs } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { GrupoProducto } from '../../models/grupoProductos';
 

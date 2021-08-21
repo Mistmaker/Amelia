@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Usuario } from '../../models/usuarios.model';
-import { urlWs } from 'src/environments/environment.prod';
+import { urlWs } from 'src/environments/environment';
 import { Router } from '@angular/router';
 
 @Injectable({

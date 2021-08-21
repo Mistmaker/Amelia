@@ -25,9 +25,9 @@
                         <a class="nav-link" [ngClass]="{'active': tab === 'DC'}" (click)="tab='DC'">Datos
                             catastros</a>
                     </li>
-                    <!-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" [ngClass]="{'active': tab === 'DO'}" (click)="tab='DO'">Documentos</a>
-                    </li> -->
+                    </li>
                 </ul>
             </div>
 
@@ -408,6 +408,36 @@
                                 <input disabled [(ngModel)]="cliente.CLI_AGENRETENCION" name="agenteRetencion" type="text" disabled class="form-control form-control-sm" />
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div *ngIf="tab == 'DO'">
+                    <div class="table-responsive" *ngIf="cliente.documentos || cliente.documentos.length>0">
+                        <table class="table table-sm table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Fecha Subida</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let documento of cliente.documentos;let i = index">
+                                    <td scope="row">
+                                        {{ documento.DOC_NOMBRE }}.{{ documento.DOC_TIPO }}
+                                    </td>
+                                    <td>
+                                        {{ documento.DOC_FECHA }}
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-success btn-sm" [href]="descargarArchivo(documento)"> <i class="fas fa-download"></i> </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngIf="cliente.documentos.length === 0" class="alert alert-warning text-center mt-3 animated fadein faster">
+                        <h4 class="alert-heading">No hay registros</h4>
+                        <p><i class="fa fa-exclamation fa-3x"></i></p>
                     </div>
                 </div>
             </div>

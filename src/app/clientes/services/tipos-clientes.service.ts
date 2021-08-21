@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TiposClientes } from '../../models/tiposClientes';
-import { urlWs } from 'src/environments/environment.prod';
+import { urlWs } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'

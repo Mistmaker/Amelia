@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Configuracion } from './../../models/configuracion';
-import { urlWs } from './../../../environments/environment.prod';
+import { urlWs } from './../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

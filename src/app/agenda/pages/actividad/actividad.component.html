@@ -1,0 +1,205 @@
+<div class="card">
+    <div class="card-header card-header-info">
+        <h4 class="card-title">Actividades</h4>
+        <p class="card-category">Creación/Mantenimiento de actividades para agenda</p>
+    </div>
+
+    <div class="card-body">
+        <div class="text-right mr-3">
+            <button routerLink="/agenda/actividades" class="btn btn-primary mt-1">
+                <i class="fas fa-long-arrow-alt-left"></i> Regresar
+            </button>
+        </div>
+        <form (ngSubmit)="f.form.valid && guardar(f)" #f="ngForm">
+            <div class="form-group">
+                <label class="form-label">Entidad *</label>
+                <select [(ngModel)]="actividad.entidad" name="entidad" #entidad="ngModel"
+                    class="form-control form-control-sm" required>
+                    <option style="display:none"></option>
+                    <option *ngFor="let ent of entidades" [value]="ent.codigo_entidad">
+                        {{ ent.entidad }}
+                    </option>
+                </select>
+                <div *ngIf="f.submitted && entidad.invalid">
+                    <span *ngIf="entidad.errors?.required" class="badge bg-warning text-dark"> <i
+                            class="fas fa-exclamation-triangle"></i> Seleccione una entidad</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Actividad *</label>
+                <input [(ngModel)]="actividad.actividad" name="act" #act="ngModel" placeholder="Actividad a realizar"
+                    type="text" class="form-control" minlength="5" required />
+                <div *ngIf="f.submitted && act.invalid">
+                    <span *ngIf="act.errors?.required" class="badge bg-warning text-dark"> <i
+                            class="fas fa-exclamation-triangle"></i> Seleccione una entidad</span>
+                    <span *ngIf="act.errors?.minlength" class="badge bg-warning text-dark"> <i
+                            class="fas fa-exclamation-triangle"></i> Mínimo 5 dígitos</span>
+                </div>
+            </div>
+
+
+            <div class="row">
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label">Frecuencia *</label>
+                        <button (click)="tipoFrecuencia='Anual'"
+                            class="btn {{ tipoFrecuencia=='Anual' ? 'btn-primary' : 'btn-outline-primary' }} w-50"
+                            type="button">
+                            Anual
+                        </button>
+                        <button (click)="tipoFrecuencia='Mensual'"
+                            class="btn {{ tipoFrecuencia=='Mensual' ? 'btn-primary' : 'btn-outline-primary' }} w-50"
+                            type="button">
+                            Mensual
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-2" *ngIf="tipoFrecuencia=='Anual'">
+                    <div class="form-group">
+                        <label class="form-label">Mes *</label>
+                        <select [(ngModel)]="actividad.frecuencia" name="mes" #mes="ngModel"
+                            class="form-control form-control-sm" required>
+                            <option style="display:none"></option>                            
+                            <option value="1">Enero</option>                            
+                            <option value="2">Febrero</option>                            
+                            <option value="3">Marzo</option>                            
+                            <option value="4">Abril</option>                            
+                            <option value="5">Mayo</option>                            
+                            <option value="6">Junio</option>                            
+                            <option value="7">Julio</option>                            
+                            <option value="8">Agosto</option>                            
+                            <option value="9">Septiembre</option>                            
+                            <option value="10">Octubre</option>                            
+                            <option value="11">Noviembre</option>                            
+                            <option value="12">Diciembre</option>                            
+                        </select>
+                        <div *ngIf="f.submitted && mes.invalid">
+                            <span *ngIf="mes.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Seleccione el mes</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2" *ngIf="tipoFrecuencia=='Anual' || tipoFrecuencia=='Mensual'">
+                    <div class="form-group">
+                        <label class="form-label">Dia *</label>
+                        <input [(ngModel)]="actividad.vence" name="vence" #vence="ngModel" placeholder="" type="text"
+                            class="form-control" (keyup)="validarDia()" [readonly]="segunDig" required />
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="segunDig" name="segunDig"
+                            (change)="establecerDia()" type="checkbox" id="segunDig">
+                        <label class="form-check-label" for="segunDig">Según dígito </label>
+                    </div>
+                    <div *ngIf="f.submitted && vence.invalid">
+                        <span *ngIf="vence.errors?.required" class="badge bg-warning text-dark"> <i
+                                class="fas fa-exclamation-triangle"></i> Seleccione el dia de vencimiento</span>
+                    </div>
+                    <div *ngIf="!diaValido">
+                        <span class="badge bg-warning text-dark"> <i
+                                class="fas fa-exclamation-triangle"></i> Ingrese un día válido</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Alertar con dias de anticipación*</label>
+                <input [(ngModel)]="actividad.dias" name="diasAlert" #diasAlert="ngModel" placeholder="5"
+                    type="number" class="form-control" required />
+                <div *ngIf="f.submitted && diasAlert.invalid">
+                    <span *ngIf="diasAlert.errors?.required" class="badge bg-warning text-dark"> <i
+                            class="fas fa-exclamation-triangle"></i> Ingrese un valor</span>
+                </div>
+            </div>
+
+
+
+            <div class="row mt-3">
+
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pn_empleado" name="pn_empleado"
+                            type="checkbox" id="pn_empleado">
+                        <label class="form-check-label" for="pn_empleado">Pn Empleado </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pn_rise" name="pn_rise" type="checkbox"
+                            id="pn_rise">
+                        <label class="form-check-label" for="pn_rise">Pn Rise </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pn_no_obligado" name="pn_no_obligado"
+                            type="checkbox" id="pn_no_obligado">
+                        <label class="form-check-label" for="pn_no_obligado">Pn No Obligado </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pn_no_obligado_semestral"
+                            name="pn_no_obligado_semestral" type="checkbox" id="pn_no_obligado_semestral">
+                        <label class="form-check-label" for="pn_no_obligado_semestral">Pn No Obligado Semestral </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pn_obligado" name="pn_obligado"
+                            type="checkbox" id="pn_obligado">
+                        <label class="form-check-label" for="pn_obligado">Pn Obligado </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pj_sa" name="pj_sa" type="checkbox"
+                            id="pj_sa">
+                        <label class="form-check-label" for="pj_sa">Pj Sa </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pj_cia_ltda" name="pj_cia_ltda"
+                            type="checkbox" id="pj_cia_ltda">
+                        <label class="form-check-label" for="pj_cia_ltda">Pj Cia Ltda </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pj_sin_fin_lucro" name="pj_sin_fin_lucro"
+                            type="checkbox" id="pj_sin_fin_lucro">
+                        <label class="form-check-label" for="pj_sin_fin_lucro">Pj Sin fin de lucro </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pj_seps_finan" name="pj_seps_finan"
+                            type="checkbox" id="pj_seps_finan">
+                        <label class="form-check-label" for="pj_seps_finan">Pj Seps Finan </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" [(ngModel)]="actividad.pj_seps_no_finan" name="pj_seps_no_finan"
+                            type="checkbox" id="pj_seps_no_finan">
+                        <label class="form-check-label" for="pj_seps_no_finan">Pj Seps no Finan </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr />
+            <div class="form-group text-center">
+                <button class="btn btn-primary w-50" type="submit">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+                <button *ngIf="mostrarBorrar" (click)="eliminarActividad()" class="btn btn-danger w-50" type="button">
+                    <i class="fas fa-trash-alt"></i> Borrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

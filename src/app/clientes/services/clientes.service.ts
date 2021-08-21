@@ -9,7 +9,7 @@ import {
   urlWsRucCE,
   urlWsRucEF,
   urlWsRucAR,
-} from '../../../environments/environment.prod';
+} from '../../../environments/environment';
 import { Cliente } from '../../models/clientes.model';
 import { ClienteDocumentos } from '../../models/clientesDocumentos';
 
@@ -104,9 +104,9 @@ export class ClientesService {
     formData.append("fecha", this.getFechaActual());
     formData.append("total", total);
     formData.append("estado", estado);
-    if (acc === 'd'){
+    if (acc === 'd') {
       return this.http.post(`${this.ruta}/api/cliDocs/`, formData);
-    } else if (acc === 'i'){
+    } else if (acc === 'i') {
       return this.http.post(`${this.ruta}/api/cliDocs/img/`, formData);
     }
   }
@@ -121,6 +121,12 @@ export class ClientesService {
   getImagenes(id: string) {
     return this.http.get<ClienteDocumentos[]>(`${this.ruta}/api/cliDocs/cliente/img/${id}`);
   }
+  getImagen(id: number) {
+    return this.http.get<ClienteDocumentos>(`${this.ruta}/api/cliDocs/cliente/view/img/${id}`);
+  }
+  putDocumento(doc: ClienteDocumentos) {
+    return this.http.put<ClienteDocumentos>(`${this.ruta}/api/cliDocs/${doc.DOC_CODIGO}`, doc);
+  }
 
   deleteDocumento(id: string) {
     return this.http.delete(`${this.ruta}/api/cliDocs/${id}`);
@@ -131,7 +137,8 @@ export class ClientesService {
     let dia: string, mes: string, anio: number;
 
     dia = date.getDate().toString().length < 2 ? `0${date.getDate().toString()}` : date.getDate().toString();
-    mes = date.getMonth().toString().length < 2 ? `0${date.getMonth().toString()}` : date.getMonth().toString();
+    mes = (date.getMonth() + 1).toString();
+    mes = mes.length < 2 ? `0${mes}` : mes;
     anio = date.getFullYear();
 
     return `${anio}-${mes}-${dia}`;

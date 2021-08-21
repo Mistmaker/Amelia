@@ -1,5 +1,5 @@
 import { NgForm } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 
@@ -11,6 +11,8 @@ import { TipoClientesService } from './../../../clientes/services/tipo-clientes.
 import { Proveedor } from './../../../models/proveedores.model';
 import { ProveedoresService } from './../../../proveedores/services/proveedores.service';
 import { CrearProductoComponent } from 'src/app/shared/components/crear-producto/crear-producto.component';
+import { Usuario } from '../../../models/usuarios.model';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-factura',
@@ -22,17 +24,23 @@ export class FacturaComponent implements OnInit {
   supplier = new Proveedor();
   typeClient: TipoCliente[] = [];
   invoice = new EncabezadoFactura();
+  usr = new Usuario();
   // ui
   isNewSupplier: boolean = false;
   // values
   subtotal: number = 0;
+  establecimiento = '';
+  ptoEmision = '';
+
+  @Output() guardadoCompleto = new EventEmitter();
 
   constructor(
     private supplierService: ProveedoresService,
     private typeClientService: TipoClientesService,
     private facturasService: FacturasService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private auth: AuthService
+  ) { }
 
   ngOnInit(): void {
     // get type client
@@ -51,6 +59,7 @@ export class FacturaComponent implements OnInit {
     this.invoice.ENCFACPRO_VALORIVA = 0;
     // propina
     this.invoice.ENCFACPRO_TOTAL = 0;
+    this.usr = JSON.parse(this.auth.getUsrFromLocalStorage());
   }
 
   toggleCheckBox() {
@@ -79,7 +88,12 @@ export class FacturaComponent implements OnInit {
     if (!this.isNewSupplier) {
       this.supplierService.getProveedor(this.supplier.PRO_CODIGO).subscribe(
         (res) => {
-          this.supplier = res;
+          if (res !== null) {
+            this.supplier = res;
+          } else {
+            this.isNewSupplier = true;
+            this.searchDataOnline();
+          }
         },
         (err) => {
         }
@@ -167,35 +181,22 @@ export class FacturaComponent implements OnInit {
     return `${date[2]}-${date[1]}-${date[0]}`;
   }
 
-  onChangeSelect(value: string) {}
+  onChangeSelect(value: string) { }
 
   saveInvoice(form: NgForm) {
     if (form.invalid) {
       return;
     }
 
+    this.invoice.ENCFACPRO_SERIE = this.establecimiento + this.ptoEmision;
+    this.invoice.ENCFACPRO_REFERENCIA = this.establecimiento + this.ptoEmision + this.invoice.ENCFACPRO_NUMERO;
+    this.invoice.USU_IDENTIFICACION = this.usr.USUIDENTIFICACION;
     if (this.isNewSupplier) {
       // put null on dates containing undefined string
-      if (
-        this.supplier.PRO_FECINIACTIVIDADES &&
-        this.supplier.PRO_FECINIACTIVIDADES.includes('undefined')
-      )
-        this.supplier.PRO_FECINIACTIVIDADES = null;
-      if (
-        this.supplier.PRO_FECCESACTIVIDADES &&
-        this.supplier.PRO_FECCESACTIVIDADES.includes('undefined')
-      )
-        this.supplier.PRO_FECCESACTIVIDADES = null;
-      if (
-        this.supplier.PRO_FECREIACTIVIDADES &&
-        this.supplier.PRO_FECREIACTIVIDADES.includes('undefined')
-      )
-        this.supplier.PRO_FECREIACTIVIDADES = null;
-      if (
-        this.supplier.PRO_FECACTUALIZACION &&
-        this.supplier.PRO_FECACTUALIZACION.includes('undefined')
-      )
-        this.supplier.PRO_FECACTUALIZACION = null;
+      if (this.supplier.PRO_FECINIACTIVIDADES && this.supplier.PRO_FECINIACTIVIDADES.includes('undefined')) this.supplier.PRO_FECINIACTIVIDADES = null;
+      if (this.supplier.PRO_FECCESACTIVIDADES && this.supplier.PRO_FECCESACTIVIDADES.includes('undefined')) this.supplier.PRO_FECCESACTIVIDADES = null;
+      if (this.supplier.PRO_FECREIACTIVIDADES && this.supplier.PRO_FECREIACTIVIDADES.includes('undefined')) this.supplier.PRO_FECREIACTIVIDADES = null;
+      if (this.supplier.PRO_FECACTUALIZACION && this.supplier.PRO_FECACTUALIZACION.includes('undefined')) this.supplier.PRO_FECACTUALIZACION = null;
 
       this.invoice.isNewSupplier = this.isNewSupplier;
       this.invoice.supplier = this.supplier;
@@ -208,6 +209,10 @@ export class FacturaComponent implements OnInit {
 
     this.facturasService.postFacturaProveedor(this.invoice).subscribe(
       (res) => {
+        const data = {
+          id: this.invoice.ENCFACPRO_NUMERO
+        }
+        this.guardadoCompleto.emit(data);
         Swal.fire('Éxito', 'Se creo la factura con éxito', 'success');
       },
       (err) => {
@@ -377,4 +382,18 @@ export class FacturaComponent implements OnInit {
       this.invoice.ENCFACPRO_VALORIVA;
     return parseFloat(total.toFixed(6));
   }
+
+  formatEstablecimiento(numero: string) {
+    const pad = "000";
+    this.establecimiento = (pad + numero).slice(-pad.length);
+  }
+  formatPuntoemision(numero: string) {
+    const pad = "000";
+    this.ptoEmision = (pad + numero).slice(-pad.length);
+  }
+  formatSecuencual(numero: string) {
+    const pad = "000000000";
+    this.invoice.ENCFACPRO_NUMERO = (pad + numero).slice(-pad.length);
+  }
+
 }

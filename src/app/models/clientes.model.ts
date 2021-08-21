@@ -130,6 +130,7 @@ export class Cliente {
   CLI_TIPOCLIENTE: number;
   datosAdicionales: ClienteDatosAdicionales[];
   documentos: ClienteDocumentos[];
+  TipoCliente: string;
 
   constructor() {
     this.CLI_ESTADO = '1';

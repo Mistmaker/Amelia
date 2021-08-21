@@ -7,7 +7,7 @@
 
 <div>
     <label>Nombre o Ruc del cliente *</label>
-    <input [(ngModel)]="textoBusqueda" (keyup)="busqueda($event)" #cuenta="ngModel" type="text" class="form-control" name="searchProduct" placeholder="Nombre o ruc del cliente" required autocomplete="off" />
+    <input [(ngModel)]="textoBusqueda" (keyup)="busqueda($event)" #inputBusqueda  tabindex="0" type="text" class="form-control" name="buscarCliente" placeholder="Nombre o ruc del cliente" required autocomplete="off">
     <hr>
     <!-- <div class="">
         <ul class="list-group">

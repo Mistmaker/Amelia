@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { urlWs } from '../../../environments/environment.prod';
+import { urlWs } from '../../../environments/environment';
 import { Producto } from '../../models/productos.model';
 
 @Injectable({
