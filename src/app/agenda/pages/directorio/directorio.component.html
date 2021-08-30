@@ -4,51 +4,75 @@
         <p class="card-category"></p>
     </div>
 
-    <div class="card-body" *ngIf="mostrarEstado">
+    <div class="card-body">
         <div class="d-grid gap-2 mb-1 d-md-flex justify-content-md-end">
-            <button type="button" (click)="mostrarEstado=false" class="btn btn-sm btn-secondary mt-1">
-                Ocultar
+            <button type="button" (click)="mostrarEstado = !mostrarEstado" class="btn btn-sm btn-secondary mt-1">
+                {{ mostrarEstado ? 'Ocultar' : 'Ver' }}
             </button>
         </div>
-        <div class="input-group bg-danger bg-gradient mb-1">
-            <span class="form-control bg-danger bg-gradient text-light" style="border: 0;" id="basic-addon1">Vencidos</span>
-            <span class="input-group-text bg-danger bg-gradient text-light" style="border: 0;" id="basic-addon1">{{estadoActividades.vencidos}}</span>
+
+        <div class="row" *ngIf="mostrarEstado">
+            <div class="col-md-3" (click)="cargarPorEstado('ven')">
+                <div class="input-group bg-danger bg-gradient mb-1 pointer">
+                    <span class="form-control bg-danger bg-gradient text-light" style="border: 0;"
+                        id="basic-addon1">Vencidos</span>
+                    <span class="input-group-text bg-danger bg-gradient text-light" style="border: 0;"
+                        id="basic-addon1">{{estadoActividades.vencidos}}</span>
+                </div>
+            </div>
+            <div class="col-md-3" (click)="cargarPorEstado('pen')">
+                <div class="input-group bg-primary bg-warning mb-1 pointer">
+                    <span class="form-control bg-primary bg-warning text-light" style="border: 0;"
+                        id="basic-addon1">Pendientes</span>
+                    <span class="input-group-text bg-primary bg-warning text-light" style="border: 0;"
+                        id="basic-addon1">{{estadoActividades.pendientes}}</span>
+                </div>
+            </div>
+            <div class="col-md-3" (click)="cargarPorEstado('hoy')">
+                <div class="input-group bg-primary bg-success mb-1 pointer">
+                    <span class="form-control bg-primary bg-success text-light" style="border: 0;"
+                        id="basic-addon1">Hoy</span>
+                    <span class="input-group-text bg-primary bg-success text-light" style="border: 0;"
+                        id="basic-addon1">{{estadoActividades.hoy}}</span>
+                </div>
+            </div>
+            <div class="col-md-3" (click)="cargarPorEstado('pro')">
+                <div class="input-group bg-primary bg-gradient mb-1 pointer">
+                    <span class="form-control bg-primary bg-gradient text-light" style="border: 0;"
+                        id="basic-addon1">Próximos</span>
+                    <span class="input-group-text bg-primary bg-gradient text-light" style="border: 0;"
+                        id="basic-addon1">{{estadoActividades.proximos}}</span>
+                </div>
+            </div>
         </div>
-        <div class="input-group bg-primary bg-warning mb-1">
-            <span class="form-control bg-primary bg-warning text-light" style="border: 0;" id="basic-addon1">Pendientes</span>
-            <span class="input-group-text bg-primary bg-warning text-light" style="border: 0;" id="basic-addon1">{{estadoActividades.pendientes}}</span>
-        </div>
-        <div class="input-group bg-primary bg-success mb-1">
-            <span class="form-control bg-primary bg-success text-light" style="border: 0;" id="basic-addon1">Hoy</span>
-            <span class="input-group-text bg-primary bg-success text-light" style="border: 0;" id="basic-addon1">{{estadoActividades.hoy}}</span>
-        </div>
-        <div class="input-group bg-primary bg-gradient mb-1">
-            <span class="form-control bg-primary bg-gradient text-light" style="border: 0;" id="basic-addon1">Próximos</span>
-            <span class="input-group-text bg-primary bg-gradient text-light" style="border: 0;" id="basic-addon1">{{estadoActividades.proximos}}</span>
-        </div>
+
+
+
+
+
     </div>
 
     <div class="card-body">
 
-
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-sm" readonly [(ngModel)]="nombreCliente" placeholder="Buscar cliente...">
-                    <button (click)="abrirModal()" class="btn btn-sm btn-primary"><i
-                        class="fas fa-search"></i></button>
+                    <input type="text" class="form-control form-control-sm" readonly [(ngModel)]="nombreCliente"
+                        placeholder="Buscar cliente...">
+                    <button (click)="abrirModal()" class="btn btn-sm btn-primary"><i class="fas fa-search"></i></button>
                 </div>
                 <p style="font-size: 0.7rem;"> &nbsp; {{ tipoCliente }} </p>
             </div>
             <div class="col-md-6">
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-sm" #busqueda [(ngModel)]="textoBusqueda" placeholder="Buscar...">
-                    <button (click)="limpiarBusqueda()" [disabled]="textoBusqueda.length==0" class="btn btn-sm btn-primary"><i
-                        class="fas fa-backspace"></i></button>
+                    <input type="text" class="form-control form-control-sm" #busqueda [(ngModel)]="textoBusqueda"
+                        placeholder="Buscar...">
+                    <button (click)="limpiarBusqueda()" [disabled]="textoBusqueda.length==0"
+                        class="btn btn-sm btn-primary"><i class="fas fa-backspace"></i></button>
                 </div>
             </div>
         </div>
-        
+
         <!-- <div class="row mb-3">
             <div class="col-md-9">
                 <input type="text" class="form-control form-control-sm" [(ngModel)]="textoBusqueda" (keyup)="page=1"
@@ -71,7 +95,7 @@
                     <th> <a (click)="ordenar('cliente')" style="cursor: pointer;"> Razon Social </a></th>
                     <th> <a (click)="ordenar('actividad')" style="cursor: pointer;"> Actividad </a></th>
                     <th> <a (click)="ordenar('vence')" style="cursor: pointer;"> Vence </a></th>
-                    <th> <a (click)="ordenar('mesVence')" style="cursor: pointer;"> Mes </a></th>
+                    <th> <a (click)="ordenar('mesVence')" style="cursor: pointer;"> Periodo </a></th>
                     <th> <a (click)="ordenar('fecha_finalizacion')" style="cursor: pointer;"> Finalizacion </a></th>
                     <th> <a (click)="ordenar('ESCAT')" style="cursor: pointer;"> Estado </a></th>
                     <th class="col-botones">Acciones</th>
@@ -84,18 +108,21 @@
                         <td>{{ a.cliente }} </td>
                         <td>{{ a.actividad }} </td>
                         <td>{{ a.vence }} </td>
-                        <td>{{ a.mes }} </td>
+                        <td>{{ a.periodo_calculo }} </td>
                         <td>{{ a.fecha_finalizacion?.replace('T',' ').replace('.000Z','') }} </td>
                         <td>{{ a.ESCAT }} </td>
-                        <td class="col-botones">
-                            <button class="btn btn-sm btn-danger mr-1" (click)="eliminar(a.id,i)"
-                                [disabled]="a.estado!=='PENDIENTE'"><i class="fa fa-trash"></i></button>
-                            <button class="btn btn-sm btn-warning text-light mr-1" (click)="reversar(a)"
-                                [disabled]="a.estado=='PENDIENTE'"><i class="fa fa-exchange-alt"></i></button>
-                            <button class="btn btn-sm btn-success mr-1" (click)="finalizar(a)"
-                                [disabled]="a.estado!=='PENDIENTE'"><i class="fa fa-check"></i></button>
-                            <button class="btn btn-sm btn-primary mr-1" (click)="comentar(a)"><i
-                                    class="fa fa-comment"></i> {{ a.comentarios }}</button>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-danger wh30"
+                                    (click)="eliminar(a.id,a.comentarios,i)" [disabled]="a.estado!=='PENDIENTE'"><i
+                                        class="fa fa-trash"></i></button>
+                                <button type="button" class="btn btn-warning text-light wh30" (click)="reversar(a)"
+                                    [disabled]="a.estado=='PENDIENTE'"><i class="fa fa-exchange-alt"></i></button>
+                                <button type="button" class="btn btn-success wh30" (click)="finalizar(a)"
+                                    [disabled]="a.estado!=='PENDIENTE'"><i class="fa fa-check"></i></button>
+                                <button type="button" class="btn btn-primary wh5030" (click)="comentar(a)"><i
+                                        class="fa fa-comment"></i> {{ a.comentarios }}</button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>

@@ -6,6 +6,7 @@ import { BuscarClientesComponent } from '../../../shared/components/buscar-clien
 import { UtilidadesService } from '../../../shared/services/utilidades.service';
 import { AgendaService } from '../../services/agenda.service';
 import Swal from 'sweetalert2';
+import { ConfiguracionesService } from '../../../configuraciones/services/configuraciones.service';
 
 @Component({
   selector: 'app-tareas',
@@ -30,7 +31,7 @@ export class TareasComponent implements OnInit {
 
   cargando = false;
 
-  constructor(private utils: UtilidadesService, private agendaService: AgendaService, private dialog: MatDialog) { }
+  constructor(private utils: UtilidadesService, private agendaService: AgendaService, private configuracionesService: ConfiguracionesService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.fecha = this.utils.getFechaActual();
@@ -53,6 +54,41 @@ export class TareasComponent implements OnInit {
     });
   }
 
+  async eliminar(id: string, periodo: number, pos: number) {
+
+    const datos = { periodo: periodo };
+    const codigoAutorizacion = await this.configuracionesService.getConfig('AGENDA_COD_AUT_ELIM').toPromise();
+
+    let eliminar = false;
+    Swal.fire({
+      title: 'Confirmación', html: `Desea eliminar las tareas de este cliente? <br> Solo se eliminarán las "Pendientes" y que no tengan comentarios <br><br> Por favor ingrese el código de autorización`, icon: 'warning', showDenyButton: true, confirmButtonText: `Eliminar`, denyButtonText: `No eliminar`, denyButtonColor: '#3085d6', confirmButtonColor: '#d33', input: 'password', inputPlaceholder: 'Código de autorización', inputAttributes: { autocapitalize: 'off' },
+      preConfirm: (codigo) => {
+        if (codigo == codigoAutorizacion.numero) {
+          return true;
+        } else {
+          Swal.showValidationMessage(`Código no válido`);
+        }
+      }, allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        eliminar = true;
+        if (eliminar) {
+          Swal.fire({ title: 'Espere', text: 'Eliminando información', allowOutsideClick: false, icon: 'info', });
+          Swal.showLoading();
+          this.agendaService.deleteActividadesGeneradasCliente(id, datos).subscribe(resp => {
+            this.agendaService.getActividadesGeneradas().subscribe(resp => {
+              this.agendaActividades = resp;
+            });
+            Swal.fire('Exito', 'Registro eliminado con éxito', 'success');
+          });
+        }
+
+      }
+    });
+
+  }
+
   abrirModal() {
     const dialogRef = this.dialog.open(BuscarClientesComponent, {
       width: '100%',
@@ -71,7 +107,7 @@ export class TareasComponent implements OnInit {
   }
 
   limpiarBusqueda() {
-    this.textoBusqueda = ''; 
+    this.textoBusqueda = '';
     setTimeout(() => { this.busqueda.nativeElement.focus(); }, 0);
   }
 

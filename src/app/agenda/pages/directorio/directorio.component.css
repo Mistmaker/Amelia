@@ -5,6 +5,14 @@ td {
     padding: 0 10px;
 }
 
-.col-botones{
-    width: 160px !important;
+.wh30 {
+    width: 35px;
+    height: 30px;
 }
+
+.wh5030 {
+    width: 50px;
+    height: 30px;
+}
+
+.pointer {cursor: pointer;}

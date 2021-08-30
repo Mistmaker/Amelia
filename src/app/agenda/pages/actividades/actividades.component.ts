@@ -19,7 +19,7 @@ export class ActividadesComponent implements OnInit {
   // Para paginación
   page = 1;
   count = 0;
-  tableSize = 7;
+  tableSize = 15;
   tableSizes = [3, 6, 9, 12];
 
   constructor(private agendaService: AgendaService, private actividadesService: ActividadesService) { }

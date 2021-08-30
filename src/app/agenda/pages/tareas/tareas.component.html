@@ -8,9 +8,9 @@
         <div class="row mb-3">
             <div class="col-md-4">
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-sm" readonly [(ngModel)]="cliente.CLI_NOMBRE" placeholder="Buscar...">
-                    <button (click)="abrirModal()" class="btn btn-sm btn-primary"><i
-                        class="fas fa-search"></i></button>
+                    <input type="text" class="form-control form-control-sm" readonly [(ngModel)]="cliente.CLI_NOMBRE"
+                        placeholder="Buscar...">
+                    <button (click)="abrirModal()" class="btn btn-sm btn-primary"><i class="fas fa-search"></i></button>
                 </div>
                 <p style="font-size: 0.7rem;"> &nbsp; {{ cliente.TipoCliente }} </p>
             </div>
@@ -23,7 +23,8 @@
             </div>
             <div class="form-group col-md-3" id="data_1">
                 <div class="input-group date">
-                    <span class="input-group-text"><i class="fas fa-calendar"></i></span><input type="date" [(ngModel)]="fecha" class="form-control form-control-sm" id="fecha">
+                    <span class="input-group-text"><i class="fas fa-calendar"></i></span><input type="date"
+                        [(ngModel)]="fecha" class="form-control form-control-sm" id="fecha">
                 </div>
             </div>
             <div class="col-md-2">
@@ -43,20 +44,23 @@
         <div class="row mb-3">
             <div class="col-md-6">
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-sm" #busqueda [(ngModel)]="textoBusqueda" placeholder="Buscar...">
-                    <button (click)="limpiarBusqueda()" [disabled]="textoBusqueda.length==0" class="btn btn-sm btn-primary"><i
-                        class="fas fa-backspace"></i></button>
+                    <input type="text" class="form-control form-control-sm" #busqueda [(ngModel)]="textoBusqueda"
+                        placeholder="Buscar...">
+                    <button (click)="limpiarBusqueda()" [disabled]="textoBusqueda.length==0"
+                        class="btn btn-sm btn-primary"><i class="fas fa-backspace"></i></button>
                 </div>
             </div>
         </div>
 
         <div class="table-responsive">
-            <table *ngIf="!cargando  && agendaActividades.length > 0" class="table table-striped table-hover animated fadein faster">
+            <table *ngIf="!cargando  && agendaActividades.length > 0"
+                class="table table-striped table-hover animated fadein faster">
                 <thead class="text-primary">
                     <th>Ruc</th>
                     <th>Razon Social</th>
                     <th>Periodo</th>
                     <th>Creación</th>
+                    <th>Acciones</th>
                 </thead>
                 <tbody>
                     <tr
@@ -65,6 +69,11 @@
                         <td>{{ a.cliente }} </td>
                         <td>{{ a.periodo }} </td>
                         <td>{{ a.creado }} </td>
+                        <td>
+                            <button class="btn btn-sm btn-danger mr-1" (click)="eliminar(a.ruc,a.periodo,i)"><i
+                                    class="fa fa-trash"></i></button>
+                        </td>
+
                     </tr>
                 </tbody>
             </table>

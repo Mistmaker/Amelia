@@ -19,21 +19,16 @@
         </div>
 
         <div class="table-responsive">
-            <table *ngIf="!cargando  && actividades.length > 0" class="table table-striped table-hover table-sm animated fadein faster">
+            <table *ngIf="!cargando  && actividades.length > 0"
+                class="table table-striped table-hover table-sm animated fadein faster">
                 <thead class="text-primary">
                     <th>Id</th>
                     <th>Entidad</th>
                     <th>Actividad</th>
-                    <th>Pn_Empleado</th>
-                    <th>Pn_Rise</th>
-                    <th>Pn_No_Obligado</th>
-                    <th>Pn_No_Obligado_Semestral</th>
-                    <th>Pn_Obligado</th>
-                    <th>Pj_Sa</th>
-                    <th>Pj_Cia_Ltda</th>
-                    <th>Pj_Sin_Fin_Lucro</th>
-                    <th>Pj_Seps_Finan</th>
-                    <th>Pj_Seps_No_Finan</th>
+                    <th class="centrado">Pn_No_Obligado</th>
+                    <th class="centrado">Pn_Obligado</th>
+                    <th class="centrado">Pj_Sin_Fin_Lucro</th>
+                    <th class="centrado">Pj_Con_Fin_Lucro</th>
                     <th>Acciones</th>
                 </thead>
                 <tbody>
@@ -42,18 +37,24 @@
                         <td>{{ a.id_actividad }} </td>
                         <td>{{ a.nombreEntidad }} </td>
                         <td>{{ a.actividad }} </td>
-                        <td>{{ a.pn_empleado == '1' ? 'SI' : 'NO' }} </td>
-                        <td>{{ a.pn_rise == '1' ? 'SI' : 'NO' }} </td>
-                        <td>{{ a.pn_no_obligado == '1' ? 'SI' : 'NO' }} </td>
-                        <td>{{ a.pn_no_obligado_semestral == '1' ? 'SI' : 'NO' }} </td>
-                        <td>{{ a.pn_obligado == '1' ? 'SI' : 'NO' }} </td>
-                        <td>{{ a.pj_sa == '1' ? 'SI' : 'NO' }} </td>
-                        <td>{{ a.pj_cia_ltda == '1' ? 'SI' : 'NO' }} </td>
-                        <td>{{ a.pj_sin_fin_lucro == '1' ? 'SI' : 'NO' }} </td>
-                        <td>{{ a.pj_seps_finan == '1' ? 'SI' : 'NO' }} </td>
-                        <td>{{ a.pj_seps_no_finan == '1' ? 'SI' : 'NO' }} </td>
-                        <td>
-                            <button class="btn btn-sm btn-primary mr-1"
+                        <td class="centrado">
+                            <i *ngIf="a.pn_no_obligado == '1'" class="fa fa-check-circle fa-2x text-success"></i>
+                            <i *ngIf="a.pn_no_obligado != '1'" class="fa fa-times-circle fa-2x text-danger"></i>
+                        </td>
+                        <td class="centrado">
+                            <i *ngIf="a.pn_obligado == '1'" class="fa fa-check-circle fa-2x text-success"></i>
+                            <i *ngIf="a.pn_obligado != '1'" class="fa fa-times-circle fa-2x text-danger"></i>
+                        </td>
+                        <td class="centrado">
+                            <i *ngIf="a.pj_sin_fin_lucro == '1'" class="fa fa-check-circle fa-2x text-success"></i>
+                            <i *ngIf="a.pj_sin_fin_lucro != '1'" class="fa fa-times-circle fa-2x text-danger"></i>
+                        </td>
+                        <td class="centrado">
+                            <i *ngIf="a.pj_con_fin_lucro == '1'" class="fa fa-check-circle fa-2x text-success"></i>
+                            <i *ngIf="a.pj_con_fin_lucro != '1'" class="fa fa-times-circle fa-2x text-danger"></i>
+                        </td>
+                        <td class="centrado">
+                            <button class="btn btn-sm btn-primary mr-1" [disabled]="a.editable!='1'"
                                 [routerLink]="['/agenda/actividades', a.id_actividad]"><i
                                     class="fa fa-pen"></i></button>
                         </td>

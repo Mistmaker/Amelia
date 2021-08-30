@@ -9,16 +9,11 @@ export class Actividades {
     dias: string;
     frecuencia: string;
     vence: string;
-    pn_empleado: string;
-    pn_rise: string;
-    pn_no_obligado: string;
-    pn_no_obligado_semestral: string;
     pn_obligado: string;
-    pj_sa: string;
-    pj_cia_ltda: string;
+    pn_no_obligado: string;
     pj_sin_fin_lucro: string;
-    pj_seps_finan: string;
-    pj_seps_no_finan: string;
+    pj_con_fin_lucro: string;
+    editable: string;
     nombreEntidad: string;
     constructor() {
         this.id_actividad = 0;

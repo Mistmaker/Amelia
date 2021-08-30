@@ -10,6 +10,7 @@ export class AgendaActividad {
     fecha_aviso: string;
     usuario: string;
     periodo: string;
+    periodo_calculo: string;
     actividad: string;
     ESCAT: string;
     cliente: string;

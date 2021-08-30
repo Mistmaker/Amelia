@@ -36,7 +36,7 @@ export class ActividadComponent implements OnInit {
       this.actividadesService.getActividad(this.idParam).subscribe(resp => {
         if (resp === null) { Swal.fire({ title: 'Error', html: `No se encontraron los datos de la actividad seleccionada <br> Intente nuevamente`, icon: 'error' }).then(() => { this.router.navigateByUrl('/agenda/actividades') }); }
         this.actividad = resp;
-        if (this.actividad.frecuencia == 'Mensual') { this.tipoFrecuencia = 'Mensual'; } else { this.tipoFrecuencia = 'Anual'; }
+        if (this.actividad.frecuencia == 'Mensual') { this.tipoFrecuencia = 'Mensual'; } else {  if( this.actividad.frecuencia == 'Semestral' ) { this.tipoFrecuencia = 'Semestral' }  else { this.tipoFrecuencia = 'Anual';} }
         if (this.actividad.vence == 'D') { this.segunDig = true; } else { this.segunDig = false; }
         this.mostrarBorrar = true;
       });
@@ -51,7 +51,7 @@ export class ActividadComponent implements OnInit {
     Swal.fire({ title: 'Espere', text: 'Guardando información...', icon: 'info', allowOutsideClick: false });
     Swal.showLoading();
 
-    if (this.tipoFrecuencia == 'Mensual') {
+    if (this.tipoFrecuencia == 'Mensual' || this.tipoFrecuencia == 'Semestral') {
       this.actividad.frecuencia = this.tipoFrecuencia;
     }
 

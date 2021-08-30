@@ -4,3 +4,8 @@ th {
 td {
     padding: 0 10px;
 }
+
+.centrado{
+    text-align: center;
+    vertical-align: middle;
+}

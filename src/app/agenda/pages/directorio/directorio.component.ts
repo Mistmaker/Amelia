@@ -9,6 +9,7 @@ import { ComentariosModalComponent } from '../comentarios-modal/comentarios-moda
 import { AuthService } from '../../../auth/services/auth.service';
 import { BuscarClientesComponent } from '../../../shared/components/buscar-clientes/buscar-clientes.component';
 import { Cliente } from '../../../models/clientes.model';
+import { ConfiguracionesService } from '../../../configuraciones/services/configuraciones.service';
 
 @Component({
   selector: 'app-directorio',
@@ -34,9 +35,9 @@ export class DirectorioComponent implements OnInit {
   estadoActividades: { vencidos: string, pendientes: string, hoy: string; proximos: string }
   // Para filtros de busqueda
   nombreCliente = '';
-  tipoCliente='';
+  tipoCliente = '';
 
-  constructor(private agendaService: AgendaService, private dialog: MatDialog, private authService: AuthService) { }
+  constructor(private agendaService: AgendaService, private authService: AuthService, private configuracionesService: ConfiguracionesService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.cargando = true;
@@ -66,22 +67,59 @@ export class DirectorioComponent implements OnInit {
     // console.log(this.orden);
   }
 
-  eliminar(id: string, pos: number) {
-    this.agendaService.deleteAgendaActividad(id).subscribe(resp => {
-      this.agendaActividades.splice(pos, 1);
-      Swal.fire('Exito', 'Registro eliminado con éxito', 'success');
+  async eliminar(id: string, comentarios: number, pos: number) {
+
+    if (comentarios > 0) { Swal.fire('No se puede eliminar', 'La tarea tiene comentarios, por favor elimínelos e intente nuevamente', 'warning'); return; }
+
+    const codigoAutorizacion = await this.configuracionesService.getConfig('AGENDA_COD_AUT_ELIM').toPromise();
+
+    let eliminar = false;
+    Swal.fire({
+      title: 'Confirmación', html: `Desea eliminar esta tarea? <br> Por favor ingrese el código de autorización`, icon: 'warning', showDenyButton: true, confirmButtonText: `Eliminar`, denyButtonText: `No eliminar`, denyButtonColor: '#3085d6', confirmButtonColor: '#d33', input: 'password', inputPlaceholder: 'Código de autorización', inputAttributes: { autocapitalize: 'off' },
+      preConfirm: (codigo) => {
+        if (codigo == codigoAutorizacion.numero) {
+          return true;
+        } else {
+          Swal.showValidationMessage(`Código no válido`);
+        }
+      }, allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        eliminar = true;
+        if (eliminar) {
+          Swal.fire({ title: 'Espere', text: 'Eliminando información', allowOutsideClick: false, icon: 'info', });
+          Swal.showLoading();
+          this.agendaService.deleteAgendaActividad(id).subscribe(resp => {
+            this.agendaActividades.splice(pos, 1);
+            Swal.fire('Exito', 'Registro eliminado con éxito', 'success');
+          });
+        }
+
+      }
     });
+
   }
 
   finalizar(actividad: AgendaActividad) {
-    actividad.estado = 'FINALIZADO';
-    actividad.ESCAT = 'SOLUCIONADO';
-    actividad.fecha_finalizacion = this.agendaService.getFechaActual();
-    const usr = JSON.parse(this.authService.getUsrFromLocalStorage());
-    actividad.usuario = usr.USUAPELLIDO + ' ' + usr.USUNOMBRE;
-    this.agendaService.putAgendaActividad(actividad).subscribe(resp => {
-      console.log(resp);
+    this.agendaService.getComentariosAgendaActividad(actividad.id.toString()).subscribe(resp => {
+      const pendientes = resp.filter(c => {
+        return c.estado == "PENDIENTE";
+      });
+
+      if (pendientes.length > 0) { Swal.fire('No se puede finalizar', `La tarea tiene ${pendientes.length} comentario(s) sin revisar, por favor márquelos como revisados e intente nuevamente`, 'warning'); return; }
+
+      actividad.estado = 'FINALIZADO';
+      actividad.ESCAT = 'SOLUCIONADO';
+      actividad.fecha_finalizacion = this.agendaService.getFechaActual();
+      const usr = JSON.parse(this.authService.getUsrFromLocalStorage());
+      actividad.usuario = (usr.USUAPELLIDO + ' ' + usr.USUNOMBRE).trim();
+      this.agendaService.putAgendaActividad(actividad).subscribe(resp => {
+        console.log(resp);
+      });
+
     });
+
   }
 
   reversar(actividad: AgendaActividad) {
@@ -101,6 +139,7 @@ export class DirectorioComponent implements OnInit {
       height: '100%',
       data: {
         id: actividad.id,
+        estado: actividad.estado
       },
     });
 
@@ -111,6 +150,17 @@ export class DirectorioComponent implements OnInit {
       } else {
         console.log('sin parametro de retorno');
       }
+    });
+  }
+
+  cargarPorEstado(estado: string) {
+    this.cargando = true;
+    this.agendaService.getAgendaActividades().subscribe(resp => {
+      if (estado === 'ven') { this.agendaActividades = resp.filter(act => act.ESCAT === 'VENCIDO'); }
+      if (estado === 'pen') { this.agendaActividades = resp.filter(act => act.ESCAT === 'PENDIENTE'); }
+      if (estado === 'hoy') { this.agendaActividades = resp.filter(act => act.ESCAT === 'HOY'); }
+      if (estado === 'pro') { this.agendaActividades = resp.filter(act => act.ESCAT === 'PROXIMO'); }
+      this.cargando = false;
     });
   }
 
@@ -127,7 +177,7 @@ export class DirectorioComponent implements OnInit {
       if (result) {
         this.nombreCliente = result.CLI_NOMBRE;
         this.tipoCliente = result.TipoCliente;
-        this.agendaService.getActividadesGeneradasCliente(result.CLI_CODIGO).subscribe(resp=>{
+        this.agendaService.getActividadesGeneradasCliente(result.CLI_CODIGO).subscribe(resp => {
           this.agendaActividades = resp;
         });
         // console.log(result);

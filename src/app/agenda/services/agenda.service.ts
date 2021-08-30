@@ -28,7 +28,7 @@ export class AgendaService {
     return this.http.get<AgendaActividad[]>(`${urlWs}/api/agendaActividad/actividadesCliente/${id}`);
   }
 
-  getEstadoActividades(){
+  getEstadoActividades() {
     return this.http.get(`${urlWs}/api/agendaActividad/estadoActividades`);
   }
 
@@ -56,7 +56,11 @@ export class AgendaService {
     return this.http.delete(`${urlWs}/api/comentariosAgenda/${id}`);
   }
 
-  generarAgenda(datos){
+  deleteActividadesGeneradasCliente(id: string, datos: any) {
+    return this.http.post(`${urlWs}/api/agendaActividad/actividadesCliente/${id}`, datos);
+  }
+
+  generarAgenda(datos) {
     return this.http.post(`${urlWs}/api/agendaActividad/periodo`, datos);
   }
 

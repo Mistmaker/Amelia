@@ -7,7 +7,7 @@
 
 <div>
 
-    <form (ngSubmit)="f.form.valid && guardarComentario(f)" #f="ngForm">
+    <form *ngIf="permitirGuardar" (ngSubmit)="f.form.valid && guardarComentario(f)" #f="ngForm">
         <div class="form-group">
             <div class="input-group ">
                 <input [(ngModel)]="comentario.comentario" name="com" #com="ngModel"
@@ -34,10 +34,10 @@
                 </div>
                 <div class="col-xs-6 col-md-6">
                     <div class="input-group d-flex justify-content-end">
-                        <button class="btn btn-sm btn-warning" *ngIf="c.estado == 'PENDIENTE'" type="button" (click)="cambiarEstado(c)">
+                        <button class="btn btn-sm btn-warning" *ngIf="c.estado == 'PENDIENTE'" type="button" [disabled]="!permitirGuardar" (click)="cambiarEstado(c)">
                             <i class="fas fa-sync-alt"></i> {{ c.estado }}
                         </button>
-                        <button class="btn btn-sm btn-success" *ngIf="c.estado == 'REVISADO'" type="button" (click)="cambiarEstado(c)">
+                        <button class="btn btn-sm btn-success" *ngIf="c.estado == 'REVISADO'" type="button" [disabled]="!permitirGuardar" (click)="cambiarEstado(c)">
                             <i class="fas fa-sync-alt"></i> {{ c.estado }}
                         </button>
                         <button class="btn btn-sm btn-danger" type="button" (click)="eliminar(c.id,i)" [disabled]="c.estado == 'REVISADO'">
