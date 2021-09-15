@@ -10,6 +10,8 @@ import { AuthService } from '../../../auth/services/auth.service';
 import { BuscarClientesComponent } from '../../../shared/components/buscar-clientes/buscar-clientes.component';
 import { Cliente } from '../../../models/clientes.model';
 import { ConfiguracionesService } from '../../../configuraciones/services/configuraciones.service';
+import { Actividades } from '../../../models/actividades.model';
+import { BuscarActividadesComponent } from '../../../shared/components/buscar-actividades/buscar-actividades.component';
 
 @Component({
   selector: 'app-directorio',
@@ -36,6 +38,13 @@ export class DirectorioComponent implements OnInit {
   // Para filtros de busqueda
   nombreCliente = '';
   tipoCliente = '';
+
+  // Para tarea manual
+  tareaManual = false;
+  cliente = new Cliente();
+  actividad = new Actividades();
+  fecha = '';
+  diasAviso: number;
 
   constructor(private agendaService: AgendaService, private authService: AuthService, private configuracionesService: ConfiguracionesService, private dialog: MatDialog) { }
 
@@ -64,7 +73,6 @@ export class DirectorioComponent implements OnInit {
   ordenar(col: string) {
     this.agendaActividades = orderBy(this.agendaActividades, [col], [this.orden == 'a' ? 'asc' : 'desc']);
     this.orden = this.orden == 'a' ? 'd' : 'a';
-    // console.log(this.orden);
   }
 
   async eliminar(id: string, comentarios: number, pos: number) {
@@ -115,7 +123,6 @@ export class DirectorioComponent implements OnInit {
       const usr = JSON.parse(this.authService.getUsrFromLocalStorage());
       actividad.usuario = (usr.USUAPELLIDO + ' ' + usr.USUNOMBRE).trim();
       this.agendaService.putAgendaActividad(actividad).subscribe(resp => {
-        console.log(resp);
       });
 
     });
@@ -126,7 +133,6 @@ export class DirectorioComponent implements OnInit {
     actividad.estado = 'PENDIENTE';
     actividad.fecha_finalizacion = actividad.fecha_finalizacion.replace('T', ' ').replace('.000Z', '');
     this.agendaService.putAgendaActividad(actividad).subscribe(resp => {
-      // console.log(resp);
       this.agendaService.getAgendaActividades().subscribe(resp => {
         this.agendaActividades = resp;
       });
@@ -145,10 +151,8 @@ export class DirectorioComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        console.log(result);
         actividad.comentarios = result.comentarios;
       } else {
-        console.log('sin parametro de retorno');
       }
     });
   }
@@ -164,7 +168,40 @@ export class DirectorioComponent implements OnInit {
     });
   }
 
-  abrirModal() {
+  crearTareaManual() {
+    if (!this.cliente.CLI_CODIGO) { Swal.fire('Atención', 'Seleccione un cliente primero', 'warning'); return; }
+    if (!this.actividad.id_actividad) { Swal.fire('Atención', 'Seleccione una actividad primero', 'warning'); return; }
+    if (!this.diasAviso) { Swal.fire('Atención', 'Ingrese los dias de aviso', 'warning'); return; }
+    if (this.diasAviso < 0) { Swal.fire('Atención', 'Ingrese un número válido', 'warning'); return; }
+    if (this.diasAviso !== parseInt(this.diasAviso.toString(), 10)) { Swal.fire('Atención', 'No se aceptan decimales para los días de notificación', 'warning'); return; }
+
+    Swal.fire({ title: 'Espere', text: 'Generando tarea...', icon: 'info', allowOutsideClick: false });
+    Swal.showLoading();
+
+    const datosActividad = {
+      id_cliente: this.cliente.CLI_CODIGO,
+      id_actividad: this.actividad.id_actividad,
+      vencimiento: this.fecha,
+      dias: this.diasAviso
+    }
+    this.agendaService.postAgendaActividad(datosActividad).subscribe(resp => {
+      Swal.fire('Éxito', 'Tarea generada con éxito', 'success');
+      this.cargarDatos();
+      this.cancelarTareaManual();
+      // this.agendaService.getActividadesGeneradas().subscribe(resp => {
+      //   this.agendaActividades = resp;
+      // });
+    })
+  }
+
+  cancelarTareaManual() {
+    this.cliente = new Cliente();
+    this.actividad = new Actividades();
+    this.diasAviso = null;
+    this.tareaManual = false;
+  }
+
+  abrirModal(origen: string) {
     const dialogRef = this.dialog.open(BuscarClientesComponent, {
       width: '100%',
       height: '100%',
@@ -175,12 +212,32 @@ export class DirectorioComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: Cliente) => {
       if (result) {
-        this.nombreCliente = result.CLI_NOMBRE;
-        this.tipoCliente = result.TipoCliente;
-        this.agendaService.getActividadesGeneradasCliente(result.CLI_CODIGO).subscribe(resp => {
-          this.agendaActividades = resp;
-        });
-        // console.log(result);
+        if (origen == 'busqueda') {
+          this.nombreCliente = result.CLI_NOMBRE;
+          this.tipoCliente = result.TipoCliente;
+          this.agendaService.getActividadesGeneradasCliente(result.CLI_CODIGO).subscribe(resp => {
+            this.agendaActividades = resp;
+          });
+        }
+        if (origen == 'nuevaTarea') {
+          this.cliente = result;
+        }
+      }
+    });
+  }
+
+  abrirModalActividades() {
+    const dialogRef = this.dialog.open(BuscarActividadesComponent, {
+      width: '100%',
+      height: '100%',
+      data: {
+        name: this.cliente,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: Actividades) => {
+      if (result) {
+        this.actividad = result;
       }
     });
   }

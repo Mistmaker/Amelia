@@ -7,6 +7,8 @@ import { UtilidadesService } from '../../../shared/services/utilidades.service';
 import { AgendaService } from '../../services/agenda.service';
 import Swal from 'sweetalert2';
 import { ConfiguracionesService } from '../../../configuraciones/services/configuraciones.service';
+import { BuscarActividadesComponent } from '../../../shared/components/buscar-actividades/buscar-actividades.component';
+import { Actividades } from '../../../models/actividades.model';
 
 @Component({
   selector: 'app-tareas',
@@ -18,6 +20,7 @@ export class TareasComponent implements OnInit {
   @ViewChild("busqueda") busqueda: ElementRef;
 
   cliente = new Cliente();
+  actividad = new Actividades();
   periodo = '2021';
   fecha = '';
   textoBusqueda = '';
@@ -30,6 +33,8 @@ export class TareasComponent implements OnInit {
   tableSizes = [3, 6, 9, 12];
 
   cargando = false;
+  // tareaManual = false;
+  // diasAviso: number;
 
   constructor(private utils: UtilidadesService, private agendaService: AgendaService, private configuracionesService: ConfiguracionesService, private dialog: MatDialog) { }
 
@@ -42,11 +47,9 @@ export class TareasComponent implements OnInit {
 
   crearAgenda() {
     const datos = { id: this.cliente.CLI_CODIGO, periodo: this.periodo, fecha: this.fecha };
-    console.log(datos);
     Swal.fire({ title: 'Espere', text: 'Generando tareas...', icon: 'info', allowOutsideClick: false });
     Swal.showLoading();
     this.agendaService.generarAgenda(datos).subscribe(resp => {
-      console.log(resp);
       Swal.fire('Éxito', 'Tareas generadas con éxito', 'success');
       this.agendaService.getActividadesGeneradas().subscribe(resp => {
         this.agendaActividades = resp;
@@ -54,9 +57,9 @@ export class TareasComponent implements OnInit {
     });
   }
 
-  async eliminar(id: string, periodo: number, pos: number) {
+  async eliminar(id: string, periodo: number, creado: string) {
 
-    const datos = { periodo: periodo };
+    const datos = { periodo: periodo, creado: creado };
     const codigoAutorizacion = await this.configuracionesService.getConfig('AGENDA_COD_AUT_ELIM').toPromise();
 
     let eliminar = false;
@@ -89,6 +92,37 @@ export class TareasComponent implements OnInit {
 
   }
 
+  // crearTareaManual() {
+  //   if (!this.cliente.CLI_CODIGO) { Swal.fire('Atención', 'Seleccione un cliente primero', 'warning'); return; }
+  //   if (!this.actividad.id_actividad) { Swal.fire('Atención', 'Seleccione una actividad primero', 'warning'); return; }
+  //   if (!this.diasAviso) { Swal.fire('Atención', 'Ingrese los dias de aviso', 'warning'); return; }
+  //   if (this.diasAviso < 0) { Swal.fire('Atención', 'Ingrese un número válido', 'warning'); return; }
+  //   if (this.diasAviso !== parseInt(this.diasAviso.toString(), 10)) { Swal.fire('Atención', 'No se aceptan decimales para los días de notificación', 'warning'); return; }
+
+  //   Swal.fire({ title: 'Espere', text: 'Generando tarea...', icon: 'info', allowOutsideClick: false });
+  //   Swal.showLoading();
+
+  //   const datosActividad = {
+  //     id_cliente: this.cliente.CLI_CODIGO,
+  //     id_actividad: this.actividad.id_actividad,
+  //     vencimiento: this.fecha,
+  //     dias: this.diasAviso
+  //   }
+  //   this.agendaService.postAgendaActividad(datosActividad).subscribe(resp => {
+  //     Swal.fire('Éxito', 'Tarea generada con éxito', 'success');
+  //     this.agendaService.getActividadesGeneradas().subscribe(resp => {
+  //       this.agendaActividades = resp;
+  //     });
+  //   })
+  // }
+
+  // cancelarTareaManual() {
+  //   this.cliente = new Cliente();
+  //   this.actividad = new Actividades();
+  //   this.diasAviso = null;
+  //   this.tareaManual = false;
+  // }
+
   abrirModal() {
     const dialogRef = this.dialog.open(BuscarClientesComponent, {
       width: '100%',
@@ -101,10 +135,25 @@ export class TareasComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: Cliente) => {
       if (result) {
         this.cliente = result;
-        console.log(this.cliente);
       }
     });
   }
+
+  // abrirModalActividades() {
+  //   const dialogRef = this.dialog.open(BuscarActividadesComponent, {
+  //     width: '100%',
+  //     height: '100%',
+  //     data: {
+  //       name: this.cliente,
+  //     },
+  //   });
+
+  //   dialogRef.afterClosed().subscribe((result: Actividades) => {
+  //     if (result) {
+  //       this.actividad = result;
+  //     }
+  //   });
+  // }
 
   limpiarBusqueda() {
     this.textoBusqueda = '';

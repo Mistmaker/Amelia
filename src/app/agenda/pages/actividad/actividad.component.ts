@@ -57,7 +57,6 @@ export class ActividadComponent implements OnInit {
 
     if (this.idParam == 'nuevo') {
       this.actividadesService.postActividad(this.actividad).subscribe(resp => {
-        console.log(resp);
         Swal.fire({ title: 'Listo', text: 'Creado con éxito', icon: 'success' });
         this.router.navigateByUrl('/agenda/actividades');
       }, error => {
@@ -65,7 +64,6 @@ export class ActividadComponent implements OnInit {
       });
     } else {
       this.actividadesService.putActividad(this.actividad).subscribe(resp => {
-        console.log(resp);
         Swal.fire({ title: 'Listo', text: 'Actualizado con éxito', icon: 'success' });
         this.router.navigateByUrl('/agenda/actividades');
       }, error => {
@@ -107,10 +105,8 @@ export class ActividadComponent implements OnInit {
   }
 
   validarDia() {
-    console.log(+this.actividad.vence);
     if (this.actividad.vence == 'D') { this.diaValido = true; return; }
     if (+this.actividad.vence > 0 && +this.actividad.vence <= 31) { this.diaValido = true } else { this.diaValido = false }
-    console.log(this.diaValido);
   }
 
 }

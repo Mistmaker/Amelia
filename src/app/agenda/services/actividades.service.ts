@@ -14,6 +14,10 @@ export class ActividadesService {
     return this.http.get<Actividades[]>(`${urlWs}/api/actividades`);
   }
 
+  getActividadesPorNombre(datos: any) {
+    return this.http.post<Actividades[]>(`${urlWs}/api/actividades/nombre`, datos);
+  }
+
   getActividad(id: string) {
     return this.http.get<Actividades>(`${urlWs}/api/actividades/${id}`);
   }

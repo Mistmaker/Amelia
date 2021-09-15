@@ -32,6 +32,10 @@ export class AgendaService {
     return this.http.get(`${urlWs}/api/agendaActividad/estadoActividades`);
   }
 
+  postAgendaActividad(actividad: any) {
+    return this.http.post(`${urlWs}/api/agendaActividad`, actividad);
+  }
+
   putAgendaActividad(actividad: AgendaActividad) {
     return this.http.put(`${urlWs}/api/agendaActividad/${actividad.id}`, actividad);
   }

@@ -6,7 +6,7 @@
 
     <div class="card-body">
         <div class="row mb-3">
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="input-group">
                     <input type="text" class="form-control form-control-sm" readonly [(ngModel)]="cliente.CLI_NOMBRE"
                         placeholder="Buscar...">
@@ -33,11 +33,65 @@
                             class="fas fa-plus"></i> Crear agenda</button>
                 </div>
                 <!-- <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-1">
-                    <button  class="btn btn-sm btn-secondary"><i
-                            class="fas fa-plus"></i> Tarea manual</button>
+                    <button class="btn btn-sm btn-secondary" (click)="tareaManual=true"><i class="fas fa-plus"></i> Tarea manual</button>
                 </div> -->
             </div>
         </div>
+
+        <!-- <div class="card" *ngIf="tareaManual">
+            <div class="card-header card-header-info">
+                <h4 class="card-title ">Tarea Manual</h4>
+                <p class="card-category"></p>
+            </div>
+
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Cliente</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-sm" readonly
+                                [(ngModel)]="cliente.CLI_NOMBRE" placeholder="Buscar Cliente...">
+                            <button (click)="abrirModal()" class="btn btn-sm btn-primary"><i
+                                    class="fas fa-search"></i></button>
+                        </div>
+                        <p style="font-size: 0.7rem;"> &nbsp; {{ cliente.TipoCliente }} </p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Actividad</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-sm" readonly
+                                [(ngModel)]="actividad.actividad" placeholder="Buscar Actividad...">
+                            <button (click)="abrirModalActividades()" class="btn btn-sm btn-primary"><i
+                                    class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3" id="data_1">
+                        <label class="form-label">Vencimiento</label>
+                        <div class="input-group date">
+                            <span class="input-group-text"><i class="fas fa-calendar"></i></span><input type="date"
+                                [(ngModel)]="fecha" class="form-control form-control-sm" id="fecha">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Días Notificación</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control form-control-sm" step="1"
+                                [(ngModel)]="diasAviso" placeholder="Dias antes de aviso">
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-sm btn-primary w-50" (click)="crearTareaManual()" type="button">
+                            <i class="fas fa-save"></i> Crear tarea
+                        </button>
+                        <button class="btn btn-sm btn-danger w-50" (click)="cancelarTareaManual()" type="button">
+                            <i class="fas fa-ban"></i> Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+
 
         <hr>
 
@@ -70,7 +124,7 @@
                         <td>{{ a.periodo }} </td>
                         <td>{{ a.creado }} </td>
                         <td>
-                            <button class="btn btn-sm btn-danger mr-1" (click)="eliminar(a.ruc,a.periodo,i)"><i
+                            <button class="btn btn-sm btn-danger mr-1" (click)="eliminar(a.ruc,a.periodo,a.creado)"><i
                                     class="fa fa-trash"></i></button>
                         </td>
 

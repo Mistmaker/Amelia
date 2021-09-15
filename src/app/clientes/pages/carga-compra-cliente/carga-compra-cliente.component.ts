@@ -22,13 +22,11 @@ export class CargaCompraClienteComponent implements OnInit {
     this.idDocumento = this.route.snapshot.paramMap.get('id');
 
     this.clientesService.getImagen(+this.idDocumento).subscribe(resp => {
-      // console.log(resp);
       this.imgSrc = resp.DOC_DATOS;
     });
   }
 
   confirmarGuardado($event) {
-    console.log($event);
     const data: any = $event;
     if (data.id) {
       const docu = new ClienteDocumentos();

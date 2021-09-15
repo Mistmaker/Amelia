@@ -36,7 +36,8 @@
                         *ngFor="let a of actividades | filtroSimple: textoBusqueda | paginate : {itemsPerPage: tableSize,currentPage: page,totalItems: count};">
                         <td>{{ a.id_actividad }} </td>
                         <td>{{ a.nombreEntidad }} </td>
-                        <td>{{ a.actividad }} </td>
+                        <td *ngIf="a.condicion"> <u> {{ a.actividad }} </u> </td>
+                        <td *ngIf="!a.condicion">{{ a.actividad }} </td>
                         <td class="centrado">
                             <i *ngIf="a.pn_no_obligado == '1'" class="fa fa-check-circle fa-2x text-success"></i>
                             <i *ngIf="a.pn_no_obligado != '1'" class="fa fa-times-circle fa-2x text-danger"></i>

@@ -243,7 +243,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="form-label">Tipo *</label>
-                            <select [(ngModel)]="cliente.CLI_TIPOCLIENTE" name="tipoCli" #tc='ngModel' class="form-select form-select-sm" required>
+                            <select [(ngModel)]="cliente.CLI_TIPOCLIENTE" name="tipoCli" #tc='ngModel' #tipoCliente (change)="cargarTipoJuridica()" class="form-select form-select-sm" required>
                                 <option style="display:none"></option>
                                 <option *ngFor="let t of tiposClientes" [value]="t.TIP_CODIGO">
                                     {{ t.TIP_NOMBRE }}
@@ -544,6 +544,97 @@
                             <div class="form-group">
                                 <label class="form-label">Agente de Retención</label>
                                 <input [(ngModel)]="cliente.CLI_AGENRETENCION" name="agenteRetencion" type="text" disabled class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Número de Afiliados</label>
+                                <input [(ngModel)]="cliente.CLI_NUMEROAFILIADOS" name="numeroAfiliados" type="number" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-md-4" *ngIf="mostrarTipoJuridica">
+                            <div class="form-group">
+                                <label class="form-label">Tipo Juridica*</label>
+                                <select [(ngModel)]="cliente.CLI_TIPOJURIDICA" name="tipoJur" #tj='ngModel' class="form-select form-select-sm" required>
+                                    <option style="display:none"></option>
+                                    <option *ngFor="let t of tipoJuridica" [value]="t.TPJ_CODIGO">
+                                        {{ t.TPJ_NOMBRE }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div *ngIf="f.submitted && tj.invalid">
+                                <span *ngIf="tj.errors?.required" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Supera monto de activos para declaración patrimonial*</label>
+                                <select [(ngModel)]="cliente.CLI_SUPERAMONTOACTIVOS_DEC_PATR" name="superaMontoActivos" #spadp='ngModel' class="form-select form-select-sm" required>
+                                    <option style="display:none"></option>
+                                    <option value="1">SI</option>
+                                    <option value="0">NO</option>
+                                </select>
+                            </div>
+                            <div *ngIf="f.submitted && spadp.invalid">
+                                <span *ngIf="spadp.errors?.required" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4" *ngIf="mostrarAfiliadoIess" >
+                            <div class="form-group">
+                                <label class="form-label">Afiliado al IESS?*</label>
+                                <select [(ngModel)]="cliente.CLI_AFILIADOIESS" name="afiliadoIess" #afi='ngModel' class="form-select form-select-sm" required>
+                                    <option style="display:none"></option>
+                                    <option value="1">SI</option>
+                                    <option value="0">NO</option>
+                                </select>
+                            </div>
+                            <div *ngIf="f.submitted && afi.invalid">
+                                <span *ngIf="afi.errors?.required" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4"  *ngIf="mostrarRegimenRuc">
+                            <div class="form-group">
+                                <label class="form-label">Régimen RUC*</label>
+                                <select [(ngModel)]="cliente.CLI_REGIMENRUC" name="regimenRuc" #reg='ngModel' class="form-select form-select-sm" required>
+                                    <option style="display:none"></option>
+                                    <option value="G">General</option>
+                                    <option value="R">Rise</option>
+                                </select>
+                            </div>
+                            <div *ngIf="f.submitted && reg.invalid">
+                                <span *ngIf="reg.errors?.required" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-label">Tiene inmueble registrado en el municipio?*</label>
+                                <select [(ngModel)]="cliente.CLI_INMUEBLE_REG_MUNI" name="inmueble" #inm='ngModel' class="form-select form-select-sm" required>
+                                    <option style="display:none"></option>
+                                    <option value="1">SI</option>
+                                    <option value="0">NO</option>
+                                </select>
+                            </div>
+                            <div *ngIf="f.submitted && inm.invalid">
+                                <span *ngIf="inm.errors?.required" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4" *ngIf="mostrarContratarAuditoria">
+                            <div class="form-group">
+                                <label class="form-label">Debe contratar auditoría?*</label>
+                                <select [(ngModel)]="cliente.CLI_CONTRATARAUDITORIASUPER" name="auditoria" #aud='ngModel' class="form-select form-select-sm" required>
+                                    <option style="display:none"></option>
+                                    <option value="1">SI</option>
+                                    <option value="0">NO</option>
+                                </select>
+                            </div>
+                            <div *ngIf="f.submitted && aud.invalid">
+                                <span *ngIf="aud.errors?.required" class="badge bg-warning text-dark"> <i
+                                        class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
                             </div>
                         </div>
                     </div>

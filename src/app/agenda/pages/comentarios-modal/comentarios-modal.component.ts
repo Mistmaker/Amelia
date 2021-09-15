@@ -23,13 +23,11 @@ export class ComentariosModalComponent implements OnInit {
   constructor(private agendaService: AgendaService, private authService: AuthService, public dialogRef: MatDialogRef<ComentariosModalComponent>, @Inject(MAT_DIALOG_DATA) public data: any | null) { }
 
   ngOnInit(): void {
-    console.log(this.data);
     if (this.data.estado !== "PENDIENTE") { this.permitirGuardar = false; }
     if (this.data.id) {
       const usr = JSON.parse(this.authService.getUsrFromLocalStorage());
       this.usuario = usr.USUAPELLIDO + ' ' + usr.USUNOMBRE;
       this.agendaService.getComentariosAgendaActividad(this.data.id).subscribe(resp => {
-        console.log(resp);
         this.comentarios = resp;
         this.cantComentarios = this.comentarios.length;
       });
@@ -52,7 +50,6 @@ export class ComentariosModalComponent implements OnInit {
     this.comentario.usuario = this.usuario;
 
     this.agendaService.setComentarioAgendaActividad(this.comentario).subscribe((resp: ComentarioAgenda) => {
-      console.log(resp);
       this.comentario.id = resp.id;
       this.comentarios.push(this.comentario);
       this.cantComentarios = this.comentarios.length;
@@ -72,7 +69,6 @@ export class ComentariosModalComponent implements OnInit {
     comentario.fecha = comentario.fecha.replace('T', ' ').replace('.000Z', '')
     comentario.estado = comentario.estado == 'PENDIENTE' ? 'REVISADO' : 'PENDIENTE';
     this.agendaService.putComentarioAgendaActividad(comentario).subscribe(resp => {
-      console.log(resp);
     });
   }
 

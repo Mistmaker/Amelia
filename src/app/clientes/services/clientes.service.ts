@@ -10,7 +10,7 @@ import {
   urlWsRucEF,
   urlWsRucAR,
 } from '../../../environments/environment';
-import { Cliente } from '../../models/clientes.model';
+import { Cliente, TipoJuridica } from '../../models/clientes.model';
 import { ClienteDocumentos } from '../../models/clientesDocumentos';
 
 @Injectable({
@@ -88,6 +88,10 @@ export class ClientesService {
     return this.http.get(`${urlWsRucAR}${id}`);
   }
 
+  getTipoJuridicaCliente(tipoCliente: number) {
+    return this.http.get<TipoJuridica[]>(`${this.ruta}/api/tipJuridica/${tipoCliente  }`);
+  }
+
   public upload(file: any, cli: Cliente) {
     const formData = new FormData();
     formData.append("current", file);
@@ -97,7 +101,6 @@ export class ClientesService {
   public upload2(file: any[], cli: Cliente, total: any = null, estado: any = null, acc = 'd') {
     const formData = new FormData();
     for (const f of file) {
-      console.log(f);
       formData.append("current", f, f.newName);
     }
     formData.append("idCli", cli.CLI_CODIGO);

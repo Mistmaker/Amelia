@@ -47,7 +47,6 @@ export class DocumentosClienteComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: Cliente) => {
       if (result) {
         this.clienteSeleccionado = result;
-        console.log(this.clienteSeleccionado);
         this.nombreCliente = this.clienteSeleccionado.CLI_NOMBRE;
         // Cargando imagenes
         this.obtenerImagenes();
@@ -61,15 +60,12 @@ export class DocumentosClienteComponent implements OnInit {
 
   cargaArchivo(event: any) {
     const file: File = event.target.files[0];
-    console.log(file);
-    console.log(this.archivos.length, this.documentos.length);
     if ((this.archivos.length + this.documentos.length) > 9) { Swal.fire('Excedido límite máximo de archivos', 'Solo se permiten 10 archivos', 'warning'); event.target.value = null; return; }
     if (file.size > maxFileSize) { Swal.fire('No se puede cargar el archivo', 'El archivo no debe pesar mas de 15Mb', 'warning'); return; }
     this.current = file;
   }
 
   agregarDocLista() {
-    console.log(this.nombreArchivo);
     if (!this.nombreArchivo || this.nombreArchivo === '') { Swal.fire('No se puede cargar', 'Por favor agrege un nombre al archivo', 'warning'); return; }
     if (!this.valorTotal || this.valorTotal <= 0) { Swal.fire('No se puede cargar', 'Por favor ingrese un valor total correcto', 'warning'); return; }
     if (!this.current) { Swal.fire('No se puede cargar', 'Por favor agrege seleccione una imagen', 'warning'); return; }
@@ -79,7 +75,6 @@ export class DocumentosClienteComponent implements OnInit {
     this.archivos.push(this.current);
     this.clientesService.upload2(this.archivos, this.clienteSeleccionado, this.valorTotal, 'P', 'i').subscribe(resp => {
       Swal.fire('Listo', 'Imagen cargada con éxito', 'success');
-      console.log(resp);
       this.obtenerImagenes();
       this.archivos = [];
       this.nombreArchivo = '';
@@ -89,14 +84,12 @@ export class DocumentosClienteComponent implements OnInit {
     }, err => {
       Swal.fire('Error', 'Ocurrió un inconveniente', 'error');
     });
-    // console.log(this.current);
     // this.cargarDocumento = false;
   }
 
   obtenerImagenes() {
     this.cargando = true;
     this.clientesService.getImagenes(this.clienteSeleccionado.CLI_CODIGO).subscribe(resp => {
-      console.log(resp);
       this.documentos = resp;
       this.cargando = false;
     }, err => {
@@ -130,11 +123,9 @@ export class DocumentosClienteComponent implements OnInit {
   }
 
   verDocumento(doc: ClienteDocumentos) {
-    // console.log(doc.DOC_DATOS);
     Swal.fire({ title: 'Espere', text: 'Obteniendo imagen...', icon: 'info', allowOutsideClick: false});
     Swal.showLoading();
     this.clientesService.getImagen(doc.DOC_CODIGO).subscribe(resp => {
-      console.log('img from server', resp.DOC_DATOS);
       this.dialog.open(ImgModaldialog, {
         width: '100%',
         height: '100%',

@@ -1,0 +1,78 @@
+<div class="d-flex justify-content-between">
+    <h5 mat-dialog-title class="" id="exampleModalLabel">Actividades</h5>
+    <button type="button" class="close" (click)="onNoClick()">
+        <span aria-hidden="true" class="text-danger"> <i class="fas fa-2x fa-window-close"></i> </span>
+    </button>
+</div>
+
+<div>
+    <div class="d-grid gap-2 mb-1 d-md-flex justify-content-md-end">
+        <button class="btn btn-sm btn-secondary" (click)="nuevaTarea=true"><i class="fas fa-plus"></i> Nueva
+            Tarea</button>
+    </div>
+    <div *ngIf="!nuevaTarea">
+        <label>Nombre de la actividad</label>
+        <input [(ngModel)]="textoBusqueda" (keyup)="busqueda($event)" #inputBusqueda tabindex="0" type="text"
+            class="form-control" name="buscarActividad" placeholder="Nombre de la actividad" required
+            autocomplete="off">
+        <hr>
+        <div class="list-group">
+            <button type="button" class="list-group-item btn-sm list-group-item-action"
+                *ngFor="let actividad of actividades" (click)="seleccionarActividad(actividad)">{{ actividad.actividad
+                }}</button>
+        </div>
+    </div>
+
+    <div *ngIf="nuevaTarea">
+        
+        <div class="card">
+            <div class="card-header card-header-info">
+                <h4 class="card-title">Actividades</h4>
+                <p class="card-category">Creación/Mantenimiento de actividades para agenda</p>
+            </div>
+        
+            <div class="card-body">
+                
+                <form (ngSubmit)="f.form.valid && guardar(f)" #f="ngForm">
+                    <div class="form-group">
+                        <label class="form-label">Entidad *</label>
+                        <select [(ngModel)]="actividad.entidad" name="entidad" #entidad="ngModel"
+                            class="form-select form-select-sm" required>
+                            <option style="display:none"></option>
+                            <option *ngFor="let ent of entidades" [value]="ent.codigo_entidad">
+                                {{ ent.entidad }}
+                            </option>
+                        </select>
+                        <div *ngIf="f.submitted && entidad.invalid">
+                            <span *ngIf="entidad.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Seleccione una entidad</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Actividad *</label>
+                        <input [(ngModel)]="actividad.actividad" name="act" #act="ngModel" placeholder="Actividad a realizar"
+                            type="text" class="form-control" minlength="5" required />
+                        <div *ngIf="f.submitted && act.invalid">
+                            <span *ngIf="act.errors?.required" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Seleccione una entidad</span>
+                            <span *ngIf="act.errors?.minlength" class="badge bg-warning text-dark"> <i
+                                    class="fas fa-exclamation-triangle"></i> Mínimo 5 dígitos</span>
+                        </div>
+                    </div>
+        
+                    <hr />
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary w-50" type="submit">
+                            <i class="fas fa-save"></i> Guardar
+                        </button>
+                        <button *ngIf="mostrarBorrar" (click)="eliminarActividad()" class="btn btn-danger w-50" type="button">
+                            <i class="fas fa-trash-alt"></i> Borrar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>

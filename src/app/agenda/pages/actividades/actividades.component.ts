@@ -26,11 +26,9 @@ export class ActividadesComponent implements OnInit {
 
   ngOnInit(): void {
     this.actividadesService.getActividades().subscribe(resp => {
-      console.log(resp);
       this.actividades = resp;
     });
     this.agendaService.getEntidades().subscribe(resp => {
-      console.log(resp);
       this.entidades = resp;
     });
   }

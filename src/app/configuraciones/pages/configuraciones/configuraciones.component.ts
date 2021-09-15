@@ -10,6 +10,8 @@ import { Cliente } from '../../../models/clientes.model';
 import { AuthService } from '../../../auth/services/auth.service';
 import { Usuario } from '../../../models/usuarios.model';
 import { ClientesService } from '../../../clientes/services/clientes.service';
+import { UtilidadesService } from '../../../shared/services/utilidades.service';
+import { AgendaService } from '../../../agenda/services/agenda.service';
 
 type AOA = any[][];
 
@@ -28,7 +30,7 @@ export class ConfiguracionesComponent implements OnInit {
   data: AOA = [];
   modelo: AOA = [["Nº", "RUC", "RAZON SOCIAL", "TELEFONO", "CORREO", "GRUPO", "TIPO", "REGION", "CLAVE SRI", "CLAVE IESS", "CLAVE MRL CONTRATOS", "CLAVE MRL FORMULARIOS", "CLAVE SUPERCIAS"], []];
   usr = new Usuario();
-  constructor(private configService: ConfiguracionesService, private auth: AuthService, private clientesService: ClientesService) { }
+  constructor(private configService: ConfiguracionesService, private auth: AuthService, private clientesService: ClientesService, private utilidadesService: UtilidadesService, private agendaService: AgendaService) { }
 
   ngOnInit(): void {
     this.configService.getAllConfigs().subscribe((resp) => {
@@ -59,10 +61,8 @@ export class ConfiguracionesComponent implements OnInit {
   }
 
   cargarExcel() {
-    console.log('cargando archivo....');
     if (!this.files) { Swal.fire('No hay archivo', 'Seleccione un archivo excel antes de continuar', 'warning'); return; }
     const currentFile = this.files!.item(0);
-    console.log(currentFile);
 
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
@@ -76,7 +76,6 @@ export class ConfiguracionesComponent implements OnInit {
 
       /* save data */
       this.data = <AOA>(XLSX.utils.sheet_to_json(ws, { header: 1 }));
-      // console.log(this.data);
       let f = 0;
       for (const cliente of this.data) {
         if (f !== 0) {
@@ -101,9 +100,7 @@ export class ConfiguracionesComponent implements OnInit {
 
           c.CLI_DIGITO = c.CLI_CODIGO.slice(8, 9);
           c.CLI_VENCE = +this.calcularVence(c.CLI_DIGITO);
-          // console.log(fila, c);
           this.clientesService.postCliente(c).subscribe(r => {
-            // console.log(r);
           });
         }
         f += 1;
@@ -146,14 +143,13 @@ export class ConfiguracionesComponent implements OnInit {
           const isEf = await this.clientesService.getIsEmpresaFantasma(cliente.CLI_CODIGO).toPromise();
           const isMi = await this.clientesService.getIsMicro(cliente.CLI_CODIGO).toPromise();
           const sriData = await this.clientesService.getClienteSri(cliente.CLI_CODIGO).toPromise();
-          // console.log(sriData);
           if (isAr["agentes"]) { cliente.CLI_AGENRETENCION = isAr["agentes"]; }
           if (isCe["especiales"]) { cliente.CLI_CONTRIESPECIAL = isCe["especiales"]; }
           if (isEf["fantasma"]) { cliente.CLI_EMPRESAFANTAS = isEf["fantasma"]; }
           if (isMi["microempresa"]) { cliente.CLI_MICROEMPRESA = isMi["microempresa"]; }
           if (sriData["Actividad Económica Principal"]) { cliente.CLI_ACTIVIDAD = sriData["Actividad Económica Principal"]; cliente.CLI_NOMBREC = sriData["Nombre Comercial"]; }
           if (sriData["Nombre Comercial:"]) { cliente.CLI_NOMBREC = sriData["Nombre Comercial:"]; }
-          if (isAr["agentes"] || isCe["especiales"] || isEf["fantasma"] || isMi["microempresa"]) { cliente.CLI_FECHACONSULTA = this.fechaActual(); }
+          if (isAr["agentes"] || isCe["especiales"] || isEf["fantasma"] || isMi["microempresa"]) { cliente.CLI_FECHACONSULTA = this.utilidadesService.getFechaActual(); }
           if (!cliente.datosAdicionales) {
             const datosBusqueda = {
               CLI_CODIGO: cliente.CLI_CODIGO,
@@ -162,9 +158,7 @@ export class ConfiguracionesComponent implements OnInit {
             const datosAdi: any = await this.clientesService.getDatosAdicionales(datosBusqueda).toPromise();
             cliente.datosAdicionales = datosAdi;
           }
-          // console.log(cliente);
           const resp = await this.clientesService.putCliente(cliente.CLI_CODIGO, cliente).toPromise();
-          // console.log(resp);
         } catch (error) {
           console.log(error);
         }
@@ -221,6 +215,35 @@ export class ConfiguracionesComponent implements OnInit {
     mes = date.getMonth().toString().length < 2 ? `0${date.getMonth().toString()}` : date.getMonth().toString();
     anio = date.getFullYear();
     return `${anio}-${mes}-${dia}`;
+  }
+
+
+  // Por motivos de trabajo interno
+  // Quitar o mejorar mas adelante
+
+  crearAgenda() {
+
+    let clientes: Cliente[] = [];
+    Swal.fire({ title: 'Espere', text: 'Generando tareas...', icon: 'info', allowOutsideClick: false });
+    Swal.showLoading();
+
+    this.clientesService.getClientes().subscribe(async resp => {
+      clientes = resp;
+      if (clientes.length === 0) { Swal.fire('No se encontraron clientes', 'Registre clientes antes de utilizar esta opción', 'warning'); return; }
+      for (const cliente of clientes) {
+
+        const datos = { id: cliente.CLI_CODIGO, periodo: 2021, fecha: '2021-09-01' };
+
+        setTimeout(() => {
+          this.agendaService.generarAgenda(datos).subscribe(resp => {
+          });
+        }, 2000);
+
+      }
+      Swal.fire('Éxito', 'Tareas generadas con éxito', 'success');
+    });
+
+
   }
 
 }

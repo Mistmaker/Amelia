@@ -128,6 +128,13 @@ export class Cliente {
   CLI_EMPRESAFANTAS: string;
   CLI_AGENRETENCION: string;
   CLI_TIPOCLIENTE: number;
+  CLI_NUMEROAFILIADOS: number;
+  CLI_TIPOJURIDICA: number;
+  CLI_SUPERAMONTOACTIVOS_DEC_PATR: string;
+  CLI_AFILIADOIESS: string;
+  CLI_REGIMENRUC: string;
+  CLI_INMUEBLE_REG_MUNI: string;
+  CLI_CONTRATARAUDITORIASUPER: string;
   datosAdicionales: ClienteDatosAdicionales[];
   documentos: ClienteDocumentos[];
   TipoCliente: string;
@@ -146,5 +153,11 @@ export class CuentasContablesClientes {
   CLI_BASECERO: string;
   CLI_BASENOBJET: string;
 
-  constructor() {}
+  constructor() { }
+}
+
+export class TipoJuridica {
+  TPJ_CODIGO: number;
+  TPJ_NOMBRE: string;
+  TPJ_TIPOCLIENTE: string;
 }

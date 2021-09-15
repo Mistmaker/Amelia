@@ -5,7 +5,7 @@ import { NgForm } from '@angular/forms';
 // import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2';
 
-import { Cliente, CuentasContablesClientes } from '../../../models/clientes.model';
+import { Cliente, CuentasContablesClientes, TipoJuridica } from '../../../models/clientes.model';
 import { ClientesService } from '../../services/clientes.service';
 import { TipoCliente } from '../../../models/tipoClientes';
 import { TipoClientesService } from '../../services/tipo-clientes.service';
@@ -51,6 +51,7 @@ export class ClienteComponent implements OnInit {
   usuarios: Usuario[] = [];
   grupos: GrupoCliente[] = [];
   tiposClientes: TiposClientes[] = [];
+  tipoJuridica: TipoJuridica[] = [];
   mostrarInfoCompl = false;
   cargarDocumento = false;
   documentoCliente = new ClienteDocumentos();
@@ -64,6 +65,12 @@ export class ClienteComponent implements OnInit {
 
   current: any = null;
   archivos: any[] = [];
+
+  // para efectos de interfaz
+  mostrarTipoJuridica = false;
+  mostrarAfiliadoIess = false;
+  mostrarRegimenRuc = false;
+  mostrarContratarAuditoria = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -97,6 +104,15 @@ export class ClienteComponent implements OnInit {
         this.cliente.CLI_AGENRETENCION = resp.CLI_AGENRETENCION || '';
         this.getCoordinates();
         this.getCiudad();
+
+        if (this.cliente.CLI_TIPOCLIENTE == 3 || this.cliente.CLI_TIPOCLIENTE == 4) {
+          this.mostrarTipoJuridica = true;
+          this.clientesService.getTipoJuridicaCliente(this.cliente.CLI_TIPOCLIENTE).subscribe(resp => {
+            this.tipoJuridica = resp;
+          });
+        }
+
+        this.cargarTipoJuridica();
 
         const datosBusqueda = {
           CLI_CODIGO: this.cliente.CLI_CODIGO,
@@ -263,26 +279,13 @@ export class ClienteComponent implements OnInit {
     Swal.showLoading();
 
     // put null on dates containing undefined string
-    if (
-      this.cliente.CLI_FECINIACTIVIDADES &&
-      this.cliente.CLI_FECINIACTIVIDADES.includes('undefined')
-    )
-      this.cliente.CLI_FECINIACTIVIDADES = null;
-    if (
-      this.cliente.CLI_FECCESACTIVIDADES &&
-      this.cliente.CLI_FECCESACTIVIDADES.includes('undefined')
-    )
-      this.cliente.CLI_FECCESACTIVIDADES = null;
-    if (
-      this.cliente.CLI_FECREIACTIVIDADES &&
-      this.cliente.CLI_FECREIACTIVIDADES.includes('undefined')
-    )
-      this.cliente.CLI_FECREIACTIVIDADES = null;
-    if (
-      this.cliente.CLI_FECACTUALIZACION &&
-      this.cliente.CLI_FECACTUALIZACION.includes('undefined')
-    )
-      this.cliente.CLI_FECACTUALIZACION = null;
+    if (this.cliente.CLI_FECINIACTIVIDADES && this.cliente.CLI_FECINIACTIVIDADES.includes('undefined')) this.cliente.CLI_FECINIACTIVIDADES = null;
+    if (this.cliente.CLI_FECCESACTIVIDADES && this.cliente.CLI_FECCESACTIVIDADES.includes('undefined')) this.cliente.CLI_FECCESACTIVIDADES = null;
+    if (this.cliente.CLI_FECREIACTIVIDADES && this.cliente.CLI_FECREIACTIVIDADES.includes('undefined')) this.cliente.CLI_FECREIACTIVIDADES = null;
+    if (this.cliente.CLI_FECACTUALIZACION && this.cliente.CLI_FECACTUALIZACION.includes('undefined')) this.cliente.CLI_FECACTUALIZACION = null;
+
+    if (this.cliente.CLI_TIPOCLIENTE == 1 || this.cliente.CLI_TIPOCLIENTE == 2) { this.cliente.CLI_TIPOJURIDICA = null; } else { this.cliente.CLI_AFILIADOIESS = null; this.cliente.CLI_REGIMENRUC = null; }
+    if (this.cliente.CLI_TIPOCLIENTE != 3) { this.cliente.CLI_CONTRATARAUDITORIASUPER = null; }
 
     // merge coordinates
     this.cliente.CLI_GMAPS = this.coordinateX + ',' + this.coordinateY;
@@ -299,7 +302,6 @@ export class ClienteComponent implements OnInit {
             //   Swal.update({ title: 'Espere', html: `Subiendo archivo: <br> ${archivo.name}`, allowOutsideClick: false, icon: 'info', });
             //   Swal.showLoading();
             //   const r = await this.clientesService.upload(archivo, this.cliente).toPromise();
-            //   console.log(r);
             // }
             if (this.archivos.length > 0) {
               const r = await this.clientesService.upload2(this.archivos, this.cliente).toPromise();
@@ -578,23 +580,19 @@ export class ClienteComponent implements OnInit {
   }
 
   agregarDocLista() {
-    console.log(this.nombreArchivo);
     if (!this.nombreArchivo || this.nombreArchivo === '') { Swal.fire('No se puede cargar', 'Por favor agrege un nombre al archivo', 'warning'); return; }
     // this.current = file;
     // this.createFile(null,null);
     this.current.newName = this.nombreArchivo + '.' + this.current.name.split('.').pop();
     this.archivos.push(this.current);
     // event.target.value = null;
-    console.log(this.current);
     this.cargarDocumento = false;
-    console.log(this.clientesService.getFechaActual());
   }
 
   // createFile(bits, name) {
   //   try {
   //     // const myRenamedFile = new File([this.current.data], "my-file-final-1-really.txt");
   //     this.current = new File([this.current], "my-file-final-1-really.txt");
-  //     console.log(this.current);
   //   } catch (e) {
 
   //   }
@@ -602,8 +600,6 @@ export class ClienteComponent implements OnInit {
 
   cargaArchivo(event: any) {
     const file: File = event.target.files[0];
-    console.log(file);
-    console.log(this.archivos.length, this.cliente.documentos.length);
     // TODO: CAMBIAR POR PARAMETRO EN BASE DE DATOS [CONFIGURACION GLOBAL]
     // if ((this.archivos.length + this.cliente.documentos.length) > 9) { Swal.fire('Excedido límite máximo de archivos', 'Solo se permiten 10 archivos', 'warning'); event.target.value = null; return; }
 
@@ -659,5 +655,26 @@ export class ClienteComponent implements OnInit {
 
   descargarArchivo(documento: ClienteDocumentos) {
     return this.clientesService.downloadUrl(documento);
+  }
+
+  cargarTipoJuridica() {
+    if (this.cliente.CLI_TIPOCLIENTE == 1 || this.cliente.CLI_TIPOCLIENTE == 2) {
+      this.cliente.CLI_TIPOJURIDICA = null;
+      this.mostrarTipoJuridica = false;
+      this.mostrarAfiliadoIess = true;
+      this.mostrarRegimenRuc = true;
+      return;
+    }
+    if (this.cliente.CLI_TIPOCLIENTE == 3) {
+      this.mostrarContratarAuditoria = true;
+    } else {
+      this.mostrarContratarAuditoria = false;
+    }
+    this.mostrarTipoJuridica = true;
+    this.mostrarAfiliadoIess = false;
+    this.mostrarRegimenRuc = false;
+    this.clientesService.getTipoJuridicaCliente(this.cliente.CLI_TIPOCLIENTE).subscribe(resp => {
+      this.tipoJuridica = resp;
+    });
   }
 }
