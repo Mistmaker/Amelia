@@ -13,7 +13,8 @@
         <form (ngSubmit)="f.form.valid && guardar(f)" #f="ngForm">
             <div class="form-group">
                 <label class="form-label">Asesor *</label>
-                <select [(ngModel)]="usuario.VEN_CODIGO" name="asesor" (change)="cargarNombre(usr.value)" #usr="ngModel" class="form-control form-control-sm" required>
+                <select [(ngModel)]="usuario.VEN_CODIGO" name="asesor" (change)="cargarNombre(usr.value)" #usr="ngModel"
+                    class="form-control form-control-sm" required>
                     <option *ngFor="let vendedor of vendedores" [value]="vendedor.VEN_CODIGO">
                         {{ vendedor.VEN_NOMBRE }}
                     </option>
@@ -23,8 +24,24 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="form-label">Perfil:*</label>
+                <select [(ngModel)]="usuario.PERFIL_CODIGO" name="perfil" class="form-select" required
+                    #perfil="ngModel">
+                    <option style="display:none"></option>
+                    <option *ngFor="let perfil of perfiles" [value]="perfil.PERFIL_CODIGO">
+                        {{ perfil.PERFIL_NOMBRE }}
+                    </option>
+                </select>
+                <div *ngIf="f.submitted && perfil.invalid">
+                    <span *ngIf="perfil.errors?.required" class="badge bg-warning text-dark"> <i
+                            class="fas fa-exclamation-triangle"></i> Seleccione una opción</span>
+                </div>
+            </div>
+            <div class="form-group">
                 <label>Usuario *</label>
-                <input [(ngModel)]="usuario.USUIDENTIFICACION" name="codigo" #codigo="ngModel" placeholder="Nombre de usuario" type="text" class="form-control" minlength="5" maxlength="10" required />
+                <input [(ngModel)]="usuario.USUIDENTIFICACION" name="codigo" #codigo="ngModel"
+                    placeholder="Nombre de usuario" type="text" class="form-control" minlength="5" maxlength="10"
+                    required />
                 <div *ngIf="f.submitted && codigo.invalid" class="alert bg-warning">
                     <div *ngIf="codigo.errors.required">Usuario requerido</div>
                     <div *ngIf="codigo.errors.minlength">Debe tener mínimo 5 letras</div>
@@ -35,7 +52,8 @@
             </div>
             <div class="form-group">
                 <label>Contraseña *</label>
-                <input [(ngModel)]="usuario.USUCLAVE" name="name" #name="ngModel" placeholder="Contraseña" type="password" class="form-control" minlength="4" maxlength="10" required />
+                <input [(ngModel)]="usuario.USUCLAVE" name="name" #name="ngModel" placeholder="Contraseña"
+                    type="password" class="form-control" minlength="4" maxlength="10" required />
                 <div *ngIf="f.submitted && name.invalid" class="alert bg-warning">
                     <div *ngIf="name.errors.required">Contraseña requerida</div>
                     <div *ngIf="name.errors.minlength">Debe tener mínimo 4 letras</div>

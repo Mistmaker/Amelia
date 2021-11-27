@@ -32,6 +32,7 @@ export class ClientesComponent implements OnInit {
     this.cargando = true;
     this.clientesService.getClientes().subscribe(resp => {
       this.clientes = resp;
+      console.log(this.clientes);
       this.cargando = false;
     });
 

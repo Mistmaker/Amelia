@@ -46,4 +46,11 @@ export class Empresa {
     COM_UBICACIONXMLAUT: string;
     COM_TRANSPORTE: string;
     COM_MICROEMPRESA: string;
+    PLACAS: EmpresaPlaca[];
+}
+
+export class EmpresaPlaca {
+    COP_CODIGO: number;
+    COP_PLACA: string;
+    COP_OBSERVACION: string;
 }

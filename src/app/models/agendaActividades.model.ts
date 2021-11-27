@@ -15,4 +15,12 @@ export class AgendaActividad {
     ESCAT: string;
     cliente: string;
     comentarios: number;
+    documentos: number;
+}
+
+export class AgendaActividadAdmin {
+    usuario: string;
+    colapsado: boolean;
+    page: number;
+    actividades: AgendaActividad[];
 }

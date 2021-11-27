@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 import { EmpresaService } from '../../services/empresa.service';
-import { Empresa } from '../../../models/empresa.model';
+import { Empresa, EmpresaPlaca } from '../../../models/empresa.model';
 
 @Component({
   selector: 'app-empresa',
@@ -19,10 +19,15 @@ export class EmpresaComponent implements OnInit {
   ngOnInit(): void {
     this.empresaService.getDatos().subscribe(resp => {
       this.empresa = resp;
+      this.empresaService.getDatosPlacas().subscribe(r => {
+        this.empresa.PLACAS = r;
+      });
     });
   }
 
   guardar(form: NgForm) {
+
+    console.log(this.empresa);
     if (form.invalid) {
       return;
     }
@@ -35,6 +40,14 @@ export class EmpresaComponent implements OnInit {
       }
     );
 
+  }
+
+  agregarPlaca() {
+    this.empresa.PLACAS.push(new EmpresaPlaca());
+  }
+
+  quitarPlaca(index: number) {
+    this.empresa.PLACAS.splice(index, 1);
   }
 
 }

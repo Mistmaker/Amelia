@@ -11,8 +11,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class BuscarClientesComponent implements OnInit {
 
   @ViewChild("inputBusqueda") inputBusqueda: ElementRef;
-  
+
   clientes: Cliente[] = [];
+  rucs: string[] = [];
   textoBusqueda = '';
   constructor(private clientesService: ClientesService, public dialogRef: MatDialogRef<BuscarClientesComponent>, @Inject(MAT_DIALOG_DATA) public data: any | null) { }
 
@@ -39,11 +40,26 @@ export class BuscarClientesComponent implements OnInit {
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    if (this.data.permitirVarios) {
+      this.dialogRef.close(this.rucs);
+    } else {
+      this.dialogRef.close(new Cliente());
+    }
   }
 
   seleccionarCliente(c: Cliente) {
-    this.dialogRef.close(c);
+    if (this.data.permitirVarios) {
+      if (c.seleccionado) {
+        for (let i = 0; i < this.rucs.length; i++) {
+          if (this.rucs[i] == c.CLI_CODIGO) { c.seleccionado = false; this.rucs.splice(i, 1); return; }
+        }
+      } else {
+        this.rucs.push(c.CLI_CODIGO);
+        c.seleccionado = true;
+      }
+    } else {
+      this.dialogRef.close(c);
+    }
   }
 
 }

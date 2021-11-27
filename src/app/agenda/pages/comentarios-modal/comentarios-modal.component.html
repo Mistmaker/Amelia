@@ -40,7 +40,7 @@
                         <button class="btn btn-sm btn-success" *ngIf="c.estado == 'REVISADO'" type="button" [disabled]="!permitirGuardar" (click)="cambiarEstado(c)">
                             <i class="fas fa-sync-alt"></i> {{ c.estado }}
                         </button>
-                        <button class="btn btn-sm btn-danger" type="button" (click)="eliminar(c.id,i)" [disabled]="c.estado == 'REVISADO'">
+                        <button class="btn btn-sm btn-danger" type="button" (click)="eliminar(c.id,i)" [disabled]="c.estado == 'REVISADO' || !permitirGuardar">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>

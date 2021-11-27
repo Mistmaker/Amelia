@@ -20,6 +20,7 @@ export class TareasComponent implements OnInit {
   @ViewChild("busqueda") busqueda: ElementRef;
 
   cliente = new Cliente();
+  rucs: string[] = [];
   actividad = new Actividades();
   periodo = '2021';
   fecha = '';
@@ -33,6 +34,7 @@ export class TareasComponent implements OnInit {
   tableSizes = [3, 6, 9, 12];
 
   cargando = false;
+  permitirVarios = false;
   // tareaManual = false;
   // diasAviso: number;
 
@@ -43,18 +45,36 @@ export class TareasComponent implements OnInit {
     this.agendaService.getActividadesGeneradas().subscribe(resp => {
       this.agendaActividades = resp;
     });
+    this.configuracionesService.getConfig('TAREAS_MULTI').subscribe(resp => {
+      console.log(resp);
+      if (resp.codigo == 1) { this.permitirVarios = true; }
+    });
   }
 
   crearAgenda() {
-    const datos = { id: this.cliente.CLI_CODIGO, periodo: this.periodo, fecha: this.fecha };
-    Swal.fire({ title: 'Espere', text: 'Generando tareas...', icon: 'info', allowOutsideClick: false });
-    Swal.showLoading();
-    this.agendaService.generarAgenda(datos).subscribe(resp => {
-      Swal.fire('Éxito', 'Tareas generadas con éxito', 'success');
-      this.agendaService.getActividadesGeneradas().subscribe(resp => {
-        this.agendaActividades = resp;
+    if (!this.permitirVarios) {
+      const datos = { id: this.cliente.CLI_CODIGO, periodo: this.periodo, fecha: this.fecha };
+      Swal.fire({ title: 'Espere', text: 'Generando tareas...', icon: 'info', allowOutsideClick: false });
+      Swal.showLoading();
+      this.agendaService.generarAgenda(datos).subscribe(resp => {
+        Swal.fire('Éxito', 'Tareas generadas con éxito', 'success');
+        this.agendaService.getActividadesGeneradas().subscribe(resp => {
+          this.agendaActividades = resp;
+        });
       });
-    });
+    } else {
+      if (this.rucs.length == 0) { Swal.fire('Advertencia', 'Seleccione almenos a un cliente', 'warning'); return; }
+      const datos = { ids: this.rucs, periodo: this.periodo, fecha: this.fecha }
+      Swal.fire({ title: 'Espere', text: 'Generando tareas...', icon: 'info', allowOutsideClick: false });
+      Swal.showLoading();
+      this.agendaService.generarAgendaMultiplesClientes(datos).subscribe(resp => {
+        console.log(resp);
+        Swal.fire('Éxito', 'Tareas generadas con éxito', 'success');
+        this.agendaService.getActividadesGeneradas().subscribe(resp => {
+          this.agendaActividades = resp;
+        });
+      });
+    }
   }
 
   async eliminar(id: string, periodo: number, creado: string) {
@@ -64,7 +84,7 @@ export class TareasComponent implements OnInit {
 
     let eliminar = false;
     Swal.fire({
-      title: 'Confirmación', html: `Desea eliminar las tareas de este cliente? <br> Solo se eliminarán las "Pendientes" y que no tengan comentarios <br><br> Por favor ingrese el código de autorización`, icon: 'warning', showDenyButton: true, confirmButtonText: `Eliminar`, denyButtonText: `No eliminar`, denyButtonColor: '#3085d6', confirmButtonColor: '#d33', input: 'password', inputPlaceholder: 'Código de autorización', inputAttributes: { autocapitalize: 'off' },
+      title: 'Confirmación', html: `Desea eliminar las tareas de este cliente? <br> Solo se eliminarán las "Pendientes" y que no tengan comentarios <br><br> Por favor ingrese el código de autorización`, icon: 'warning', showDenyButton: true, confirmButtonText: `Eliminar`, denyButtonText: `No eliminar`, denyButtonColor: '#3085d6', confirmButtonColor: '#d33', input: 'password', inputPlaceholder: 'Código de autorización', inputAttributes: { autocapitalize: 'off', autocorrect: 'off' },
       preConfirm: (codigo) => {
         if (codigo == codigoAutorizacion.numero) {
           return true;
@@ -125,16 +145,24 @@ export class TareasComponent implements OnInit {
 
   abrirModal() {
     const dialogRef = this.dialog.open(BuscarClientesComponent, {
-      width: '100%',
+      maxWidth: '100vw',
+      maxHeight: '100vh',
       height: '100%',
+      width: '100%',
       data: {
         name: this.cliente,
+        permitirVarios: this.permitirVarios
       },
     });
 
-    dialogRef.afterClosed().subscribe((result: Cliente) => {
-      if (result) {
+    dialogRef.afterClosed().subscribe((result: Cliente | string[]) => {
+      if (!Array.isArray(result)) {
         this.cliente = result;
+      } else {
+        this.rucs = result;
+        console.log(this.rucs);
+        this.cliente.CLI_CODIGO = '1';
+        this.cliente.CLI_NOMBRE = `${this.rucs.length} Clientes(s) seleccionados`;
       }
     });
   }

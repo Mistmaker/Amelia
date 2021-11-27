@@ -1,1 +1,57 @@
-<p>perfiles works!</p>
+<div class="card">
+    <div class="card-header card-header-info">
+        <h4 class="card-title ">Perfiles de usuario</h4>
+        <p class="card-category"> Listado de perfiles</p>
+    </div>
+
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-9">
+                <input type="text" class="form-control form-control-sm" [(ngModel)]="textoBusqueda"
+                    placeholder="Buscar ...">
+            </div>
+            <div class="col-md-3">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button routerLink="/usuarios/perfiles/nuevo" class="btn btn-sm btn-primary"><i
+                            class="fas fa-plus"></i>Agregar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table *ngIf="!cargando  && perfiles.length > 0"
+                class="table table-striped table-hover animated fadein faster">
+                <thead class=" text-primary">
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Acción</th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let p of perfiles | filtroSimple: textoBusqueda | paginate : {itemsPerPage: tableSize,currentPage: page,totalItems: count}">
+                        <td>{{ p.PERFIL_CODIGO }} </td>
+                        <td>{{ p.PERFIL_NOMBRE }} </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary mr-1"
+                                [routerLink]="['/usuarios/perfiles', p.PERFIL_CODIGO]"><i
+                                    class="fa fa-pen"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!cargando && perfiles.length !== 0" class="d-flex justify-content-center">
+                <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="onTableDataChange($event)">
+                </pagination-controls>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="cargando" class="alert alert-info text-center mt-3 animated fadein faster">
+    <h4 class="alert-heading">Cargando</h4>
+    <p><i class="fa fa-sync-alt fa-spin fa-3x"></i></p>
+    <p class="mb-0"> Espere por favor</p>
+</div>
+<div *ngIf="!cargando && perfiles.length === 0" class="alert alert-warning text-center mt-3 animated fadein faster">
+    <h4 class="alert-heading">No hay registros</h4>
+    <p><i class="fa fa-exclamation fa-3x"></i></p>
+</div>

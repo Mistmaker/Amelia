@@ -10,6 +10,7 @@ import { PipesModule } from '../shared/pipes/pipes.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ActividadComponent } from './pages/actividad/actividad.component';
 import { ComentariosModalComponent } from './pages/comentarios-modal/comentarios-modal.component';
+import { DocumentosModalComponent } from './pages/documentos-modal/documentos-modal.component';
 
 
 
@@ -20,6 +21,7 @@ import { ComentariosModalComponent } from './pages/comentarios-modal/comentarios
     TareasComponent,
     ActividadComponent,
     ComentariosModalComponent,
+    DocumentosModalComponent,
   ],
   imports: [
     CommonModule,

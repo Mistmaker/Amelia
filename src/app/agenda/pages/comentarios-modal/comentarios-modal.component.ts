@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AgendaService } from '../../services/agenda.service';
 import { ComentarioAgenda } from '../../../models/comentariosAgenda.model';
 import { AuthService } from '../../../auth/services/auth.service';
+import { ConfiguracionesService } from '../../../configuraciones/services/configuraciones.service';
 
 @Component({
   selector: 'app-comentarios-modal',
@@ -18,9 +19,11 @@ export class ComentariosModalComponent implements OnInit {
   comentario = new ComentarioAgenda();
   usuario = '';
   permitirGuardar = true;
+  comentarTareasFinalizdas = false;
+
 
   textoBusqueda = '';
-  constructor(private agendaService: AgendaService, private authService: AuthService, public dialogRef: MatDialogRef<ComentariosModalComponent>, @Inject(MAT_DIALOG_DATA) public data: any | null) { }
+  constructor(private agendaService: AgendaService, private authService: AuthService, private configuracionesService: ConfiguracionesService, public dialogRef: MatDialogRef<ComentariosModalComponent>, @Inject(MAT_DIALOG_DATA) public data: any | null) { }
 
   ngOnInit(): void {
     if (this.data.estado !== "PENDIENTE") { this.permitirGuardar = false; }
@@ -35,6 +38,14 @@ export class ComentariosModalComponent implements OnInit {
     this.dialogRef.beforeClosed().subscribe(resp => {
       this.onNoClick();
     });
+    if (!this.data.bloquearComentarios) {
+      this.configuracionesService.getConfig('COM_TAR_FIN').subscribe(resp => {
+        if (resp.codigo == 1) { this.permitirGuardar = true; }
+      });
+    } else {
+      this.permitirGuardar = false;
+    }
+    console.log(this.data)
   }
 
   guardarComentario(form: NgForm) {

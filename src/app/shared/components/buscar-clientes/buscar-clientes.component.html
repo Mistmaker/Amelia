@@ -15,7 +15,7 @@
         </ul>
     </div> -->
     <div class="list-group">
-        <button type="button" class="list-group-item btn-sm list-group-item-action" *ngFor="let cliente of clientes" (click)="seleccionarCliente(cliente)">{{ cliente.CLI_NOMBRE }}</button>
+        <button type="button" class="bg-success list-group-item btn-sm list-group-item-action" [ngClass]="{'bg-success text-light': cliente.seleccionado }" *ngFor="let cliente of clientes" (click)="seleccionarCliente(cliente)">{{ cliente.CLI_NOMBRE }}</button>
     </div>
 
 </div>

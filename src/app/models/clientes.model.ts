@@ -138,6 +138,8 @@ export class Cliente {
   datosAdicionales: ClienteDatosAdicionales[];
   documentos: ClienteDocumentos[];
   TipoCliente: string;
+  Asesor: string;
+  seleccionado: boolean;
 
   constructor() {
     this.CLI_ESTADO = '1';

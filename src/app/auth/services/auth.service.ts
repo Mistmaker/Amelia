@@ -22,14 +22,21 @@ export class AuthService {
     return false;
   }
 
-  cerrarSesion(){
+  cerrarSesion() {
     localStorage.removeItem('usuario');
     this.router.navigateByUrl('auth');
   }
 
-  getUsrFromLocalStorage(){
+  getUsrFromLocalStorage() {
     if (localStorage.getItem('usuario')) {
       return localStorage.getItem('usuario');
+    }
+    return null;
+  }
+
+  getUsuario() {
+    if (localStorage.getItem('usuario')) {
+      return JSON.parse(localStorage.getItem('usuario'));
     }
     return null;
   }

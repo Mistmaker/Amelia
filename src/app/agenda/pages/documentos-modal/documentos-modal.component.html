@@ -1,0 +1,52 @@
+<div class="d-flex justify-content-between">
+    <h5 mat-dialog-title class="" id="exampleModalLabel">Documentos</h5>
+    <button type="button" class="close" (click)="onNoClick()">
+        <span aria-hidden="true" class="text-danger"> <i class="fas fa-2x fa-window-close"></i> </span>
+    </button>
+</div>
+
+<div class="row" *ngIf="!bloquearIngresosModificaciones">
+    <div class="col-md-6">
+        <label for="formFile" class="form-label">Nombre Archivo:</label>
+        <input class="form-control" type="text" [(ngModel)]="nombreArchivo" name="archivo">
+    </div>
+    <div class="col-md-4">
+        <label for="formFile" class="form-label">Archivo:</label>
+        <input class="form-control" (change)="cargaArchivo($event)" type="file" name="file1" id="formFile">
+    </div>
+    <div class="col-md-2 ">
+        <label for="formFile" class="form-label">&nbsp;</label>
+        <button class="btn btn-primary" type="button" (click)="agregarDocLista()">
+            <i class="fas fa-plus"></i> Cargar
+        </button>
+    </div>
+</div>
+
+<br>
+
+<div class="card" *ngFor="let archivo of archivos; let i = index">
+    <div class="card-body">
+        <p class="card-text"> <b> {{ archivo.ADOC_NOMBRE }}.{{ archivo.ADOC_TIPO }} </b> </p>
+        <div class="row">
+            <div class="col-xs-6 col-md-6">
+                <p class="card-text"> <i class="fas fa-file"></i> {{ archivo.ADOC_FECHA }} -
+                    {{ archivo.id_usuario }} </p>
+            </div>
+            <div class="col-xs-6 col-md-6">
+                <div class="input-group d-flex justify-content-end">
+                    <button class="btn btn-sm btn-primary" type="button"
+                        *ngIf="archivo.ADOC_TIPO=='jpeg' || archivo.ADOC_TIPO=='png' || archivo.ADOC_TIPO=='jpg'"
+                        (click)="verDocumento(archivo.ADOC_CODIGO)">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <a class="btn btn-success btn-sm" [href]="descargarDocumento(archivo.ADOC_CODIGO)"> <i
+                            class="fas fa-download"></i> </a>
+                    <button class="btn btn-sm btn-danger" type="button" *ngIf="!bloquearIngresosModificaciones" (click)="eliminar(archivo.ADOC_CODIGO,i)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

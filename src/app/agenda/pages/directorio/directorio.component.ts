@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AgendaService } from '../../services/agenda.service';
-import { AgendaActividad } from '../../../models/agendaActividades.model';
+import { AgendaActividad, AgendaActividadAdmin } from '../../../models/agendaActividades.model';
 import { MatDialog } from '@angular/material/dialog';
 
 import { orderBy } from 'lodash';
@@ -12,6 +12,9 @@ import { Cliente } from '../../../models/clientes.model';
 import { ConfiguracionesService } from '../../../configuraciones/services/configuraciones.service';
 import { Actividades } from '../../../models/actividades.model';
 import { BuscarActividadesComponent } from '../../../shared/components/buscar-actividades/buscar-actividades.component';
+import { DocumentosModalComponent } from '../documentos-modal/documentos-modal.component';
+import { Usuario } from '../../../models/usuarios.model';
+import { PerfilesService } from '../../../usuarios/services/perfiles.service';
 
 @Component({
   selector: 'app-directorio',
@@ -23,6 +26,7 @@ export class DirectorioComponent implements OnInit {
   @ViewChild("busqueda") busqueda: ElementRef;
 
   agendaActividades: AgendaActividad[] = [];
+  agendaActividadesAdmin: AgendaActividadAdmin[] = [];
   cargando = false;
   textoBusqueda = '';
   // Para paginación
@@ -46,12 +50,52 @@ export class DirectorioComponent implements OnInit {
   fecha = '';
   diasAviso: number;
 
-  constructor(private agendaService: AgendaService, private authService: AuthService, private configuracionesService: ConfiguracionesService, private dialog: MatDialog) { }
+  soloFinalizados = false;
+  mostrarAgrupados = false;
+
+
+  constructor(
+    private agendaService: AgendaService,
+    private authService: AuthService,
+    private perfilesService: PerfilesService,
+    private configuracionesService: ConfiguracionesService,
+    private dialog: MatDialog,
+  ) { }
 
   ngOnInit(): void {
+    this.cargaInicial();
+  }
+
+  cargaInicial() {
+    const usuario: Usuario = this.authService.getUsuario();
+    console.log(usuario);
+
+    this.perfilesService.getPerfil(usuario.PERFIL_CODIGO).subscribe(result => {
+      console.log(result);
+      if (result.PERFIL_CLIENTES == 'T') {
+        this.configuracionesService.getConfig('TAREAS_AGRUP').subscribe(resp => {
+          console.log(resp)
+          if (resp.codigo == 1) { this.mostrarAgrupados = true; }
+          this.cargando = true;
+          this.agendaService.getAgendaActividadesAdministrador().subscribe(resp => {
+            console.log(resp)
+            this.agendaActividadesAdmin = resp;
+            this.cargando = false;
+          },
+            error => {
+              this.cargando = false;
+              console.log(error)
+            });
+        });
+      }
+    });
+
+
+
     this.cargando = true;
     this.agendaService.getAgendaActividades().subscribe(resp => {
-      this.agendaActividades = resp;
+      console.log(resp)
+      this.agendaActividades = resp.filter(a => a.estado != 'FINALIZADO');
       this.ordenar('vence');
       this.cargando = false;
     });
@@ -65,7 +109,28 @@ export class DirectorioComponent implements OnInit {
   cargarDatos() {
     this.cargando = true;
     this.agendaService.getAgendaActividades().subscribe(resp => {
-      this.agendaActividades = resp;
+      this.agendaActividades = resp.filter(a => a.estado != 'FINALIZADO');
+      this.cargando = false;
+    });
+    this.agendaService.getEstadoActividades().subscribe((resp: any) => {
+      this.estadoActividades = resp;
+      this.mostrarEstado = true;
+    })
+  }
+
+  limpiarFiltros() {
+    this.textoBusqueda = '';
+    this.nombreCliente = '';
+    this.tipoCliente = '';
+    this.page = 1;
+    this.cargaInicial();
+  }
+
+  mostrarFinalizados() {
+    this.cargando = true;
+    this.mostrarAgrupados = false;
+    this.agendaService.getAgendaActividades().subscribe(resp => {
+      this.agendaActividades = resp.filter(a => a.estado == 'FINALIZADO');
       this.cargando = false;
     });
   }
@@ -83,7 +148,7 @@ export class DirectorioComponent implements OnInit {
 
     let eliminar = false;
     Swal.fire({
-      title: 'Confirmación', html: `Desea eliminar esta tarea? <br> Por favor ingrese el código de autorización`, icon: 'warning', showDenyButton: true, confirmButtonText: `Eliminar`, denyButtonText: `No eliminar`, denyButtonColor: '#3085d6', confirmButtonColor: '#d33', input: 'password', inputPlaceholder: 'Código de autorización', inputAttributes: { autocapitalize: 'off' },
+      title: 'Confirmación', html: `Desea eliminar esta tarea? <br> Por favor ingrese el código de autorización`, icon: 'warning', showDenyButton: true, confirmButtonText: `Eliminar`, denyButtonText: `No eliminar`, denyButtonColor: '#3085d6', confirmButtonColor: '#d33', input: 'password', inputPlaceholder: 'Código de autorización', inputAttributes: { autocapitalize: 'off', autocorrect: 'off' },
       preConfirm: (codigo) => {
         if (codigo == codigoAutorizacion.numero) {
           return true;
@@ -157,7 +222,28 @@ export class DirectorioComponent implements OnInit {
     });
   }
 
+  documentosActividad(actividad: AgendaActividad) {
+    const dialogRef = this.dialog.open(DocumentosModalComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%',
+      data: {
+        id: actividad.id,
+        estado: actividad.estado
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        // actividad.comentarios = result.comentarios;
+      } else {
+      }
+    });
+  }
+
   cargarPorEstado(estado: string) {
+    this.page = 1;
     this.cargando = true;
     this.agendaService.getAgendaActividades().subscribe(resp => {
       if (estado === 'ven') { this.agendaActividades = resp.filter(act => act.ESCAT === 'VENCIDO'); }
@@ -211,8 +297,10 @@ export class DirectorioComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: Cliente) => {
-      if (result) {
+      if (result.CLI_CODIGO) {
         if (origen == 'busqueda') {
+          this.mostrarAgrupados = false;
+          this.page = 1;
           this.nombreCliente = result.CLI_NOMBRE;
           this.tipoCliente = result.TipoCliente;
           this.agendaService.getActividadesGeneradasCliente(result.CLI_CODIGO).subscribe(resp => {
@@ -244,6 +332,7 @@ export class DirectorioComponent implements OnInit {
 
   limpiarBusqueda() {
     this.textoBusqueda = '';
+    this.page = 1;
     setTimeout(() => { this.busqueda.nativeElement.focus(); }, 0);
   }
 
@@ -254,6 +343,15 @@ export class DirectorioComponent implements OnInit {
   onTableSizeChange(event: any): void {
     this.tableSize = event.target.value;
     this.page = 1;
+  }
+
+  onMultiTableDataChange(grupo: AgendaActividadAdmin, event: any) {
+    grupo.page = event;
+    // this.page = event;
+  }
+  onMultiTableSizeChange(grupo: AgendaActividadAdmin, event: any): void {
+    this.tableSize = event.target.value;
+    grupo.page = 1;
   }
 
 }

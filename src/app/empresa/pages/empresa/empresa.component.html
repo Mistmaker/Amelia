@@ -119,6 +119,50 @@
                     </div>
                 </div>
             </div>
+
+            <hr>
+            <div class="row">
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button class="btn btn-sm btn-primary mt-1" type="button" (click)="agregarPlaca()">
+                        <i class="fas fa-plus"></i> Agregar
+                    </button>
+                </div>
+
+                <div class="table-responsive" *ngIf="empresa.PLACAS">
+                    <table class="table table-sm table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Placa *</th>
+                                <th scope="col">Observación/Comentario</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let placa of empresa.PLACAS;let i = index">
+                                <td scope="row">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control form-control-sm" name="placa{{i}}"
+                                            [(ngModel)]="placa.COP_PLACA" [value]="placa.COP_PLACA" required>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control form-control-sm" name="obse{{i}}"
+                                            [(ngModel)]="placa.COP_OBSERVACION" [value]="placa.COP_OBSERVACION">
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        (click)="quitarPlaca(i)">
+                                        <i class="fas fa-minus-circle"></i> </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <hr />
             <div class="form-group text-center">
                 <button class="btn btn-primary w-50" type="submit">

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Empresa } from '../../models/empresa.model';
+import { Empresa, EmpresaPlaca } from '../../models/empresa.model';
 import { urlWs } from 'src/environments/environment';
 
 @Injectable({
@@ -15,5 +15,9 @@ export class EmpresaService {
   }
   setDatos(empresa: Empresa) {
     return this.http.put<Empresa>(`${urlWs}/api/empresa/${empresa.COMCODIGO}`, empresa);
+  }
+
+  getDatosPlacas(){
+    return this.http.get<EmpresaPlaca[]>(`${urlWs}/api/empresaPlacas`);
   }
 }

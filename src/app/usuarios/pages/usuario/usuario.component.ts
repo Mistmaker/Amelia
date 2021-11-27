@@ -6,6 +6,8 @@ import { UsuariosService } from '../../services/usuarios.service';
 import { Usuario } from '../../../models/usuarios.model';
 import { Vendedores } from '../../../models/vendedores';
 import { VendedoresService } from '../../../vendedores/services/vendedores.service';
+import { PerfilesService } from '../../services/perfiles.service';
+import { UsuarioPerfil } from '../../../models/usuarioPerfil.model';
 
 @Component({
   selector: 'app-usuario',
@@ -16,11 +18,17 @@ export class UsuarioComponent implements OnInit {
 
   usuario = new Usuario();
   vendedores: Vendedores[] = [];
+  perfiles: UsuarioPerfil[] = [];
   routeStr = '';
   showDeleteButton = false;
 
-  constructor(private usuariosService: UsuariosService, private vendedoresService: VendedoresService, private route: ActivatedRoute,
-    private router: Router) { }
+  constructor(
+    private usuariosService: UsuariosService,
+    private vendedoresService: VendedoresService,
+    private perfilesService: PerfilesService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.routeStr = this.route.snapshot.paramMap.get('id');
@@ -37,6 +45,10 @@ export class UsuarioComponent implements OnInit {
     this.vendedoresService.getAllVendedores().subscribe(resp => {
       this.vendedores = resp;
     });
+    this.perfilesService.getPerfiles().subscribe(resp => {
+      console.log(resp);
+      this.perfiles = resp;
+    })
   }
 
   guardar(form: NgForm) {

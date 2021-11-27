@@ -25,6 +25,7 @@
                     <th>Id</th>
                     <th>Entidad</th>
                     <th>Actividad</th>
+                    <th>Dias Aviso</th>
                     <th class="centrado">Pn_No_Obligado</th>
                     <th class="centrado">Pn_Obligado</th>
                     <th class="centrado">Pj_Sin_Fin_Lucro</th>
@@ -38,6 +39,7 @@
                         <td>{{ a.nombreEntidad }} </td>
                         <td *ngIf="a.condicion"> <u> {{ a.actividad }} </u> </td>
                         <td *ngIf="!a.condicion">{{ a.actividad }} </td>
+                        <td>{{ a.dias }} </td>
                         <td class="centrado">
                             <i *ngIf="a.pn_no_obligado == '1'" class="fa fa-check-circle fa-2x text-success"></i>
                             <i *ngIf="a.pn_no_obligado != '1'" class="fa fa-times-circle fa-2x text-danger"></i>

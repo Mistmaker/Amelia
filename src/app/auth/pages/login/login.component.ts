@@ -28,10 +28,12 @@ export class LoginComponent implements OnInit {
     }
 
     this.authService.login(this.usuario).subscribe(resp => {
+      console.log(resp);
       if (!resp) { Swal.fire('Incorrecto', 'Usuario o contraseña incorrectos.', 'warning'); return; }
       localStorage.setItem("usuario", JSON.stringify(resp));
       this.router.navigateByUrl('');
     }, err => {
+      console.log(err)
       Swal.fire('Error', 'Ocurrión un error al procesar la solicitud' + err["msg"], 'error');
     });
 

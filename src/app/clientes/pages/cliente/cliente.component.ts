@@ -26,6 +26,10 @@ import { TiposClientesService } from '../../services/tipos-clientes.service';
 import { TiposClientes } from '../../../models/tiposClientes';
 import { ClienteDocumentos } from '../../../models/clientesDocumentos';
 import { maxFileSize } from '../../../../environments/environment';
+import { AgendaService } from '../../../agenda/services/agenda.service';
+import { AgendaActividad } from '../../../models/agendaActividades.model';
+import { ComentariosModalComponent } from '../../../agenda/pages/comentarios-modal/comentarios-modal.component';
+import { DocumentosModalComponent } from '../../../agenda/pages/documentos-modal/documentos-modal.component';
 
 @Component({
   selector: 'app-cliente',
@@ -72,6 +76,15 @@ export class ClienteComponent implements OnInit {
   mostrarRegimenRuc = false;
   mostrarContratarAuditoria = false;
 
+  actividadesCliente: AgendaActividad[] = [];
+  // Para paginación de actividades de clientes
+  page = 1;
+  count = 0;
+  tableSize = 12;
+  tableSizes = [3, 6, 9, 12];
+
+  buscando = false;
+
   constructor(
     private route: ActivatedRoute,
     private clientesService: ClientesService,
@@ -84,7 +97,8 @@ export class ClienteComponent implements OnInit {
     private usuariosService: UsuariosService,
     private grupoClientesService: GrupoClientesService,
     private dialog: MatDialog,
-    private tiposClientesService: TiposClientesService
+    private tiposClientesService: TiposClientesService,
+    private agendaService: AgendaService
   ) { }
 
   ngOnInit(): void {
@@ -126,6 +140,7 @@ export class ClienteComponent implements OnInit {
         //   this.cliente.documentos = resp;
         // });
         this.getDocumentos();
+        this.getActividadesCliente();
       });
 
 
@@ -175,6 +190,14 @@ export class ClienteComponent implements OnInit {
   getDocumentos() {
     this.clientesService.getDocumentos(this.cliente.CLI_CODIGO).subscribe(resp => {
       this.cliente.documentos = resp;
+    });
+  }
+
+  getActividadesCliente() {
+    this.agendaService.getActividadesGeneradasCliente(this.cliente.CLI_CODIGO).subscribe(resp => {
+      resp = resp.filter(r => r.estado == 'FINALIZADO')
+      this.actividadesCliente = resp;
+      console.log(this.actividadesCliente)
     });
   }
 
@@ -277,7 +300,8 @@ export class ClienteComponent implements OnInit {
 
     Swal.fire({ title: 'Espere', text: 'Guardando información', allowOutsideClick: false, icon: 'info', });
     Swal.showLoading();
-
+    
+    this.calcularVence();
     // put null on dates containing undefined string
     if (this.cliente.CLI_FECINIACTIVIDADES && this.cliente.CLI_FECINIACTIVIDADES.includes('undefined')) this.cliente.CLI_FECINIACTIVIDADES = null;
     if (this.cliente.CLI_FECCESACTIVIDADES && this.cliente.CLI_FECCESACTIVIDADES.includes('undefined')) this.cliente.CLI_FECCESACTIVIDADES = null;
@@ -360,11 +384,13 @@ export class ClienteComponent implements OnInit {
         'warning'
       );
 
+    this.buscando = true;
     if (this.cliente.CLI_CODIGO.length === 10) {
       this.clientesService
         .getClienteCedula(this.cliente.CLI_CODIGO)
         .subscribe((resp) => {
           this.procesarDatos('C', resp['result'][0]);
+          this.buscando = false;
         });
     }
 
@@ -372,12 +398,14 @@ export class ClienteComponent implements OnInit {
       this.clientesService.getClienteSri(this.cliente.CLI_CODIGO).subscribe(
         (resp) => {
           this.procesarDatos('R', resp);
+          this.buscando = false;
         },
         (error) => {
           this.clientesService
             .getClienteSriAlt(this.cliente.CLI_CODIGO)
             .subscribe((resp) => {
               this.procesarDatos('R', resp);
+              this.buscando = false;
             });
         }
       );
@@ -462,7 +490,8 @@ export class ClienteComponent implements OnInit {
       let dia: string, mes: string, anio: number;
 
       dia = date.getDate().toString().length < 2 ? `0${date.getDate().toString()}` : date.getDate().toString();
-      mes = date.getMonth().toString().length < 2 ? `0${date.getMonth().toString()}` : date.getMonth().toString();
+      mes = (date.getMonth() + 1).toString();
+      mes = mes.length < 2 ? `0${mes}` : mes;
       anio = date.getFullYear();
 
       this.cliente.CLI_FECHACONSULTA = `${anio}-${mes}-${dia}`;
@@ -531,9 +560,9 @@ export class ClienteComponent implements OnInit {
     this.archivos.splice(index, 1);
   }
 
-  calcularVence(event: any) {
+  calcularVence() {
     // if (event.target.value.length !== 13) { this.cliente.CLI_DIGITO = null; this.cliente.CLI_VENCE = null; return; }
-    const numDoc: string = event.target.value;
+    const numDoc: string = this.cliente.CLI_CODIGO;
     this.cliente.CLI_DIGITO = numDoc.slice(8, 9);
     let vence: string;
     switch (this.cliente.CLI_DIGITO) {
@@ -677,4 +706,45 @@ export class ClienteComponent implements OnInit {
       this.tipoJuridica = resp;
     });
   }
+
+  verComentarios(actividad: AgendaActividad) {
+    const dialogRef = this.dialog.open(ComentariosModalComponent, {
+      width: '100%',
+      height: '100%',
+      data: {
+        id: actividad.id,
+        estado: actividad.estado,
+        bloquearComentarios: true,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        actividad.comentarios = result.comentarios;
+      } else {
+      }
+    });
+  }
+
+  verDocumentos(actividad: AgendaActividad) {
+    const dialogRef = this.dialog.open(DocumentosModalComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%',
+      data: {
+        id: actividad.id,
+        estado: actividad.estado,
+        bloquearIngresos: true,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        // actividad.comentarios = result.comentarios;
+      } else {
+      }
+    });
+  }
+
 }

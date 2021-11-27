@@ -138,8 +138,8 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>Establecimiento*</label>
-                <input [(ngModel)]="establecimiento" name="estab" #estab="ngModel" placeholder="001"
-                  maxlength="3" type="tel" class="form-control" (focusout)="formatEstablecimiento(establecimiento)" required />
+                <input [(ngModel)]="establecimiento" name="estab" #estab="ngModel" placeholder="001" maxlength="3"
+                  type="tel" class="form-control" (focusout)="formatEstablecimiento(establecimiento)" required />
                 <div *ngIf="f.submitted && estab.invalid">
                   <span *ngIf="estab.errors?.required" class="badge bg-warning text-dark"> <i
                       class="fas fa-exclamation-triangle"></i> Ingrese el establecimiento</span>
@@ -149,8 +149,8 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>Pto. Emisión</label>
-                <input [(ngModel)]="ptoEmision" name="ptoEmi" #ptoEmi="ngModel" placeholder="001"
-                  maxlength="3" type="tel" class="form-control" (focusout)="formatPuntoemision(ptoEmision)" required />
+                <input [(ngModel)]="ptoEmision" name="ptoEmi" #ptoEmi="ngModel" placeholder="001" maxlength="3"
+                  type="tel" class="form-control" (focusout)="formatPuntoemision(ptoEmision)" required />
                 <div *ngIf="f.submitted && ptoEmi.invalid">
                   <span *ngIf="ptoEmi.errors?.required" class="badge bg-warning text-dark"> <i
                       class="fas fa-exclamation-triangle"></i> Ingrese el punto de emisión</span>
@@ -161,7 +161,8 @@
               <div class="form-group">
                 <label>Secuencial*</label>
                 <input [(ngModel)]="invoice.ENCFACPRO_NUMERO" name="invoiceNumber" #invoiceNumber="ngModel"
-                  placeholder="000000001" maxlength="9" type="tel" class="form-control" required (focusout)="formatSecuencual(invoice.ENCFACPRO_NUMERO)">
+                  placeholder="000000001" maxlength="9" type="tel" class="form-control" required
+                  (focusout)="formatSecuencual(invoice.ENCFACPRO_NUMERO)">
                 <div *ngIf="f.submitted && invoiceNumber.invalid">
                   <span *ngIf="invoiceNumber.errors?.required" class="badge bg-warning text-dark"> <i
                       class="fas fa-exclamation-triangle"></i> Ingrese el secuencial</span>
@@ -256,8 +257,8 @@
             <div class="col-md-8">
               <div class="form-group">
                 <label>Comentario</label>
-                <textarea name="observation" [(ngModel)]="invoice.ENCFACPRO_COMENTARIO" placeholder="Comentario..." type="text" class="form-control"
-                  minlength="4"></textarea>
+                <textarea name="observation" [(ngModel)]="invoice.ENCFACPRO_COMENTARIO" placeholder="Comentario..."
+                  type="text" class="form-control" minlength="4"></textarea>
               </div>
             </div>
             <div class="col-md-4 d-flex flex-column">
@@ -343,6 +344,215 @@
           </button>
         </div>
       </div>
+    </form>
+  </div>
+
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form (ngSubmit)="f.form.valid && saveInvoice(f)" #f="ngForm">
+
+      <div class="card">
+        <div class="card-header">Proveedor
+
+          <div class="btn-group" style="float: right;" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-sm btn-primary"> <i class="fas fa-plus"></i> </button>
+            <button type="button" class="btn btn-sm btn-secondary"> <i class="fas fa-search"></i> </button>
+          </div>
+
+        </div>
+        <div class="card-body">
+          {{ !supplier.PRO_CODIGO ? 'Proveedor no seleccionado' : '' }}
+          <div class="" *ngIf="supplier.PRO_CODIGO">
+            <ul class="list-unstyled">
+              <li><strong>Comprado a:</strong></li>
+              <li>{{ supplier.PRO_NOMBRE }}</li>
+              <li>{{ supplier.PRO_CODIGO }}</li>
+              <li>{{ supplier.PRO_DIRECCION1 }}</li>
+              <li>{{ supplier.PRO_TELEFONO1 }}</li>
+              <li>{{ supplier.PRO_CORREO }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="card">
+        <div class="card-header">Datos de factura
+          <!-- <div class="btn-group" style="float: right;" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-sm btn-primary"> <i class="fas fa-plus"></i> </button>
+            <button type="button" class="btn btn-sm btn-secondary"> <i class="fas fa-search"></i> </button>
+          </div> -->
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Autorización*</label>
+                <input [(ngModel)]="invoice.ENCFACPRO_AUTORIZACION" name="naut" #naut="ngModel" placeholder=""
+                  maxlength="49" type="tel" class="form-control form-control-sm" required />
+                <div *ngIf="f.submitted && naut.invalid">
+                  <span *ngIf="naut.errors?.required" class="badge bg-warning text-dark"> <i
+                      class="fas fa-exclamation-triangle"></i> Ingrese el numero de autorización</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Fecha Emisión*</label>
+                <input [(ngModel)]="invoice.ENCFACPRO_FECHAEMISION" name="fechaEmision" #fechaEmision="ngModel"
+                  type="date" class="form-control form-control-sm" required />
+                <div *ngIf="f.submitted && fechaEmision.invalid">
+                  <span *ngIf="fechaEmision.errors?.required" class="badge bg-warning text-dark"> <i
+                      class="fas fa-exclamation-triangle"></i> Ingrese la fecha de emisión</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>Fecha Vencimiento*</label>
+                <input [(ngModel)]="invoice.ENCFACPRO_FECHAVENCIMIENTO" name="fechaVencimiento"
+                  #fechaVencimiento="ngModel" type="date" class="form-control form-control-sm" required />
+                <div *ngIf="f.submitted && fechaVencimiento.invalid">
+                  <span *ngIf="fechaVencimiento.errors?.required" class="badge bg-warning text-dark"> <i
+                      class="fas fa-exclamation-triangle"></i> Ingrese la fecha de vencimiento</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Establecimiento*</label>
+                <input [(ngModel)]="establecimiento" name="estab" #estab="ngModel" placeholder="001" maxlength="3"
+                  type="tel" class="form-control form-control-sm" (focusout)="formatEstablecimiento(establecimiento)"
+                  required />
+                <div *ngIf="f.submitted && estab.invalid">
+                  <span *ngIf="estab.errors?.required" class="badge bg-warning text-dark"> <i
+                      class="fas fa-exclamation-triangle"></i> Ingrese el establecimiento</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Pto. Emisión</label>
+                <input [(ngModel)]="ptoEmision" name="ptoEmi" #ptoEmi="ngModel" placeholder="001" maxlength="3"
+                  type="tel" class="form-control form-control-sm" (focusout)="formatPuntoemision(ptoEmision)"
+                  required />
+                <div *ngIf="f.submitted && ptoEmi.invalid">
+                  <span *ngIf="ptoEmi.errors?.required" class="badge bg-warning text-dark"> <i
+                      class="fas fa-exclamation-triangle"></i> Ingrese el punto de emisión</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Secuencial*</label>
+                <input [(ngModel)]="invoice.ENCFACPRO_NUMERO" name="invoiceNumber" #invoiceNumber="ngModel"
+                  placeholder="000000001" maxlength="9" type="tel" class="form-control form-control-sm" required
+                  (focusout)="formatSecuencual(invoice.ENCFACPRO_NUMERO)">
+                <div *ngIf="f.submitted && invoiceNumber.invalid">
+                  <span *ngIf="invoiceNumber.errors?.required" class="badge bg-warning text-dark"> <i
+                      class="fas fa-exclamation-triangle"></i> Ingrese el secuencial</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Detalles de compra
+
+          <div class="btn-group" style="float: right;" role="group" aria-label="Basic example">
+            <!-- <button type="button" class="btn btn-sm btn-primary"> <i class="fas fa-plus"></i> </button> -->
+            <button type="button" class="btn btn-sm btn-primary" (click)="openDialog()"> <i class="fas fa-search"></i>
+            </button>
+          </div>
+
+        </div>
+        <div class="card-body">
+
+          <div class="table-responsive">
+
+            <table class="table table-stripped">
+              <thead class="">
+                <tr>
+                  <th class="text-center">Codigo</th>
+                  <th class="text-center">Description</th>
+                  <th class="text-center">Cantidad</th>
+                  <th class="text-center">Costo Unit.</th>
+                  <th class="text-center">Descuento.</th>
+                  <th class="text-center">Costo Total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of invoice.itemsInvoice; let i = index">
+                  <td>{{ item.DETFACPRO_CODIGO }}</td>
+                  <td>{{ item.DETFACPRO_DESCRIPCION }}</td>
+                  <td class="text-center"><input class="form-control form-control-sm w-100" type="number"></td>
+                  <td class="text-center"><input class="form-control form-control-sm" type="number"></td>
+                  <td class="text-center"><input class="form-control form-control-sm" type="number"></td>
+                  <td class="total"> {{ item.DETFACPRO_TOTAL.toFixed(2) }} </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-danger" (click)="removeProduct(i)"> <i
+                        class="fas fa-trash-alt"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="5" class="text-right">SubTotal Sin Impuesto:</td>
+                  <td colspan="2" class="text-center">{{ subtotal.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">SubTotal 12%:</td>
+                  <td colspan="2" class="text-center">{{ invoice.ENCFACPRO_BASEIVA.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">SubTotal 0%:</td>
+                  <td colspan="2" class="text-center">{{ invoice.ENCFACPRO_BASECERO.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">SubTotal No Objeto IVA:</td>
+                  <td colspan="2" class="text-center">{{ invoice.ENCFACPRO_BASENOOBJIVA.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">SubTotal Exento IVA:</td>
+                  <td colspan="2" class="text-center">{{ invoice.ENCFACPRO_PORCEIVA.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">Descuento:</td>
+                  <td colspan="2" class="text-center">{{ invoice.ENCFACPRO_PORCEDES.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">Valor ICE:</td>
+                  <td colspan="2" class="text-center">{{ invoice.ENCFACPRO_VALORICE.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">Valor IRBPNR:</td>
+                  <td colspan="2" class="text-center">0.00</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">IVA 12%:</td>
+                  <td colspan="2" class="text-center">{{ invoice.ENCFACPRO_VALORIVA.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">Propina:</td>
+                  <td colspan="2" class="text-center">0.00</td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right">TOTAL:</td>
+                  <td colspan="2" class="text-center">{{ invoice.ENCFACPRO_TOTAL.toFixed(2) }}</td>
+                </tr>
+              </tfoot>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+
     </form>
   </div>
 </div>

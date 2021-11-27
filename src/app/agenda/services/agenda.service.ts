@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Entidad } from '../../models/entidades.model';
 import { urlWs } from 'src/environments/environment';
-import { AgendaActividad } from '../../models/agendaActividades.model';
+import { AgendaActividad, AgendaActividadAdmin } from '../../models/agendaActividades.model';
 import { ComentarioAgenda } from '../../models/comentariosAgenda.model';
 
 @Injectable({
@@ -18,6 +18,10 @@ export class AgendaService {
 
   getAgendaActividades() {
     return this.http.get<AgendaActividad[]>(`${urlWs}/api/agendaActividad`);
+  }
+  
+  getAgendaActividadesAdministrador() {
+    return this.http.get<AgendaActividadAdmin[]>(`${urlWs}/api/agendaActividad/administrador`);
   }
 
   getActividadesGeneradas() {
@@ -66,6 +70,37 @@ export class AgendaService {
 
   generarAgenda(datos) {
     return this.http.post(`${urlWs}/api/agendaActividad/periodo`, datos);
+  }
+  
+  generarAgendaMultiplesClientes(datos: any) {
+    console.log(datos);
+    return this.http.post(`${urlWs}/api/agendaActividad/tareas`, datos);
+  }
+
+  public getDocumentos(id: number) {
+    return this.http.get(`${urlWs}/api/agendaActividad/documento/${id}`);
+  }
+  
+  public getDocumento(id: number) {
+    return this.http.get(`${urlWs}/api/agendaActividad/documento/id/${id}`);
+  }
+  
+  public downloadDocumento(id: number) {
+    return `${urlWs}/api/agendaActividad/documento/${id}/download`;
+  }
+  
+  public deleteDocumento(id: number) {
+    return this.http.delete(`${urlWs}/api/agendaActividad/documento/${id}`);
+  }
+  
+  public upload(file: any, data: any) {
+    const formData = new FormData();
+    console.log(file.newName)
+    formData.append("current", file, file.newName);
+    formData.append("idAgenda", data.idAgenda);
+    formData.append("idUsuario", data.idUsuario);
+    formData.append("fecha", this.getFechaActual());
+    return this.http.post(`${urlWs}/api/agendaActividad/documento/`, formData);
   }
 
   getFechaActual() {

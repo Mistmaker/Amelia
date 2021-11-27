@@ -35,23 +35,25 @@
                 <thead class=" text-primary">
                     <th>Nombre</th>
                     <th>CI./RUC</th>
+                    <th>Asesor</th>
                     <th>Grupo</th>
                     <th>Vence</th>
                     <th>Accion</th>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let cliente of clientes | filtroSimple: '' | paginate : {itemsPerPage: tableSize,currentPage: page,totalItems: count};">
+                    <tr [ngClass]="{'table-info': cliente.CLI_ESTADO != '1'}" *ngFor="let cliente of clientes | filtroSimple: '' | paginate : {itemsPerPage: tableSize,currentPage: page,totalItems: count};">
                         <td>{{ cliente.CLI_NOMBRE }} </td>
                         <td>{{ cliente.CLI_RUCIDE }}</td>
+                        <td>{{ cliente.Asesor }}</td>
                         <td>{{ cliente.GrupoCliente }}</td>
                         <td>{{ cliente.CLI_VENCE }}</td>
                         <td>
-                            <button class="btn btn-sm btn-warning mr-1" (click)="verDatos(cliente.CLI_CODIGO)"><i class="fa fa-eye"></i></button>
-                            <button class="btn btn-sm btn-primary mr-1" [routerLink]="['/clientes', cliente.CLI_CODIGO]"><i class="fa fa-pen"></i></button>
-                            <button class="btn btn-sm btn-success mr-1" (click)="enviarWhatsapp(cliente.CLI_TELEFONO1)" [disabled]="!cliente.CLI_TELEFONO1 || cliente.CLI_TELEFONO1.length < 10"><i class="fa fa-whatsapp"></i></button>
-                            <button class="btn btn-sm btn-primary mr-1" (click)="enviarEmail(cliente.CLI_CORREO)" [disabled]="!cliente.CLI_TELEFONO1 || cliente.CLI_CORREO.length < 8"><i class="fa fa-envelope"></i></button>
-                            <!-- <button class="btn btn-sm btn-danger mr-1"
-                                (click)="eliminarCliente(cliente.CLI_CODIGO)"><i class="fa fa-trash"></i></button> -->
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-sm btn-warning mr-1" (click)="verDatos(cliente.CLI_CODIGO)"><i class="fa fa-eye"></i></button>
+                                <button class="btn btn-sm btn-primary mr-1" [routerLink]="['/clientes', cliente.CLI_CODIGO]"><i class="fa fa-pen"></i></button>
+                                <button class="btn btn-sm btn-success mr-1" (click)="enviarWhatsapp(cliente.CLI_TELEFONO1)" [disabled]="!cliente.CLI_TELEFONO1 || cliente.CLI_TELEFONO1.length < 10"><i class="fa fa-whatsapp"></i></button>
+                                <button class="btn btn-sm btn-primary mr-1" (click)="enviarEmail(cliente.CLI_CORREO)" [disabled]="!cliente.CLI_CORREO || cliente.CLI_CORREO.length < 8"><i class="fa fa-envelope"></i></button>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
