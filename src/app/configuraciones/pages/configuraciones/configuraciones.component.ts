@@ -60,12 +60,12 @@ export class ConfiguracionesComponent implements OnInit {
     this.files = event.target.files;
   }
 
-  cargarExcel() {
+  async cargarExcel() {
     if (!this.files) { Swal.fire('No hay archivo', 'Seleccione un archivo excel antes de continuar', 'warning'); return; }
     const currentFile = this.files!.item(0);
 
     const reader: FileReader = new FileReader();
-    reader.onload = (e: any) => {
+    reader.onload = async (e: any) => {
       /* read workbook */
       const bstr: string = e.target.result;
       const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
@@ -78,30 +78,41 @@ export class ConfiguracionesComponent implements OnInit {
       this.data = <AOA>(XLSX.utils.sheet_to_json(ws, { header: 1 }));
       let f = 0;
       for (const cliente of this.data) {
+        console.log(cliente)
         if (f !== 0) {
-          const c = new Cliente();
-          const fila = cliente[0];
-          c.CLI_TIPOIDE = cliente[1].length === 13 ? '1' : '2';
-          c.CLI_CODIGO = cliente[1];
-          c.CLI_NOMBRE = cliente[2];
-          c.CLI_NOMBREC = cliente[2];
-          c.CLI_TELEFONO1 = cliente[3] ? cliente[3] : '';
-          c.CLI_CORREO = cliente[4] ? cliente[4] : '';
-          c.VEN_CODIGO = this.usr.VEN_CODIGO;
-          c.USUARIO = this.usr.USUIDENTIFICACION
-          c.GRU_CODIGO = cliente[5];
-          c.CLI_TIPOCLIENTE = cliente[6];
-          c.CLI_REGION = cliente[7] ? cliente[7] : 'C';
-          c.CLI_CLAVESRI = cliente[8] ? cliente[8] : '';
-          c.CLI_CLAVEIESSEMPLEADOR = cliente[9] ? cliente[9] : '';
-          c.CLI_CLAVEMRLCONTRATOS = cliente[10] ? cliente[10] : '';
-          c.CLI_CLAVEMRLFORMULARIOS = cliente[11] ? cliente[11] : '';
-          c.CLI_CLAVESUPER = cliente[12] ? cliente[12] : '';
+          try {
+            const c = new Cliente();
+            const fila = cliente[0];
+            c.CLI_TIPOIDE = cliente[1].length === 13 ? '1' : '2';
+            c.CLI_CODIGO = cliente[1];
+            c.CLI_NOMBRE = cliente[2];
+            c.CLI_NOMBREC = cliente[2];
+            c.CLI_TELEFONO1 = cliente[3] ? cliente[3] : '';
+            c.CLI_CORREO = cliente[4] ? cliente[4] : '';
+            c.VEN_CODIGO = this.usr.VEN_CODIGO;
+            c.USUARIO = this.usr.USUIDENTIFICACION
+            c.GRU_CODIGO = cliente[5];
+            c.CLI_TIPOCLIENTE = cliente[6];
+            c.CLI_REGION = cliente[7] ? cliente[7] : 'C';
+            c.CLI_CLAVESRI = cliente[8] ? cliente[8] : '';
+            c.CLI_CLAVEIESSEMPLEADOR = cliente[9] ? cliente[9] : '';
+            c.CLI_CLAVEMRLCONTRATOS = cliente[10] ? cliente[10] : '';
+            c.CLI_CLAVEMRLFORMULARIOS = cliente[11] ? cliente[11] : '';
+            c.CLI_CLAVESUPER = cliente[12] ? cliente[12] : '';
 
-          c.CLI_DIGITO = c.CLI_CODIGO.slice(8, 9);
-          c.CLI_VENCE = +this.calcularVence(c.CLI_DIGITO);
-          this.clientesService.postCliente(c).subscribe(r => {
-          });
+            c.CLI_DIGITO = c.CLI_CODIGO.toString().slice(8, 9);
+            c.CLI_VENCE = +this.calcularVence(c.CLI_DIGITO);
+
+
+            // this.clientesService.postCliente(c).subscribe(r => {
+            //   console.log(r);
+            // });
+            const resp = await this.clientesService.postCliente(c).toPromise();
+            console.log(resp)
+          } catch (error) {
+            console.warn(error);
+          }
+
         }
         f += 1;
       }
@@ -126,6 +137,7 @@ export class ConfiguracionesComponent implements OnInit {
   actualizarDatosCatastrosClientes() {
     let nombreCliente = '';
     let clientes: Cliente[] = [];
+    let i =0;
     Swal.fire({ title: 'Espere', text: 'Actualizando información' + nombreCliente, allowOutsideClick: false, icon: 'info', });
     Swal.showLoading();
     this.clientesService.getClientes().subscribe(async resp => {
@@ -133,7 +145,7 @@ export class ConfiguracionesComponent implements OnInit {
       if (clientes.length === 0) { Swal.fire('No se encontraron clientes', 'Registre clientes antes de utilizar esta opción', 'warning'); return; }
       for (const cliente of clientes) {
         nombreCliente = cliente.CLI_NOMBRE;
-
+        i++;
         Swal.update({ title: 'Espere', html: `Actualizando información <br> ${nombreCliente}`, allowOutsideClick: false, icon: 'info', });
         Swal.showLoading();
 
@@ -141,15 +153,23 @@ export class ConfiguracionesComponent implements OnInit {
           const isAr = await this.clientesService.getIsAgenteRentencion(cliente.CLI_CODIGO).toPromise();
           const isCe = await this.clientesService.getIsContribuyenteEspecial(cliente.CLI_CODIGO).toPromise();
           const isEf = await this.clientesService.getIsEmpresaFantasma(cliente.CLI_CODIGO).toPromise();
-          const isMi = await this.clientesService.getIsMicro(cliente.CLI_CODIGO).toPromise();
+          // const isMi = await this.clientesService.getIsMicro(cliente.CLI_CODIGO).toPromise();
+          const isRi = await this.clientesService.getIsRegimenRimpe(cliente.CLI_CODIGO).toPromise();
           const sriData = await this.clientesService.getClienteSri(cliente.CLI_CODIGO).toPromise();
           if (isAr["agentes"]) { cliente.CLI_AGENRETENCION = isAr["agentes"]; }
           if (isCe["especiales"]) { cliente.CLI_CONTRIESPECIAL = isCe["especiales"]; }
           if (isEf["fantasma"]) { cliente.CLI_EMPRESAFANTAS = isEf["fantasma"]; }
-          if (isMi["microempresa"]) { cliente.CLI_MICROEMPRESA = isMi["microempresa"]; }
+
+          console.log(i, nombreCliente, isRi);
+          if (isRi["regimen"]) {
+            cliente.CLI_MICROEMPRESA = `${isRi["regimen"]} Negocio Popular: ${isRi["negociopopular"]} - ${isRi["fecha"]}`;
+          }else {
+            cliente.CLI_MICROEMPRESA = `Régimen General`;
+          }
+
           if (sriData["Actividad Económica Principal"]) { cliente.CLI_ACTIVIDAD = sriData["Actividad Económica Principal"]; cliente.CLI_NOMBREC = sriData["Nombre Comercial"]; }
           if (sriData["Nombre Comercial:"]) { cliente.CLI_NOMBREC = sriData["Nombre Comercial:"]; }
-          if (isAr["agentes"] || isCe["especiales"] || isEf["fantasma"] || isMi["microempresa"]) { cliente.CLI_FECHACONSULTA = this.utilidadesService.getFechaActual(); }
+          if (isAr["agentes"] || isCe["especiales"] || isEf["fantasma"] || isRi) { cliente.CLI_FECHACONSULTA = this.utilidadesService.getFechaActual(); }
           if (!cliente.datosAdicionales) {
             const datosBusqueda = {
               CLI_CODIGO: cliente.CLI_CODIGO,

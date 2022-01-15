@@ -18,7 +18,7 @@
 
         </div>
 
-        <div class="row mt-1" *ngIf="mostrarEstado">
+        <div class="row mt-1" *ngIf="mostrarEstado && !mostrarAgrupados">
             <div class="col-md-3" (click)="cargarPorEstado('ven')">
                 <div class="input-group bg-danger bg-gradient mb-1 pointer">
                     <span class="form-control bg-danger bg-gradient text-light" style="border: 0;"
@@ -203,6 +203,41 @@
                     <div class="card-header bg-primary text-light" (click)="grupo.colapsado=!grupo.colapsado">
                         <b> {{ grupo.usuario }} &nbsp;&nbsp;&nbsp; <i
                                 class="fas fa-lg fa-caret-{{ grupo.colapsado ? 'up' : 'down' }}"></i> </b>
+                    </div>
+                </div>
+
+                <div class="row mt-1" *ngIf="grupo.colapsado && grupo.actividades.length > 0">
+                    <div class="col-md-3" (click)="cargarPorEstadoUsuario(grupo,'ven')">
+                        <div class="input-group bg-danger bg-gradient mb-1 pointer">
+                            <span class="form-control bg-danger bg-gradient text-light" style="border: 0;"
+                                id="basic-addon1">Vencidos</span>
+                            <span class="input-group-text bg-danger bg-gradient text-light" style="border: 0;"
+                                id="basic-addon1">{{grupo.vencidos}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3" (click)="cargarPorEstadoUsuario(grupo,'pen')">
+                        <div class="input-group bg-primary bg-warning mb-1 pointer">
+                            <span class="form-control bg-primary bg-warning text-light" style="border: 0;"
+                                id="basic-addon1">Pendientes</span>
+                            <span class="input-group-text bg-primary bg-warning text-light" style="border: 0;"
+                                id="basic-addon1">{{grupo.pendientes}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3" (click)="cargarPorEstadoUsuario(grupo,'hoy')">
+                        <div class="input-group bg-primary bg-success mb-1 pointer">
+                            <span class="form-control bg-primary bg-success text-light" style="border: 0;"
+                                id="basic-addon1">Hoy</span>
+                            <span class="input-group-text bg-primary bg-success text-light" style="border: 0;"
+                                id="basic-addon1">{{grupo.hoy}}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3" (click)="cargarPorEstadoUsuario(grupo,'pro')">
+                        <div class="input-group bg-primary bg-gradient mb-1 pointer">
+                            <span class="form-control bg-primary bg-gradient text-light" style="border: 0;"
+                                id="basic-addon1">Próximos</span>
+                            <span class="input-group-text bg-primary bg-gradient text-light" style="border: 0;"
+                                id="basic-addon1">{{grupo.proximos}}</span>
+                        </div>
                     </div>
                 </div>
 

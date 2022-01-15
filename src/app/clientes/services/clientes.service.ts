@@ -9,6 +9,7 @@ import {
   urlWsRucCE,
   urlWsRucEF,
   urlWsRucAR,
+  urlWsRimpe,
 } from '../../../environments/environment';
 import { Cliente, TipoJuridica } from '../../models/clientes.model';
 import { ClienteDocumentos } from '../../models/clientesDocumentos';
@@ -86,6 +87,10 @@ export class ClientesService {
 
   getIsAgenteRentencion(id: string) {
     return this.http.get(`${urlWsRucAR}${id}`);
+  }
+  
+  getIsRegimenRimpe(id: string) {
+    return this.http.get(`${urlWsRimpe}${id}`);
   }
 
   getTipoJuridicaCliente(tipoCliente: number) {

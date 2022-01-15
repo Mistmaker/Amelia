@@ -300,7 +300,7 @@ export class ClienteComponent implements OnInit {
 
     Swal.fire({ title: 'Espere', text: 'Guardando información', allowOutsideClick: false, icon: 'info', });
     Swal.showLoading();
-    
+
     this.calcularVence();
     // put null on dates containing undefined string
     if (this.cliente.CLI_FECINIACTIVIDADES && this.cliente.CLI_FECINIACTIVIDADES.includes('undefined')) this.cliente.CLI_FECINIACTIVIDADES = null;
@@ -411,10 +411,20 @@ export class ClienteComponent implements OnInit {
       );
     }
 
+    // this.clientesService
+    //   .getIsMicro(this.cliente.CLI_CODIGO)
+    //   .subscribe((res: any) => {
+    //     this.cliente.CLI_MICROEMPRESA = res.microempresa;
+    //   });
+
     this.clientesService
-      .getIsMicro(this.cliente.CLI_CODIGO)
+      .getIsRegimenRimpe(this.cliente.CLI_CODIGO)
       .subscribe((res: any) => {
-        this.cliente.CLI_MICROEMPRESA = res.microempresa;
+        if (res){
+          this.cliente.CLI_MICROEMPRESA = `Régimen ${res["regimen"]} Negocio Popular: ${res["negociopopular"]} - ${res["fecha"]}`;
+        }else {
+          this.cliente.CLI_MICROEMPRESA = `Régimen General`;
+        }
       });
 
     this.clientesService

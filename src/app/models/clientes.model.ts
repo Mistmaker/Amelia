@@ -139,6 +139,7 @@ export class Cliente {
   documentos: ClienteDocumentos[];
   TipoCliente: string;
   Asesor: string;
+  CodigoAsesor: number;
   seleccionado: boolean;
 
   constructor() {

@@ -78,6 +78,14 @@ export class DirectorioComponent implements OnInit {
           if (resp.codigo == 1) { this.mostrarAgrupados = true; }
           this.cargando = true;
           this.agendaService.getAgendaActividadesAdministrador().subscribe(resp => {
+            for (const usuario of resp) {
+              usuario.actividades = usuario.actividades.filter(a => a.estado != 'FINALIZADO');
+              usuario.vencidos = usuario.actividades.filter(a => a.ESCAT == 'VENCIDO').length;
+              usuario.pendientes = usuario.actividades.filter(a => a.ESCAT == 'PENDIENTE').length;
+              usuario.hoy = usuario.actividades.filter(a => a.ESCAT == 'HOY').length;
+              usuario.proximos = usuario.actividades.filter(a => a.ESCAT == 'PROXIMO').length;
+              usuario.tmpactividades = usuario.actividades;
+            }
             console.log(resp)
             this.agendaActividadesAdmin = resp;
             this.cargando = false;
@@ -254,6 +262,18 @@ export class DirectorioComponent implements OnInit {
     });
   }
 
+  cargarPorEstadoUsuario(grupo: AgendaActividadAdmin, estado: string) {
+    grupo.page = 1;
+    this.cargando = true;
+
+    grupo.actividades = grupo.tmpactividades;
+    if (estado === 'ven' && grupo.vencidos > 0) { grupo.actividades = grupo.actividades.filter(act => act.ESCAT === 'VENCIDO'); }
+    if (estado === 'pen' && grupo.pendientes > 0) { grupo.actividades = grupo.actividades.filter(act => act.ESCAT === 'PENDIENTE'); }
+    if (estado === 'hoy' && grupo.hoy > 0) { grupo.actividades = grupo.actividades.filter(act => act.ESCAT === 'HOY'); }
+    if (estado === 'pro' && grupo.proximos > 0) { grupo.actividades = grupo.actividades.filter(act => act.ESCAT === 'PROXIMO'); }
+    this.cargando = false;
+  }
+
   crearTareaManual() {
     if (!this.cliente.CLI_CODIGO) { Swal.fire('Atención', 'Seleccione un cliente primero', 'warning'); return; }
     if (!this.actividad.id_actividad) { Swal.fire('Atención', 'Seleccione una actividad primero', 'warning'); return; }
@@ -305,6 +325,8 @@ export class DirectorioComponent implements OnInit {
           this.tipoCliente = result.TipoCliente;
           this.agendaService.getActividadesGeneradasCliente(result.CLI_CODIGO).subscribe(resp => {
             this.agendaActividades = resp;
+            this.ordenar('vence');
+            this.ordenar('vence');
           });
         }
         if (origen == 'nuevaTarea') {

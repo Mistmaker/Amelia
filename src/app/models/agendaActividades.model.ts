@@ -23,4 +23,9 @@ export class AgendaActividadAdmin {
     colapsado: boolean;
     page: number;
     actividades: AgendaActividad[];
+    vencidos: number;
+    pendientes: number;
+    hoy: number;
+    proximos: number;
+    tmpactividades: AgendaActividad[];
 }

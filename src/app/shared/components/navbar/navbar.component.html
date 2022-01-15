@@ -54,8 +54,8 @@
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/proveedores']">Proveedores</a>
         </li> -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" routerLinkActive="active" id="agenda" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
+          <a class="nav-link dropdown-toggle" routerLinkActive="active" id="agenda" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
             Agenda
           </a>
           <ul class="dropdown-menu" aria-labelledby="agenda">
@@ -70,8 +70,16 @@
         <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/vendedores']">Asesores</a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link" routerLinkActive="active" [routerLink]="['/usuarios']">Usuarios</a>
+        </li> -->
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="productosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Seguridades </a>
+          <ul class="dropdown-menu" aria-labelledby="productosDropdown">
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/usuarios']">Usuarios</a></li>
+            <li><a class="dropdown-item" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="active" [routerLink]="['/usuarios/perfiles']">Perfiles</a></li>
+          </ul>
         </li>
 
         <li class="nav-item dropdown">
