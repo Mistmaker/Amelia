@@ -61,6 +61,7 @@ export class ComentariosModalComponent implements OnInit {
     this.comentario.usuario = this.usuario;
 
     this.agendaService.setComentarioAgendaActividad(this.comentario).subscribe((resp: ComentarioAgenda) => {
+      console.log(resp)
       this.comentario.id = resp.id;
       this.comentarios.push(this.comentario);
       this.cantComentarios = this.comentarios.length;

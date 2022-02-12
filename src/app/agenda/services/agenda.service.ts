@@ -99,6 +99,7 @@ export class AgendaService {
     formData.append("current", file, file.newName);
     formData.append("idAgenda", data.idAgenda);
     formData.append("idUsuario", data.idUsuario);
+    formData.append("comentarioArchivo", data.comentarioArchivo);
     formData.append("fecha", this.getFechaActual());
     return this.http.post(`${urlWs}/api/agendaActividad/documento/`, formData);
   }

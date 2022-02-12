@@ -16,6 +16,7 @@ import { ImgModaldialog } from '../../../clientes/pages/documentos-cliente/docum
 export class DocumentosModalComponent implements OnInit {
 
   nombreArchivo = '';
+  comentarioArchivo = '';
   current: any = null;
   archivos: any[] = [];
   idUsuario = '';
@@ -62,7 +63,8 @@ export class DocumentosModalComponent implements OnInit {
     this.current.newName = this.nombreArchivo + '.' + this.current.name.split('.').pop();
     const datos = {
       idAgenda: this.data.id,
-      idUsuario: this.idUsuario
+      idUsuario: this.idUsuario,
+      comentarioArchivo: this.comentarioArchivo
     }
     this.agendaService.upload(this.current, datos).subscribe(resp => {
       console.log(resp);

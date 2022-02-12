@@ -22,7 +22,7 @@ export class TareasComponent implements OnInit {
   cliente = new Cliente();
   rucs: string[] = [];
   actividad = new Actividades();
-  periodo = '2021';
+  periodo = '2022';
   fecha = '';
   textoBusqueda = '';
   agendaActividades: AgendaActividad[] = [];

@@ -8,4 +8,5 @@ export class AgendaActividadDocumentos {
     ADOC_TIPO: string;
     ADOC_MIMETYPE: string;
     ADOC_FECHA: Date;
+    ADOC_COMENTARIO: string;
 }

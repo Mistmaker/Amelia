@@ -1,9 +1,10 @@
 import { MatDialog } from '@angular/material/dialog';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 // import { formatDate } from '@angular/common';
 import Swal from 'sweetalert2';
+import { orderBy } from 'lodash';
 
 import { Cliente, CuentasContablesClientes, TipoJuridica } from '../../../models/clientes.model';
 import { ClientesService } from '../../services/clientes.service';
@@ -31,12 +32,18 @@ import { AgendaActividad } from '../../../models/agendaActividades.model';
 import { ComentariosModalComponent } from '../../../agenda/pages/comentarios-modal/comentarios-modal.component';
 import { DocumentosModalComponent } from '../../../agenda/pages/documentos-modal/documentos-modal.component';
 
+import * as dayjs from 'dayjs'
+import 'dayjs/locale/es-mx' // import locale
+
 @Component({
   selector: 'app-cliente',
   templateUrl: './cliente.component.html',
   styleUrls: ['./cliente.component.css'],
 })
 export class ClienteComponent implements OnInit {
+
+  @ViewChild("busqueda") busqueda: ElementRef;
+
   cliente = new Cliente();
   tipoClientes: TipoCliente[] = [];
   provinciaCodigo: string = '';
@@ -82,6 +89,11 @@ export class ClienteComponent implements OnInit {
   count = 0;
   tableSize = 12;
   tableSizes = [3, 6, 9, 12];
+
+  // Para ordenamiento
+  orden = 'a'; // orden a= ascendente | b=descendente
+
+  textoBusqueda = '';
 
   buscando = false;
 
@@ -194,9 +206,17 @@ export class ClienteComponent implements OnInit {
   }
 
   getActividadesCliente() {
+    const fecha = dayjs();
+    const fechafin = dayjs().endOf('month');
+    console.log(fecha.format('DD/MM/YYYY'))
+    console.log(fechafin.format('DD/MM/YYYY'))
     this.agendaService.getActividadesGeneradasCliente(this.cliente.CLI_CODIGO).subscribe(resp => {
-      resp = resp.filter(r => r.estado == 'FINALIZADO')
+      // resp = resp.filter(r => r.estado == 'FINALIZADO')
+      resp = resp.filter(r => dayjs(r.vence) <= fechafin)
+      resp.map(a => console.log(a.vence,  dayjs(a.vence).toDate() <= fechafin.toDate()))
       this.actividadesCliente = resp;
+      this.ordenar('vence');
+      this.ordenar('vence');
       console.log(this.actividadesCliente)
     });
   }
@@ -420,9 +440,9 @@ export class ClienteComponent implements OnInit {
     this.clientesService
       .getIsRegimenRimpe(this.cliente.CLI_CODIGO)
       .subscribe((res: any) => {
-        if (res){
+        if (res) {
           this.cliente.CLI_MICROEMPRESA = `Régimen ${res["regimen"]} Negocio Popular: ${res["negociopopular"]} - ${res["fecha"]}`;
-        }else {
+        } else {
           this.cliente.CLI_MICROEMPRESA = `Régimen General`;
         }
       });
@@ -755,6 +775,28 @@ export class ClienteComponent implements OnInit {
       } else {
       }
     });
+  }
+
+  onTableDataChange(event: any) {
+    this.page = event;
+    // this.fetchPosts();
+  }
+
+  onTableSizeChange(event: any): void {
+    this.tableSize = event.target.value;
+    this.page = 1;
+    // this.fetchPosts();
+  }
+
+  ordenar(col: string) {
+    this.actividadesCliente = orderBy(this.actividadesCliente, [col], [this.orden == 'a' ? 'asc' : 'desc']);
+    this.orden = this.orden == 'a' ? 'd' : 'a';
+  }
+
+  limpiarBusqueda() {
+    this.textoBusqueda = '';
+    this.page = 1;
+    setTimeout(() => { this.busqueda.nativeElement.focus(); }, 0);
   }
 
 }

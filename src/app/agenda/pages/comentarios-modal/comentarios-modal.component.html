@@ -10,15 +10,14 @@
     <form *ngIf="permitirGuardar" (ngSubmit)="f.form.valid && guardarComentario(f)" #f="ngForm">
         <div class="form-group">
             <div class="input-group ">
-                <input [(ngModel)]="comentario.comentario" name="com" #com="ngModel"
-                    placeholder="Ingresa un nuevo comentario" type="text" class="form-control" minlength="1" required>
+                <!-- <input [(ngModel)]="comentario.comentario" name="com" #com="ngModel" placeholder="Ingresa un nuevo comentario" type="text" class="form-control" minlength="1" required> -->
+                <textarea name="comentario" id="comentario" #com="ngModel" [(ngModel)]="comentario.comentario" rows="2" laceholder="Ingresa un nuevo comentario" class="form-control" minlength="1" required></textarea>
                 <button class="btn btn-primary " type="submit">
                     <i class="fas fa-save"></i>
                 </button>
             </div>
             <div *ngIf="f.submitted && com.invalid">
-                <span *ngIf="com.errors?.required" class="badge bg-warning text-dark"> <i
-                        class="fas fa-exclamation-triangle"></i> Ingrese un comentario</span>
+                <span *ngIf="com.errors?.required" class="badge bg-warning text-dark"> <i class="fas fa-exclamation-triangle"></i> Ingrese un comentario</span>
             </div>
         </div>
     </form>
@@ -27,7 +26,7 @@
 
     <div class="card" *ngFor="let c of comentarios; let i = index">
         <div class="card-body">
-            <p class="card-text"> {{ c.comentario }} </p>
+            <pre  class="card-text"> {{ c.comentario }} </pre>
             <div class="row">
                 <div class="col-xs-6 col-md-6">
                     <p class="card-text"> <i class="fas fa-clock"></i> {{ c.fecha.replace('T',' ').replace('.000Z','') }} - {{ c.usuario }} </p>
